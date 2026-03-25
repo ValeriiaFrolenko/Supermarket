@@ -22,13 +22,13 @@ CREATE TABLE IF NOT EXISTS Employee (
 
 -- Category table
 CREATE TABLE IF NOT EXISTS Category (
-    category_number INTEGER PRIMARY KEY,
+    category_number INTEGER PRIMARY KEY AUTOINCREMENT,
     category_name TEXT NOT NULL
     );
 
 -- Product table
 CREATE TABLE IF NOT EXISTS Product (
-   id_product INTEGER PRIMARY KEY,
+   id_product INTEGER PRIMARY KEY AUTOINCREMENT,
    category_number INTEGER NOT NULL,
    product_name TEXT NOT NULL,
    characteristics TEXT NOT NULL,

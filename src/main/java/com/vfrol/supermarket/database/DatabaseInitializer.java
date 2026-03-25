@@ -2,6 +2,7 @@ package com.vfrol.supermarket.database;
 
 import com.google.inject.Inject;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -15,29 +16,21 @@ public class DatabaseInitializer {
     }
 
     public void initialize() {
-        executeSqlScript("/sql/schema.sql");
+        executeSqlScript();
     }
 
-    public void executeSqlScript(String resourcePath) {
+    private void executeSqlScript() {
         try (Connection connection = databaseConnection.getConnection();
              Statement statement = connection.createStatement()) {
-            var is = getClass().getResourceAsStream(resourcePath);
-            if (is == null) {
-                System.err.println("Resource not found: " + resourcePath);
-                return;
+            var inputStream = getClass().getResourceAsStream("/sql/schema.sql");
+            if (inputStream == null) {
+                throw new RuntimeException("Resource not found: " + "/sql/schema.sql");
             }
-            String sql = new String(is.readAllBytes());
-            String[] commands = sql.split(";");
-            for (String command : commands) {
-                String trimmed = command.trim();
-                if (!trimmed.isEmpty() && !trimmed.startsWith("--")) {
-                    statement.addBatch(trimmed);
-                }
-            }
-            statement.executeBatch();
+            String sql = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            statement.executeUpdate(sql);
         } catch (Exception e) {
-            System.err.println("Failed to execute SQL script: " + e.getMessage());
-            throw new RuntimeException("SQL script execution failed", e);
+            System.err.println("Database initialization failed: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }
