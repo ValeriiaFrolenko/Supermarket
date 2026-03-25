@@ -8,11 +8,10 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:sqlite:supermarket.db";
 
     public Connection getConnection() throws SQLException {
-        try {
-            return DriverManager.getConnection(URL);
-        } catch (SQLException e) {
-            System.err.println("Failed to connect to the database: " + e.getMessage());
-            throw new RuntimeException("Database connection failed", e);
+        Connection connection = DriverManager.getConnection(URL);
+        try (var stmt = connection.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON");
         }
+        return connection;
     }
 }

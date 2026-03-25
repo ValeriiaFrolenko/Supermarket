@@ -12,6 +12,7 @@ module com.vfrol.supermarket {
 
     opens com.vfrol.supermarket to javafx.fxml, com.google.guice;
     opens com.vfrol.supermarket.controller to javafx.fxml, com.google.guice;
+    opens com.vfrol.supermarket.database to com.google.guice;
 
     exports com.vfrol.supermarket;
     exports com.vfrol.supermarket.controller;
