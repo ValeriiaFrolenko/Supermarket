@@ -7,6 +7,7 @@ PRAGMA foreign_keys = ON;
 -- Employee table
 CREATE TABLE IF NOT EXISTS Employee (
     id_employee TEXT PRIMARY KEY,
+    password_hash TEXT NOT NULL,
     empl_surname TEXT NOT NULL,
     empl_name TEXT NOT NULL,
     empl_patronymic TEXT,

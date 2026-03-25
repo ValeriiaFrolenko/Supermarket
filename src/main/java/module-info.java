@@ -9,6 +9,7 @@ module com.vfrol.supermarket {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires java.sql;
+    requires jbcrypt;
 
     opens com.vfrol.supermarket to javafx.fxml, com.google.guice;
     opens com.vfrol.supermarket.controller to javafx.fxml, com.google.guice;
