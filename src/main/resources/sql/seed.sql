@@ -5,14 +5,14 @@ PRAGMA foreign_keys = ON;
 
 -- Insert Employees (edge cases: NULL patronymic, minimum age 18, minimum salary 0)
 INSERT OR IGNORE INTO Employee VALUES
-                         ('EMP0000001','$2a$10$VavcbDs5wojYs8TPs32dRe.dE60UR8.odOQv4ZNSwGKVBhhWUCIwC', 'Smith', 'John', NULL, 'manager', 25000.0000, '2000-01-01', '2020-01-15', '+380501234567', 'Kyiv', 'Shevchenka St', '01001'),
-                         ('EMP0000002', '$2a$10$UXxaBrMUMCh3OWp0KB7Yvu7xKxGrtzeSVoTZ4QO4BP6snGXyRya6u','Johnson', 'Mary', 'Ann', 'cashier', 12000.5000, '1995-06-15', '2021-03-20', '+380672345678', 'Lviv', 'Franka St', '79000'),
-                         ('EMP0000003', '$2a$10$3gXhiStA8keP6rVpZQCI1.H5wQFH4Y0hJgiM39KuuEa2nVqlNFvoa','Williams', 'Robert', NULL, 'cashier', 0.0000, '2006-03-25', '2024-03-26', '+380933456789', 'Odesa', 'Deribasivska St', '65000'),
-                         ('EMP0000004', '$2a$10$Dy0V/tpsgMTTfY/qx3JIVOlwHn.mOa0eys/8NRjkTDn8LSW/jO2BS','Brown', 'Patricia', 'Lee', 'manager', 50000.9999, '1985-12-31', '2015-07-01', '+380994567890', 'Dnipro', 'Gagarina Ave', '49000'),
-                         ('EMP0000005', '$2a$10$a3IRg52fwkkewN7ZBQEWVeZ.H4yInDNtnZBYTpi/13Nmgl1346Oo6','Jones', 'Michael', NULL, 'cashier', 13500.0000, '1998-08-20', '2022-11-10', '+380635678901', 'Kharkiv', 'Sumska St', '61000'),
-                         ('EMP0000006', '$2a$10$nBvEzv.gJgdiAxUGXp5X.u/unkbYv62ZyGBCiIQJG7ZEq1sT8I836','Garcia', 'Linda', 'Marie', 'cashier', 11000.0000, '2003-02-14', '2023-02-15', '+380666789012', 'Zaporizhzhia', 'Sobornyi Ave', '69000'),
-                         ('EMP0000007', '$2a$10$R9B2FVqrE6FzYIbvtw2XPuWiyt1kyL852JeAVOosOA4Pg7fAb5N.q','Miller', 'David', NULL, 'manager', 30000.0000, '1990-05-05', '2018-09-01', '+380677890123', 'Kyiv', 'Khreshchatyk St', '01001'),
-                         ('EMP0000008', '$2a$10$gAHwoBP8hX1GvJizhFwuweZbYmkp8tWSUUpG2tJ5ovNz.n5fZxO6q','Davis', 'Barbara', 'Jean', 'cashier', 12500.0000, '1999-11-30', '2022-06-15', '+380508901234', 'Lviv', 'Horodotska St', '79000');
+                                   ('EMP0000001','$2a$10$VavcbDs5wojYs8TPs32dRe.dE60UR8.odOQv4ZNSwGKVBhhWUCIwC', 'Smith', 'John', NULL, 'MANAGER', 25000.0000, '2000-01-01', '2020-01-15', '+380501234567', 'Kyiv', 'Shevchenka St', '01001'),
+                                   ('EMP0000002', '$2a$10$UXxaBrMUMCh3OWp0KB7Yvu7xKxGrtzeSVoTZ4QO4BP6snGXyRya6u','Johnson', 'Mary', 'Ann', 'CASHIER', 12000.5000, '1995-06-15', '2021-03-20', '+380672345678', 'Lviv', 'Franka St', '79000'),
+                                   ('EMP0000003', '$2a$10$3gXhiStA8keP6rVpZQCI1.H5wQFH4Y0hJgiM39KuuEa2nVqlNFvoa','Williams', 'Robert', NULL, 'CASHIER', 0.0000, '2006-03-25', '2024-03-26', '+380933456789', 'Odesa', 'Deribasivska St', '65000'),
+                                   ('EMP0000004', '$2a$10$Dy0V/tpsgMTTfY/qx3JIVOlwHn.mOa0eys/8NRjkTDn8LSW/jO2BS','Brown', 'Patricia', 'Lee', 'MANAGER', 50000.9999, '1985-12-31', '2015-07-01', '+380994567890', 'Dnipro', 'Gagarina Ave', '49000'),
+                                   ('EMP0000005', '$2a$10$a3IRg52fwkkewN7ZBQEWVeZ.H4yInDNtnZBYTpi/13Nmgl1346Oo6','Jones', 'Michael', NULL, 'CASHIER', 13500.0000, '1998-08-20', '2022-11-10', '+380635678901', 'Kharkiv', 'Sumska St', '61000'),
+                                   ('EMP0000006', '$2a$10$nBvEzv.gJgdiAxUGXp5X.u/unkbYv62ZyGBCiIQJG7ZEq1sT8I836','Garcia', 'Linda', 'Marie', 'CASHIER', 11000.0000, '2003-02-14', '2023-02-15', '+380666789012', 'Zaporizhzhia', 'Sobornyi Ave', '69000'),
+                                   ('EMP0000007', '$2a$10$R9B2FVqrE6FzYIbvtw2XPuWiyt1kyL852JeAVOosOA4Pg7fAb5N.q','Miller', 'David', NULL, 'MANAGER', 30000.0000, '1990-05-05', '2018-09-01', '+380677890123', 'Kyiv', 'Khreshchatyk St', '01001'),
+                                   ('EMP0000008', '$2a$10$gAHwoBP8hX1GvJizhFwuweZbYmkp8tWSUUpG2tJ5ovNz.n5fZxO6q','Davis', 'Barbara', 'Jean', 'CASHIER', 12500.0000, '1999-11-30', '2022-06-15', '+380508901234', 'Lviv', 'Horodotska St', '79000');
 
 -- Insert Categories
 INSERT OR IGNORE INTO Category VALUES

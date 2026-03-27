@@ -1,0 +1,17 @@
+package com.vfrol.supermarket.dto.check;
+
+import com.vfrol.supermarket.dto.sale.SaleListDTO;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+import java.time.LocalDateTime;
+import java.util.List;
+
+public record CheckDetailsDTO(
+        @ColumnName("check_number") String checkNumber,
+        @ColumnName("employee_name") String employeeName,
+        @ColumnName("card_number") String cardNumber,
+        @ColumnName("customer_name") String customerName,
+        @ColumnName("print_date") LocalDateTime dateTime,
+        @ColumnName("sum_total") double sumTotal,
+        @ColumnName("vat") double vat,
+        List<SaleListDTO> items
+) {}

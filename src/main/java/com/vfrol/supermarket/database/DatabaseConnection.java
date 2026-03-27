@@ -8,10 +8,15 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:sqlite:supermarket.db";
 
     public Connection getConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(URL);
-        try (var stmt = connection.createStatement()) {
-            stmt.execute("PRAGMA foreign_keys = ON");
+        try {
+            Connection connection = DriverManager.getConnection(URL);
+            try (var stmt = connection.createStatement()) {
+                stmt.execute("PRAGMA foreign_keys = ON");
+            }
+            return connection;
+        } catch (SQLException e) {
+            System.err.println("CRITICAL: Could not connect to SQLite: " + e.getMessage());
+            throw e;
         }
-        return connection;
     }
 }

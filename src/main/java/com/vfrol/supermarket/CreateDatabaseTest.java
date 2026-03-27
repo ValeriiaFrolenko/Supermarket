@@ -1,8 +1,8 @@
 package com.vfrol.supermarket;
 
-import com.vfrol.supermarket.database.DatabaseConnection;
 import com.vfrol.supermarket.database.DatabaseInitializer;
 
+import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -10,10 +10,10 @@ import java.sql.Statement;
 // run this class to create the database and seed it with initial data
 public class CreateDatabaseTest {
     public static void main(String[] args) {
-        DatabaseConnection databaseConnection = new DatabaseConnection();
-        DatabaseInitializer initializer = new DatabaseInitializer(databaseConnection);
+        DataSource dataSource = new SupermarketModule().provideDataSource();
+        DatabaseInitializer initializer = new DatabaseInitializer(dataSource);
         initializer.initialize();
-            try (Connection connection = databaseConnection.getConnection();
+            try (Connection connection = dataSource.getConnection();
                 Statement statement = connection.createStatement()) {
                 var inputStream = CreateDatabaseTest.class.getResourceAsStream("/sql/seed.sql");
                 if (inputStream == null) {

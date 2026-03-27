@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Employee (
     empl_surname TEXT NOT NULL,
     empl_name TEXT NOT NULL,
     empl_patronymic TEXT,
-    empl_role TEXT NOT NULL CHECK (empl_role IN ('cashier', 'manager')),
+    empl_role TEXT NOT NULL CHECK (empl_role IN ('CASHIER', 'MANAGER')),
     salary REAL NOT NULL CHECK (salary >= 0),
     date_of_birth TEXT NOT NULL,
     date_of_start TEXT NOT NULL,

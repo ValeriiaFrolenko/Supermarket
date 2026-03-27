@@ -1,14 +1,41 @@
 package com.vfrol.supermarket;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
-import com.vfrol.supermarket.database.DatabaseConnection;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.database.DatabaseInitializer;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.sqlite.SQLiteDataSource;
+
+import javax.sql.DataSource;
 
 public class SupermarketModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(DatabaseConnection.class).in(Scopes.SINGLETON);
-        bind(DatabaseInitializer.class).in(Scopes.SINGLETON);
+
+    @Provides
+    @Singleton
+    public DatabaseInitializer provideDatabaseInitializer(DataSource dataSource) {
+        return new DatabaseInitializer(dataSource);
+    }
+
+    @Provides
+    @Singleton
+    public DataSource provideDataSource() {
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl("jdbc:sqlite:supermarket.db?foreign_keys=on");
+        return dataSource;
+    }
+
+    @Provides
+    @Singleton
+    public Jdbi provideJdbi(DataSource dataSource) {
+        return Jdbi.create(dataSource)
+                .installPlugin(new SqlObjectPlugin());
+    }
+
+    @Provides
+    public EmployeeDAO provideEmployeeDAO(Jdbi jdbi) {
+        return jdbi.onDemand(EmployeeDAO.class);
     }
 }
