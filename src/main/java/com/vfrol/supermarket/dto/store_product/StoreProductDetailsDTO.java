@@ -1,7 +1,9 @@
 package com.vfrol.supermarket.dto.store_product;
 
+import lombok.Builder;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+@Builder
 public record StoreProductDetailsDTO(
         @ColumnName("UPC") String UPC,
         @ColumnName("UPC_prom") String UPCprom,

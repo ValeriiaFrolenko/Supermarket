@@ -1,10 +1,12 @@
 package com.vfrol.supermarket.dto.check;
 
 import com.vfrol.supermarket.dto.sale.SaleListDTO;
+import lombok.Builder;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
 public record CheckDetailsDTO(
         @ColumnName("check_number") String checkNumber,
         @ColumnName("employee_name") String employeeName,

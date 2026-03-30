@@ -1,9 +1,11 @@
 package com.vfrol.supermarket.entity;
 
 import com.vfrol.supermarket.enums.EmployeeRole;
+import lombok.Builder;
 
 import java.time.LocalDate;
 
+@Builder
 public record Employee(
         String id,
         String passwordHash,

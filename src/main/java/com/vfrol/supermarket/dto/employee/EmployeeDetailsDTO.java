@@ -1,10 +1,12 @@
 package com.vfrol.supermarket.dto.employee;
 
 import com.vfrol.supermarket.enums.EmployeeRole;
+import lombok.Builder;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.time.LocalDate;
 
+@Builder
 public record EmployeeDetailsDTO(
         @ColumnName("id_employee") String id,
         @ColumnName("empl_surname") String surname,

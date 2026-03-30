@@ -1,7 +1,9 @@
 package com.vfrol.supermarket.dto.product;
 
+import lombok.Builder;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+@Builder
 public record ProductDetailsDTO(
         @ColumnName("id_product") int id,
         @ColumnName("product_name") String name,

@@ -1,5 +1,8 @@
 package com.vfrol.supermarket.entity;
 
+import lombok.Builder;
+
+@Builder
 public record CustomerCard(
         String cardNumber,
         String surname,
