@@ -15,8 +15,8 @@ public class SupermarketModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public DatabaseInitializer provideDatabaseInitializer(DataSource dataSource) {
-        return new DatabaseInitializer(dataSource);
+    public DatabaseInitializer provideDatabaseInitializer(Jdbi jdbi) {
+        return new DatabaseInitializer(jdbi);
     }
 
     @Provides

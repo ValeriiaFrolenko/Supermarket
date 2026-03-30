@@ -15,6 +15,7 @@ module com.vfrol.supermarket {
     requires org.jdbi.v3.core;
     requires org.jdbi.v3.sqlobject;
     requires org.jdbi.v3.stringtemplate4;
+    requires org.slf4j;
 
     opens com.vfrol.supermarket to javafx.fxml, com.google.guice;
     opens com.vfrol.supermarket.controller to javafx.fxml, com.google.guice;
@@ -23,4 +24,16 @@ module com.vfrol.supermarket {
 
     exports com.vfrol.supermarket;
     exports com.vfrol.supermarket.controller;
+    exports com.vfrol.supermarket.database;
+    exports com.vfrol.supermarket.dao;
+    exports com.vfrol.supermarket.entity;
+    exports com.vfrol.supermarket.filter;
+    exports com.vfrol.supermarket.dto.employee;
+    exports com.vfrol.supermarket.dto.customer_card;
+    exports com.vfrol.supermarket.dto.check;
+    exports com.vfrol.supermarket.dto.sale;
+    exports com.vfrol.supermarket.dto.product;
+    exports com.vfrol.supermarket.dto.category;
+    exports com.vfrol.supermarket.dto.store_product;
+    exports com.vfrol.supermarket.enums;
 }
