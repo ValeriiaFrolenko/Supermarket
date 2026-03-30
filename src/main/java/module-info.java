@@ -11,11 +11,12 @@ module com.vfrol.supermarket {
     requires java.sql;
     requires jbcrypt;
     requires static lombok;
-    requires org.xerial.sqlitejdbc;
     requires org.jdbi.v3.core;
     requires org.jdbi.v3.sqlobject;
     requires org.jdbi.v3.stringtemplate4;
     requires org.slf4j;
+    requires com.h2database;
+    requires java.naming;
 
     opens com.vfrol.supermarket to javafx.fxml, com.google.guice;
     opens com.vfrol.supermarket.controller to javafx.fxml, com.google.guice;
@@ -36,4 +37,6 @@ module com.vfrol.supermarket {
     exports com.vfrol.supermarket.dto.category;
     exports com.vfrol.supermarket.dto.store_product;
     exports com.vfrol.supermarket.enums;
+    exports com.vfrol.supermarket.tools;
+    opens com.vfrol.supermarket.tools to com.google.guice, javafx.fxml;
 }

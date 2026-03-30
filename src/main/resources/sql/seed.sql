@@ -1,10 +1,7 @@
 -- Zlagoda Supermarket Test Data for SQLite
 
--- Enable foreign key constraints (SQLite requires this)
-PRAGMA foreign_keys = ON;
-
 -- Insert Employees (edge cases: NULL patronymic, minimum age 18, minimum salary 0)
-INSERT OR IGNORE INTO Employee VALUES
+INSERT INTO Employee VALUES
                                    ('EMP0000001','$2a$10$VavcbDs5wojYs8TPs32dRe.dE60UR8.odOQv4ZNSwGKVBhhWUCIwC', 'Smith', 'John', NULL, 'MANAGER', 25000.0000, '2000-01-01', '2020-01-15', '+380501234567', 'Kyiv', 'Shevchenka St', '01001'),
                                    ('EMP0000002', '$2a$10$UXxaBrMUMCh3OWp0KB7Yvu7xKxGrtzeSVoTZ4QO4BP6snGXyRya6u','Johnson', 'Mary', 'Ann', 'CASHIER', 12000.5000, '1995-06-15', '2021-03-20', '+380672345678', 'Lviv', 'Franka St', '79000'),
                                    ('EMP0000003', '$2a$10$3gXhiStA8keP6rVpZQCI1.H5wQFH4Y0hJgiM39KuuEa2nVqlNFvoa','Williams', 'Robert', NULL, 'CASHIER', 0.0000, '2006-03-25', '2024-03-26', '+380933456789', 'Odesa', 'Deribasivska St', '65000'),
@@ -15,7 +12,7 @@ INSERT OR IGNORE INTO Employee VALUES
                                    ('EMP0000008', '$2a$10$gAHwoBP8hX1GvJizhFwuweZbYmkp8tWSUUpG2tJ5ovNz.n5fZxO6q','Davis', 'Barbara', 'Jean', 'CASHIER', 12500.0000, '1999-11-30', '2022-06-15', '+380508901234', 'Lviv', 'Horodotska St', '79000');
 
 -- Insert Categories
-INSERT OR IGNORE INTO Category VALUES
+INSERT INTO Category VALUES
                          (1, 'Dairy Products'),
                          (2, 'Meat & Poultry'),
                          (3, 'Bakery'),
@@ -26,7 +23,7 @@ INSERT OR IGNORE INTO Category VALUES
                          (8, 'Household Items');
 
 -- Insert Products
-INSERT OR IGNORE INTO Product VALUES
+INSERT INTO Product VALUES
                         (1, 1, 'Milk 2.5%', 'UHT milk, 1 liter pack'),
                         (2, 1, 'Butter', 'Unsalted butter, 200g pack'),
                         (3, 2, 'Chicken Breast', 'Fresh chicken breast, per kg'),
@@ -45,7 +42,7 @@ INSERT OR IGNORE INTO Product VALUES
 
 -- Insert Store_Products (edge cases: 0 quantity, minimum price, promotional items)
 -- Regular products first (promotional_product = 0, UPC_prom = NULL)
-INSERT OR IGNORE INTO Store_Product VALUES
+INSERT INTO Store_Product VALUES
                               ('000000000001', NULL, 1, 45.5000, 100, 0),
                               ('000000000002', NULL, 2, 89.9900, 50, 0),
                               ('000000000003', NULL, 3, 125.0000, 0, 0),  -- Edge case: 0 quantity
@@ -64,14 +61,14 @@ INSERT OR IGNORE INTO Store_Product VALUES
 
 -- Promotional products (promotional_product = 1, UPC_prom points to regular product)
 -- Price is 80% of regular price
-INSERT OR IGNORE INTO Store_Product VALUES
+INSERT INTO Store_Product VALUES
                               ('100000000001', '000000000001', 1, 36.4000, 50, 1),   -- Milk promo: 45.50 * 0.8 = 36.40
                               ('100000000002', '000000000002', 2, 71.9920, 25, 1),   -- Butter promo: 89.99 * 0.8 = 71.992
                               ('100000000007', '000000000007', 7, 62.4000, 15, 1),   -- Ice Cream promo: 78.00 * 0.8 = 62.40
                               ('100000000015', '000000000015', 15, 36.0000, 100, 1); -- Chocolate promo: 45.00 * 0.8 = 36.00
 
 -- Insert Customer Cards (edge cases: NULL patronymic, NULL address, 0% discount, 100% discount)
-INSERT OR IGNORE INTO Customer_Card VALUES
+INSERT INTO Customer_Card VALUES
                               ('C0000000001', 'Anderson', 'Emma', NULL, '+380501111111', 'Kyiv', 'Peremohy Ave', '03115', 10),
                               ('C0000000002', 'Taylor', 'James', 'Thomas', '+380672222222', NULL, NULL, NULL, 0),  -- Edge case: 0% discount, no address
                               ('C0000000003', 'Martinez', 'Sophia', NULL, '+380933333333', 'Lviv', 'Svobody Ave', '79000', 50),
@@ -83,7 +80,7 @@ INSERT OR IGNORE INTO Customer_Card VALUES
 
 -- Insert Checks (edge cases: NULL card_number, minimum sum, various dates)
 -- VAT is always 20% of sum_total
-INSERT OR IGNORE INTO Check_Table VALUES
+INSERT INTO Check_Table VALUES
                             ('0000000001', 'EMP0000002', 'C0000000001', '2024-01-15 10:30:00', 91.0000, 18.2000),
                             ('0000000002', 'EMP0000003', NULL, '2024-01-15 14:45:00', 125.0000, 25.0000),  -- No customer card
                             ('0000000003', 'EMP0000005', 'C0000000003', '2024-01-16 09:15:00', 0.0100, 0.0020),  -- Edge case: minimum sum
@@ -102,72 +99,72 @@ INSERT OR IGNORE INTO Check_Table VALUES
 
 -- Insert Sales (various quantities and prices)
 -- Check 0000000001: 2 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('000000000001', '0000000001', 2, 45.5000),  -- 2x Milk
                      ('000000000004', '0000000001', 1, 30.0000);  -- 1x White Bread
 
 -- Check 0000000002: 1 item
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('000000000003', '0000000002', 1, 125.0000);  -- 1x Chicken Breast
 
 -- Check 0000000003: 1 item (edge case: minimum price)
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('000000000009', '0000000003', 1, 0.0100);  -- 1x Dish Soap
 
 -- Check 0000000004: 3 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('000000000005', '0000000004', 2, 55.7500),  -- 2x Orange Juice
                      ('000000000006', '0000000004', 1, 42.0000),  -- 1x Apples
                      ('000000000012', '0000000004', 2, 22.0000);  -- 2x Croissants
 
 -- Check 0000000005: 1 item
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('000000000002', '0000000005', 1, 89.9900);  -- 1x Butter
 
 -- Check 0000000006: 1 promotional item
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('100000000007', '0000000006', 1, 62.4000);  -- 1x Ice Cream (promo)
 
 -- Check 0000000007: 5 items (large quantity)
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('000000000001', '0000000007', 10, 45.5000);  -- 10x Milk
 
 -- Check 0000000008: 1 item
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('000000000004', '0000000008', 1, 30.0000);  -- 1x White Bread
 
 -- Check 0000000009: 2 promotional items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('100000000001', '0000000009', 3, 36.4000),  -- 3x Milk (promo)
                      ('100000000015', '0000000009', 2, 36.0000);  -- 2x Chocolate (promo)
 
 -- Check 0000000010: 4 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
     ('000000000008', '0000000010', 10, 35.5000);  -- 10x Potato Chips
 
 -- Check 0000000011: 2 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('000000000013', '0000000011', 5, 18.0000),  -- 5x Mineral Water
                      ('000000000010', '0000000011', 2, 28.5000);  -- 2x Yogurt
 
 -- Check 0000000012: 3 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('000000000014', '0000000012', 3, 38.5000),  -- 3x Tomatoes
                      ('000000000015', '0000000012', 2, 45.0000),  -- 2x Chocolate
                      ('000000000012', '0000000012', 1, 22.0000);  -- 1x Croissant
 
 -- Check 0000000013: 2 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('000000000006', '0000000013', 1, 42.0000),  -- 1x Apples
                      ('000000000007', '0000000013', 1, 78.0000);  -- 1x Ice Cream
 
 -- Check 0000000014: 4 promotional items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('100000000002', '0000000014', 3, 71.9920),  -- 3x Butter (promo)
                      ('100000000001', '0000000014', 5, 36.4000);  -- 5x Milk (promo)
 
 -- Check 0000000015: 2 items
-INSERT OR IGNORE INTO Sale VALUES
+INSERT INTO Sale VALUES
                      ('000000000011', '0000000015', 1, 145.0000),  -- 1x Pork Chops
                      ('000000000004', '0000000015', 1, 30.0000);  -- 1x White Bread
 
