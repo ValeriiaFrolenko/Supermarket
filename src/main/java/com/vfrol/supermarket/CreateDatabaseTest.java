@@ -1,29 +1,36 @@
 package com.vfrol.supermarket;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.vfrol.supermarket.database.DatabaseInitializer;
+import org.jdbi.v3.core.Jdbi;
 
-import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.Statement;
 
-// run this class to create the database and seed it with initial data
+// This class is used only for testing purposes to create the database schema and seed it with initial data. It should not be used in production.
 public class CreateDatabaseTest {
     public static void main(String[] args) {
-        DataSource dataSource = new SupermarketModule().provideDataSource();
-        DatabaseInitializer initializer = new DatabaseInitializer(dataSource);
+        Injector injector = Guice.createInjector(new SupermarketModule());
+        DatabaseInitializer initializer = injector.getInstance(DatabaseInitializer.class);
         initializer.initialize();
-            try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement()) {
-                var inputStream = CreateDatabaseTest.class.getResourceAsStream("/sql/seed.sql");
-                if (inputStream == null) {
-                    throw new RuntimeException("Resource not found: " + "/sql/seed.sql");
-                }
-                String sql = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                statement.executeUpdate(sql);
-            } catch (Exception e) {
-                System.err.println("Database initialization failed: " + e.getMessage());
-                throw new RuntimeException(e);
+        System.out.println("Schema created.");
+        Jdbi jdbi = injector.getInstance(Jdbi.class);
+        seedDatabase(jdbi);
+        System.out.println("Database seeded successfully!");
+    }
+
+    private static void seedDatabase(Jdbi jdbi) {
+        try {
+            var inputStream = CreateDatabaseTest.class.getResourceAsStream("/sql/seed.sql");
+            if (inputStream == null) {
+                throw new RuntimeException("Resource not found: /sql/seed.sql");
             }
+            String sql = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+            jdbi.useHandle(handle -> handle.createScript(sql).execute());
+        } catch (Exception e) {
+            System.err.println("Database seeding failed: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }
