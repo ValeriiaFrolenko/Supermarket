@@ -7,6 +7,7 @@ import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.database.DatabaseInitializer;
 import org.h2.jdbcx.JdbcDataSource;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.SqlStatements;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import javax.sql.DataSource;
@@ -30,8 +31,9 @@ public class SupermarketModule extends AbstractModule {
     @Provides
     @Singleton
     public Jdbi provideJdbi(DataSource dataSource) {
-        return Jdbi.create(dataSource)
-                .installPlugin(new SqlObjectPlugin());
+        Jdbi jdbi = Jdbi.create(dataSource).installPlugin(new SqlObjectPlugin());
+        jdbi.getConfig(SqlStatements.class).setUnusedBindingAllowed(true);
+        return jdbi;
     }
 
     @Provides
