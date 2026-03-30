@@ -9,10 +9,12 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 
 import java.util.List;
 import java.util.Optional;
 
+@UseStringTemplateEngine
 @RegisterConstructorMapper(Check.class)
 @RegisterConstructorMapper(CheckDetailsDTO.class)
 @RegisterConstructorMapper(CheckListDTO.class)
