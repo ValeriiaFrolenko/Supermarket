@@ -6,7 +6,9 @@ import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.StoreProductFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -57,15 +59,11 @@ public interface StoreProductDAO {
     FROM Store_Product sp
     JOIN Product p ON sp.id_product = p.id_product
     WHERE 1=1
-    <if(upc)> AND sp.UPC LIKE '%' || :upc || '%' <endif>
-    <if(productName)> AND p.product_name LIKE '%' || :productName || '%' <endif>
-    <if(categoryId)> AND p.category_number = :categoryId <endif>
-    <if(promotional != null)> AND sp.promotional_product = :promotional <endif>
-    ORDER BY
-    <if(sortBy == 'NAME')> p.product_name
-    <elseif(sortBy == 'QUANTITY')> sp.products_number
-    <elseif(sortBy == 'PRICE')> sp.selling_price
-    <else> p.product_name <endif>
+    <if(filter.upc)> AND sp.UPC LIKE '%' || :upc || '%' <endif>
+    <if(filter.productName)> AND p.product_name LIKE '%' || :productName || '%' <endif>
+    <if(filter.categoryId)> AND p.category_number = :categoryId <endif>
+    <if(filter.promotional)> AND sp.promotional_product = :promotional <endif>
+    ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>p.product_name<endif>
     """)
-    List<StoreProductListDTO> findByFilter(@BindMethods StoreProductFilter filter);
+    List<StoreProductListDTO> findByFilter(@BindBean @Define("filter") StoreProductFilter filter);
 }

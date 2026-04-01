@@ -6,7 +6,9 @@ import com.vfrol.supermarket.entity.CustomerCard;
 import com.vfrol.supermarket.filter.CustomerCardFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -55,14 +57,11 @@ public interface CustomerCardDAO {
     SELECT card_number, cust_surname, cust_name, percent
     FROM Customer_Card
     WHERE 1=1
-    <if(surname)> AND cust_surname LIKE '%' || :surname || '%' <endif>
-    <if(phoneNumber)> AND phone_number LIKE '%' || :phoneNumber || '%' <endif>
-    <if(discountFrom)> AND percent >= :discountFrom <endif>
-    <if(discountTo)> AND percent <= :discountTo <endif>
-    ORDER BY
-    <if(sortBy == 'SURNAME')> cust_surname
-    <elseif(sortBy == 'DISCOUNT')> percent
-    <else> cust_surname <endif>
+    <if(filter.surname)> AND cust_surname LIKE '%' || :surname || '%' <endif>
+    <if(filter.phoneNumber)> AND phone_number LIKE '%' || :phoneNumber || '%' <endif>
+    <if(filter.discountFrom)> AND percent >= :discountFrom <endif>
+    <if(filter.discountTo)> AND percent \\<= :discountTo <endif>
+    ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>cust_surname<endif>
     """)
-    List<CustomerCardListDTO> findByFilter(@BindMethods CustomerCardFilter filter);
+    List<CustomerCardListDTO> findByFilter(@BindBean @Define("filter") CustomerCardFilter filter);
 }

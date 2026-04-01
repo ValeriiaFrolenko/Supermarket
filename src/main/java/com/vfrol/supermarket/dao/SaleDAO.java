@@ -16,12 +16,12 @@ public interface SaleDAO {
 
     @SqlUpdate("""
     INSERT INTO Sale (UPC, check_number, product_number, selling_price)
-    VALUES (:UPC, :checkNumber, :quantity, :unitPrice)
+    VALUES (:UPC, :checkNumber, :quantity, :price)
     """)
     void create(@BindMethods Sale sale);
 
     @SqlUpdate("""
-    UPDATE Sale SET product_number = :quantity, selling_price = :unitPrice
+    UPDATE Sale SET product_number = :quantity, selling_price = :price
     WHERE UPC = :UPC AND check_number = :checkNumber
     """)
     void update(@BindMethods Sale sale);

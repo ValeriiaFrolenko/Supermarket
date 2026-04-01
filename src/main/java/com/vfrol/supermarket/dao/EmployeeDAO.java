@@ -6,7 +6,9 @@ import com.vfrol.supermarket.entity.Employee;
 import com.vfrol.supermarket.filter.EmployeeFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -61,10 +63,10 @@ public interface EmployeeDAO {
         SELECT id_employee, empl_surname, empl_name, empl_role
         FROM Employee
         WHERE 1=1
-        <if(surname)> AND empl_surname LIKE '%' || :surname || '%' <endif>
-        <if(phoneNumber)> AND phone_number LIKE '%' || :phoneNumber || '%' <endif>
-        <if(role)> AND empl_role = :role <endif>
-        ORDER BY empl_surname
+        <if(filter.surname)> AND empl_surname LIKE '%' || :surname || '%' <endif>
+        <if(filter.phoneNumber)> AND phone_number LIKE '%' || :phoneNumber || '%' <endif>
+        <if(filter.role)> AND empl_role = :role <endif>
+        ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>empl_surname<endif>
         """)
-    List<EmployeeListDTO> findByFilter(@BindMethods EmployeeFilter filter);
+    List<EmployeeListDTO> findByFilter(@BindBean @Define("filter") EmployeeFilter filter);
 }

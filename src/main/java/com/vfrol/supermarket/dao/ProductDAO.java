@@ -6,7 +6,9 @@ import com.vfrol.supermarket.entity.Product;
 import com.vfrol.supermarket.filter.ProductFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -56,11 +58,9 @@ public interface ProductDAO {
     FROM Product p
     JOIN Category c ON p.category_number = c.category_number
     WHERE 1=1
-    <if(name)> AND p.product_name LIKE '%' || :name || '%' <endif>
-    <if(categoryId)> AND p.category_number = :categoryId <endif>
-    ORDER BY
-    <if(sortBy == 'CATEGORY')> c.category_name
-    <else> p.product_name <endif>
+    <if(filter.name)> AND p.product_name LIKE '%' || :name || '%' <endif>
+    <if(filter.categoryId)> AND p.category_number = :categoryId <endif>
+    ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>product_name<endif>
     """)
-    List<ProductListDTO> findByFilter(@BindMethods ProductFilter filter);
+    List<ProductListDTO> findByFilter(@BindBean @Define("filter") ProductFilter filter);
 }

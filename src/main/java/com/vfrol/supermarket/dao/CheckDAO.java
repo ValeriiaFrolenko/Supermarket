@@ -6,7 +6,9 @@ import com.vfrol.supermarket.entity.Check;
 import com.vfrol.supermarket.filter.CheckFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -22,12 +24,12 @@ public interface CheckDAO {
 
     @SqlUpdate("""
     INSERT INTO Check_Table (check_number, id_employee, card_number, print_date, sum_total, vat)
-    VALUES (:checkNumber, :employeeId, :cardNumber, :dateTime, :sumTotal, :vat)
+    VALUES (:checkNumber, :idEmployee, :cardNumber, :dateTime, :sumTotal, :vat)
     """)
     void create(@BindMethods Check check);
 
     @SqlUpdate("""
-    UPDATE Check_Table SET id_employee = :employeeId, card_number = :cardNumber,
+    UPDATE Check_Table SET id_employee = :idEmployee, card_number = :cardNumber,
     print_date = :dateTime, sum_total = :sumTotal, vat = :vat
     WHERE check_number = :checkNumber
     """)
@@ -69,15 +71,11 @@ public interface CheckDAO {
     FROM Check_Table c
     JOIN Employee e ON c.id_employee = e.id_employee
     WHERE 1=1
-    <if(checkNumber)> AND c.check_number LIKE '%' || :checkNumber || '%' <endif>
-    <if(cashierSurname)> AND e.empl_surname LIKE '%' || :cashierSurname || '%' <endif>
-    <if(dateFrom)> AND DATE(c.print_date) >= :dateFrom <endif>
-    <if(dateTo)> AND DATE(c.print_date) <= :dateTo <endif>
-    ORDER BY
-    <if(sortBy == 'DATE')> c.print_date DESC
-    <elseif(sortBy == 'EMPLOYEE')> e.empl_surname
-    <elseif(sortBy == 'SUM_TOTAL')> c.sum_total DESC
-    <else> c.print_date DESC <endif>
+    <if(filter.checkNumber)> AND c.check_number LIKE '%' || :checkNumber || '%' <endif>
+    <if(filter.cashierSurname)> AND e.empl_surname LIKE '%' || :cashierSurname || '%' <endif>
+    <if(filter.dateFrom)> AND DATE(c.print_date) >= :dateFrom <endif>
+    <if(filter.dateTo)> AND DATE(c.print_date) \\<= :dateTo <endif>
+    ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>c.print_date DESC<endif>
     """)
-    List<CheckListDTO> findByFilter(@BindMethods CheckFilter filter);
+    List<CheckListDTO> findByFilter(@BindBean @Define("filter") CheckFilter filter);
 }
