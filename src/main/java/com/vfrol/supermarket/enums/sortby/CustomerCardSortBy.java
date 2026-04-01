@@ -1,6 +1,17 @@
 package com.vfrol.supermarket.enums.sortby;
 
-public enum CustomerCardSortBy {
-    SURNAME,
-    DISCOUNT,
+public enum CustomerCardSortBy implements SortBy{
+    SURNAME("cust_surname"),
+    DISCOUNT("percent");
+
+    private final String column;
+
+    CustomerCardSortBy(String column) {
+        this.column = column;
+    }
+
+    @Override
+    public String column() {
+        return column;
+    }
 }

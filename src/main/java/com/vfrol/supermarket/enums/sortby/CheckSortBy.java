@@ -1,7 +1,18 @@
 package com.vfrol.supermarket.enums.sortby;
 
-public enum CheckSortBy {
-    DATE,
-    EMPLOYEE,
-    SUM_TOTAL
+public enum CheckSortBy implements SortBy {
+    DATE("print_date"),
+    EMPLOYEE("empl_surname"),
+    SUM_TOTAL("sum_total");
+
+    private final String column;
+
+    CheckSortBy(String column) {
+        this.column = column;
+    }
+
+    @Override
+    public String column() {
+        return column;
+    }
 }
