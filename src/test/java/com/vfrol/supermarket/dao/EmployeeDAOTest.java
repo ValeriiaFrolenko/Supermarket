@@ -1,9 +1,9 @@
 package com.vfrol.supermarket.dao;
 
-import com.vfrol.supermarket.filter.EmployeeFilter;
-import com.vfrol.supermarket.tools.PasswordGenerator;
 import com.vfrol.supermarket.entity.Employee;
 import com.vfrol.supermarket.enums.EmployeeRole;
+import com.vfrol.supermarket.filter.EmployeeFilter;
+import com.vfrol.supermarket.tools.PasswordGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,45 +40,43 @@ class EmployeeDAOTest extends BaseDAOTest {
 
     @Test
     void create() {
-        Employee employee = createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER);
-        employeeDAO.create(employee);
+        employeeDAO.create(createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER));
 
-        var retrievedEmployee = employeeDAO.findById("test_id");
-        assertTrue(retrievedEmployee.isPresent());
-        assertEquals(employee.id(), retrievedEmployee.get().id());
+        var retrieved = employeeDAO.findById("test_id");
+        assertTrue(retrieved.isPresent());
+        assertEquals("test_id", retrieved.get().id());
     }
 
     @Test
     void update() {
-        Employee employee = createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER);
-        employeeDAO.create(employee);
+        employeeDAO.create(createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER));
+        employeeDAO.update(createTestEmployee("test_id", "Doe", EmployeeRole.MANAGER));
 
-        Employee updatedEmployee = createTestEmployee("test_id", "Doe", EmployeeRole.MANAGER);
-        employeeDAO.update(updatedEmployee);
-
-        var retrievedEmployee = employeeDAO.findById("test_id");
-        assertTrue(retrievedEmployee.isPresent());
-        assertEquals(EmployeeRole.MANAGER, retrievedEmployee.get().role());
+        var retrieved = employeeDAO.findById("test_id");
+        assertTrue(retrieved.isPresent());
+        assertEquals(EmployeeRole.MANAGER, retrieved.get().role());
     }
 
     @Test
     void delete() {
-        Employee employee = createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER);
-        employeeDAO.create(employee);
-
+        employeeDAO.create(createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER));
         employeeDAO.delete("test_id");
-        var retrievedEmployee = employeeDAO.findById("test_id");
-        assertFalse(retrievedEmployee.isPresent());
+
+        assertFalse(employeeDAO.findById("test_id").isPresent());
     }
 
     @Test
     void findById() {
-        Employee employee = createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER);
-        employeeDAO.create(employee);
+        employeeDAO.create(createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER));
 
-        var retrievedEmployee = employeeDAO.findById("test_id");
-        assertTrue(retrievedEmployee.isPresent());
-        assertEquals(employee.id(), retrievedEmployee.get().id());
+        var retrieved = employeeDAO.findById("test_id");
+        assertTrue(retrieved.isPresent());
+        assertEquals("test_id", retrieved.get().id());
+    }
+
+    @Test
+    void findById_notFound() {
+        assertFalse(employeeDAO.findById("non_existing").isPresent());
     }
 
     @Test
@@ -87,22 +85,53 @@ class EmployeeDAOTest extends BaseDAOTest {
         employeeDAO.create(createTestEmployee("test_id2", "Smith", EmployeeRole.MANAGER));
 
         var employees = employeeDAO.findAll();
-        assertTrue(employees.stream().anyMatch(e -> e.id().equals("test_id1")));
-        assertTrue(employees.stream().anyMatch(e -> e.id().equals("test_id2")));
+        assertEquals(2, employees.size());
     }
 
     @Test
-    void findByFilter() {
+    void findByFilter_bySurname_returnsMatchingEmployees() {
+        employeeDAO.create(createTestEmployee("test_id1", "Doe", EmployeeRole.CASHIER));
+        employeeDAO.create(createTestEmployee("test_id2", "Smith", EmployeeRole.MANAGER));
+
+        var result = employeeDAO.findByFilter(EmployeeFilter.builder().surname("Doe").build());
+        assertEquals(1, result.size());
+        assertEquals("test_id1", result.getFirst().id());
+    }
+
+    @Test
+    void findByFilter_bySurname_noMatch_returnsEmpty() {
+        employeeDAO.create(createTestEmployee("test_id1", "Doe", EmployeeRole.CASHIER));
+
+        var result = employeeDAO.findByFilter(EmployeeFilter.builder().surname("Non-existing").build());
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void findByFilter_byRole_returnsMatchingEmployees() {
+        employeeDAO.create(createTestEmployee("test_id1", "Doe", EmployeeRole.CASHIER));
+        employeeDAO.create(createTestEmployee("test_id2", "Smith", EmployeeRole.MANAGER));
+
+        var result = employeeDAO.findByFilter(EmployeeFilter.builder().role(EmployeeRole.MANAGER).build());
+        assertEquals(1, result.size());
+        assertEquals("test_id2", result.getFirst().id());
+    }
+
+    @Test
+    void findByFilter_emptyFilter_returnsAll() {
+        employeeDAO.create(createTestEmployee("test_id1", "Doe", EmployeeRole.CASHIER));
+        employeeDAO.create(createTestEmployee("test_id2", "Smith", EmployeeRole.MANAGER));
+
+        var result = employeeDAO.findByFilter(EmployeeFilter.builder().build());
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void findByFilter_bySurnameAndRole_returnsMatchingEmployees() {
         employeeDAO.create(createTestEmployee("test_id1", "Doe", EmployeeRole.CASHIER));
         employeeDAO.create(createTestEmployee("test_id2", "Doe", EmployeeRole.MANAGER));
 
-        EmployeeFilter filter = EmployeeFilter.builder()
-                .surname("Doe")
-                .build();
-
-        var employees = employeeDAO.findByFilter(filter);
-        assertEquals(2, employees.size(), "Має знайти двох працівників з прізвищем Doe");
-        assertTrue(employees.stream().anyMatch(e -> e.id().equals("test_id1")));
-        assertTrue(employees.stream().anyMatch(e -> e.id().equals("test_id2")));
+        var result = employeeDAO.findByFilter(EmployeeFilter.builder().surname("Doe").role(EmployeeRole.CASHIER).build());
+        assertEquals(1, result.size());
+        assertEquals("test_id1", result.getFirst().id());
     }
 }
