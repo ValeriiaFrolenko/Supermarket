@@ -24,7 +24,7 @@ public class SupermarketModule extends AbstractModule {
     @Singleton
     public DataSource provideDataSource() {
         JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setUrl("jdbc:h2:./supermarket;");
+        dataSource.setUrl("jdbc:h2:./supermarket;MODE=MySQL;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=FALSE");
         return dataSource;
     }
 
