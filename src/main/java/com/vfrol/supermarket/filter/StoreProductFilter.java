@@ -2,15 +2,17 @@ package com.vfrol.supermarket.filter;
 
 import com.vfrol.supermarket.enums.sortby.StoreProductSortBy;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
-public record StoreProductFilter(
-        String upc,
-        String productName,
-        String categoryId,
-        Boolean promotional,
-        StoreProductSortBy sortBy
-) {
+@Getter
+public class StoreProductFilter{
+    private String upc;
+    private String productName;
+    private Integer categoryId;
+    private Boolean promotional;
+    private StoreProductSortBy sortBy;
+
     public boolean isEmpty() {
         return upc == null &&
                 productName == null &&

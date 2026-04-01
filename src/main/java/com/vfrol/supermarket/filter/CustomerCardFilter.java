@@ -2,15 +2,17 @@ package com.vfrol.supermarket.filter;
 
 import com.vfrol.supermarket.enums.sortby.CustomerCardSortBy;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
-public record CustomerCardFilter(
-        String surname,
-        String phoneNumber,
-        Integer discountFrom,
-        Integer discountTo,
-        CustomerCardSortBy sortBy
-) {
+@Getter
+public class CustomerCardFilter{
+    private String surname;
+    private String phoneNumber;
+    private Integer discountFrom;
+    private Integer discountTo;
+    private CustomerCardSortBy sortBy;
+
     public boolean isEmpty() {
         return surname == null &&
                 phoneNumber == null &&

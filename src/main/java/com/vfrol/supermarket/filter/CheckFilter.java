@@ -1,19 +1,20 @@
 package com.vfrol.supermarket.filter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.vfrol.supermarket.enums.sortby.CheckSortBy;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
-public record CheckFilter(
-        String checkNumber,
-        String cashierSurname,
-        LocalDate dateFrom,
-        LocalDate dateTo,
-        CheckSortBy sortBy
-) {
+@Getter
+public class CheckFilter{
+    private String checkNumber;
+    private String cashierSurname;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
+    private CheckSortBy sortBy;
+
     public boolean isEmpty() {
         return  checkNumber == null &&
                 cashierSurname == null &&
