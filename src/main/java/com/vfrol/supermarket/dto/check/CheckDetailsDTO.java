@@ -14,6 +14,5 @@ public record CheckDetailsDTO(
         @ColumnName("customer_name") String customerName,
         @ColumnName("print_date") LocalDateTime dateTime,
         @ColumnName("sum_total") double sumTotal,
-        @ColumnName("vat") double vat,
-        List<SaleListDTO> items
+        @ColumnName("vat") double vat
 ) {}
