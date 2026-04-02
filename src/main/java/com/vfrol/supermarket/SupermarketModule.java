@@ -37,6 +37,7 @@ public class SupermarketModule extends AbstractModule {
     }
 
     @Provides
+    @Singleton
     public EmployeeDAO provideEmployeeDAO(Jdbi jdbi) {
         return jdbi.onDemand(EmployeeDAO.class);
     }

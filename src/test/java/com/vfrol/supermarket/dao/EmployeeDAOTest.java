@@ -3,7 +3,7 @@ package com.vfrol.supermarket.dao;
 import com.vfrol.supermarket.entity.Employee;
 import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.filter.EmployeeFilter;
-import com.vfrol.supermarket.tools.PasswordGenerator;
+import com.vfrol.supermarket.tools.PasswordManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ class EmployeeDAOTest extends BaseDAOTest {
     private Employee createTestEmployee(String id, String surname, EmployeeRole role) {
         return Employee.builder()
                 .id(id)
-                .passwordHash(PasswordGenerator.generatePassword("12345"))
+                .passwordHash(PasswordManager.generatePassword("12345"))
                 .surname(surname)
                 .name("John")
                 .patronymic("Smith")
@@ -36,6 +36,15 @@ class EmployeeDAOTest extends BaseDAOTest {
                 .street("Street")
                 .zipCode("12345")
                 .build();
+    }
+
+    @Test
+    void getPasswordById(){
+        employeeDAO.create(createTestEmployee("test_id", "Doe", EmployeeRole.CASHIER));
+
+        var passwordHash = employeeDAO.getPasswordById("test_id");
+        assertTrue(passwordHash.isPresent());
+        assertTrue(PasswordManager.verifyPassword("12345", passwordHash.get()));
     }
 
     @Test

@@ -22,6 +22,11 @@ import java.util.Optional;
 @RegisterConstructorMapper(EmployeeListDTO.class)
 public interface EmployeeDAO {
 
+    @SqlQuery("""
+    SELECT password_hash FROM Employee WHERE id_employee = :id
+    """)
+    Optional<String> getPasswordById(@Bind("id") String id);
+
     @SqlUpdate("""
         INSERT INTO Employee (id_employee, password_hash, empl_surname, empl_name,
         empl_patronymic, empl_role, salary, date_of_birth, date_of_start,
