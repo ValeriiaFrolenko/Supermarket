@@ -1,0 +1,16 @@
+package com.vfrol.supermarket;
+
+import lombok.Getter;
+
+@Getter
+public enum AppView {
+    EMPLOYEE_LIST("view/employee/employee-list-view.fxml"),
+    EMPLOYEE_DETAILS("view/employee/employee-details-view.fxml");
+
+    private final String fxmlPath;
+
+    AppView(String fxmlPath) {
+        this.fxmlPath = fxmlPath;
+    }
+
+}
