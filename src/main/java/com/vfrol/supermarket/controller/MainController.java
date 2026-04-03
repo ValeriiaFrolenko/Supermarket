@@ -1,8 +1,8 @@
 package com.vfrol.supermarket.controller;
 
 import com.google.inject.Inject;
-import com.vfrol.supermarket.AppView;
-import com.vfrol.supermarket.ViewManager;
+import com.vfrol.supermarket.config.AppView;
+import com.vfrol.supermarket.config.ViewManager;
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
 

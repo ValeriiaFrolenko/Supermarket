@@ -1,4 +1,4 @@
-package com.vfrol.supermarket;
+package com.vfrol.supermarket.config;
 
 import lombok.Getter;
 

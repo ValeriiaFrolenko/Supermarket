@@ -1,8 +1,9 @@
-package com.vfrol.supermarket;
+package com.vfrol.supermarket.config;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.vfrol.supermarket.SupermarketApp;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

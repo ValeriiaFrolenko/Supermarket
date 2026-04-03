@@ -1,4 +1,4 @@
-package com.vfrol.supermarket;
+package com.vfrol.supermarket.config;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -56,4 +56,9 @@ public class SupermarketModule extends AbstractModule {
         return new EmployeeService(employeeDAO);
     }
 
+    @Provides
+    @Singleton
+    public SessionManager provideSessionManager() {
+        return new SessionManager();
+    }
 }

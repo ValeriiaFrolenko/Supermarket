@@ -3,6 +3,7 @@ package com.vfrol.supermarket;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.vfrol.supermarket.database.DatabaseInitializer;
+import com.vfrol.supermarket.config.SupermarketModule;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

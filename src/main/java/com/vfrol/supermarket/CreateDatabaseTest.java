@@ -3,6 +3,7 @@ package com.vfrol.supermarket;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.vfrol.supermarket.database.DatabaseInitializer;
+import com.vfrol.supermarket.config.SupermarketModule;
 import org.jdbi.v3.core.Jdbi;
 
 import java.nio.charset.StandardCharsets;

@@ -1,11 +1,11 @@
 package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
-import com.vfrol.supermarket.AppView;
-import com.vfrol.supermarket.ViewManager;
+import com.vfrol.supermarket.config.AppView;
+import com.vfrol.supermarket.config.ViewManager;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
-import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.service.EmployeeService;
+import com.vfrol.supermarket.config.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -37,19 +37,22 @@ public class EmployeeDetailsController {
     private EmployeeDetailsDTO currentEmployee;
     private final EmployeeService employeeService;
     private final ViewManager viewManager;
+    private final SessionManager sessionManager;
 
     @Inject
-    public EmployeeDetailsController(EmployeeService employeeService, ViewManager viewManager) {
+    public EmployeeDetailsController(EmployeeService employeeService, ViewManager viewManager, SessionManager sessionManager) {
         this.employeeService = employeeService;
         this.viewManager = viewManager;
+        this.sessionManager = sessionManager;
     }
 
     @FXML
     public void initialize() {
+        configureForRole();
     }
 
-    public void configureForRole(EmployeeRole currentUserRole) {
-        if (currentUserRole == EmployeeRole.CASHIER) {
+    private void configureForRole() {
+        if (!sessionManager.isManager()) {
             editButton.setVisible(false);
             editButton.setManaged(false);
 
@@ -92,6 +95,7 @@ public class EmployeeDetailsController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this employee?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
+                // TODO: Додати try-catch для обробки помилки видалення (касир з чеками) під час етапу валідації
                 employeeService.deleteEmployee(currentEmployee.id());
                 hide();
             }
