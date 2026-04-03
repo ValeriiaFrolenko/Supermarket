@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="detailsPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.employee.EmployeeDetailsController"
+      maxWidth="400" maxHeight="450" spacing="15"
+      style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);">
+
+    <Label text="Employee Details" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="idLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Surname:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="surnameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="nameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Patronymic:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="patronymicLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Role:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="roleLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Salary:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="salaryLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <Label text="Date of Birth:" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="dobLabel" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+        <Label text="Date of Start:" GridPane.rowIndex="7" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="dosLabel" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+        <Label text="Phone:" GridPane.rowIndex="8" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="phoneLabel" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+        <Label text="City:" GridPane.rowIndex="9" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="cityLabel" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+        <Label text="Street:" GridPane.rowIndex="10" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="streetLabel" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+        <Label text="Zip Code:" GridPane.rowIndex="11" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="zipLabel" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Close" onAction="#hide"/>
+    </HBox>
+</VBox>

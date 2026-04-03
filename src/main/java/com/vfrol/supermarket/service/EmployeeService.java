@@ -8,6 +8,8 @@ import com.vfrol.supermarket.entity.Employee;
 import com.vfrol.supermarket.filter.EmployeeFilter;
 import com.vfrol.supermarket.tools.PasswordManager;
 
+import java.util.List;
+
 public class EmployeeService {
     private final EmployeeDAO employeeDAO;
     public EmployeeService(EmployeeDAO employeeDAO) {
@@ -32,11 +34,11 @@ public class EmployeeService {
         return employeeDAO.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-    public Iterable<EmployeeListDTO> getAllEmployees() {
+    public List<EmployeeListDTO> getAllEmployees() {
         return employeeDAO.findAll();
     }
 
-    public Iterable<EmployeeListDTO> getEmployeesByFilter(EmployeeFilter filter) {
+    public List<EmployeeListDTO> getEmployeesByFilter(EmployeeFilter filter) {
         return employeeDAO.findByFilter(filter);
     }
 

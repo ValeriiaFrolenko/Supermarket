@@ -9,6 +9,7 @@ public record EmployeeListDTO(
         @ColumnName("id_employee") String id,
         @ColumnName("empl_surname") String surname,
         @ColumnName("empl_name") String name,
-        @ColumnName("empl_role") EmployeeRole role
-) {
+        @ColumnName("empl_role") EmployeeRole role,
+        @ColumnName("phone_number") String phoneNumber
+        ) {
 }

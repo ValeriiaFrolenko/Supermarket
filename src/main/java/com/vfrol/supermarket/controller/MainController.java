@@ -1,14 +1,31 @@
 package com.vfrol.supermarket.controller;
 
+import com.google.inject.Inject;
+import com.vfrol.supermarket.AppView;
+import com.vfrol.supermarket.ViewManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 
 public class MainController {
-    @FXML
-    private Label welcomeText;
+
+    private final ViewManager viewManager;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    private StackPane contentArea;
+
+    @Inject
+    public MainController(ViewManager viewManager) {
+        this.viewManager = viewManager;
+    }
+
+    @FXML
+    public void initialize() {
+        viewManager.setContentArea(contentArea);
+        viewManager.navigateTo(AppView.EMPLOYEE_LIST);
+    }
+
+    @FXML
+    public void goToEmployees() {
+        viewManager.navigateTo(AppView.EMPLOYEE_LIST);
     }
 }

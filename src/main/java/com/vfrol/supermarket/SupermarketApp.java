@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.vfrol.supermarket.database.DatabaseInitializer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -17,9 +18,12 @@ public class SupermarketApp extends Application {
         Injector injector = Guice.createInjector(new SupermarketModule());
         DatabaseInitializer initializer = injector.getInstance(DatabaseInitializer.class);
         initializer.initialize();
+
         FXMLLoader fxmlLoader = new FXMLLoader(SupermarketApp.class.getResource("view/main-view.fxml"));
         fxmlLoader.setControllerFactory(injector::getInstance);
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+
+        Scene scene = new Scene(fxmlLoader.load(), 900, 600);
+        stage.setOnCloseRequest(event -> Platform.exit());
         stage.setTitle("Supermarket");
         stage.setScene(scene);
         stage.show();
