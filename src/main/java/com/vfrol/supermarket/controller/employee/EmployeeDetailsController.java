@@ -1,10 +1,18 @@
 package com.vfrol.supermarket.controller.employee;
 
+import com.google.inject.Inject;
+import com.vfrol.supermarket.AppView;
+import com.vfrol.supermarket.ViewManager;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
+import com.vfrol.supermarket.enums.EmployeeRole;
+import com.vfrol.supermarket.service.EmployeeService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
 
 public class EmployeeDetailsController {
 
@@ -23,11 +31,41 @@ public class EmployeeDetailsController {
     @FXML private Label streetLabel;
     @FXML private Label zipLabel;
 
+    @FXML private Button editButton;
+    @FXML private Button deleteButton;
+
+    private EmployeeDetailsDTO currentEmployee;
+    private final EmployeeService employeeService;
+    private final ViewManager viewManager;
+
+    @Inject
+    public EmployeeDetailsController(EmployeeService employeeService, ViewManager viewManager) {
+        this.employeeService = employeeService;
+        this.viewManager = viewManager;
+    }
+
     @FXML
     public void initialize() {
     }
 
+    public void configureForRole(EmployeeRole currentUserRole) {
+        if (currentUserRole == EmployeeRole.CASHIER) {
+            editButton.setVisible(false);
+            editButton.setManaged(false);
+
+            deleteButton.setVisible(false);
+            deleteButton.setManaged(false);
+        } else {
+            editButton.setVisible(true);
+            editButton.setManaged(true);
+
+            deleteButton.setVisible(true);
+            deleteButton.setManaged(true);
+        }
+    }
+
     public void setEmployeeDetails(EmployeeDetailsDTO dto) {
+        this.currentEmployee = dto;
         idLabel.setText(dto.id());
         surnameLabel.setText(dto.surname());
         nameLabel.setText(dto.name());
@@ -40,6 +78,24 @@ public class EmployeeDetailsController {
         cityLabel.setText(dto.city());
         streetLabel.setText(dto.street());
         zipLabel.setText(dto.zipCode());
+    }
+
+    @FXML
+    public void onEdit() {
+        viewManager.showDialog(AppView.EMPLOYEE_FORM, (EmployeeFormController controller) ->
+                controller.setEmployee(currentEmployee));
+        hide();
+    }
+
+    @FXML
+    public void onDelete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this employee?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                employeeService.deleteEmployee(currentEmployee.id());
+                hide();
+            }
+        });
     }
 
     @FXML

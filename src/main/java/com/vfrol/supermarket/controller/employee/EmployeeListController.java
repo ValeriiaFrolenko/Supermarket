@@ -3,6 +3,7 @@ package com.vfrol.supermarket.controller.employee;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.AppView;
 import com.vfrol.supermarket.ViewManager;
+import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
@@ -11,6 +12,7 @@ import com.vfrol.supermarket.service.EmployeeService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -138,6 +140,9 @@ public class EmployeeListController {
         if (details != null) {
             viewManager.showDialog(AppView.EMPLOYEE_DETAILS, (EmployeeDetailsController controller) -> {
                 controller.setEmployeeDetails(details);
+
+                // TODO: Replace with actual logged-in user role later
+                controller.configureForRole(EmployeeRole.MANAGER);
             });
         }
         refreshEmployees();
@@ -145,5 +150,10 @@ public class EmployeeListController {
 
     public void refreshEmployees() {
         loadEmployees();
+    }
+
+    public void onAddEmployeeClick(ActionEvent actionEvent) {
+        viewManager.showDialog(AppView.EMPLOYEE_FORM);
+        refreshEmployees();
     }
 }

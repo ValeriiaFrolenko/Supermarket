@@ -17,13 +17,20 @@ public class EmployeeService {
     }
 
     public void addEmployee(EmployeeCreateDTO employeeCreateDTO) {
-        var employee = createEmployee(employeeCreateDTO);
+        String passwordHash = PasswordManager.generatePassword(employeeCreateDTO.rawPassword());
+        var employee = createEmployee(employeeCreateDTO, passwordHash);
         employeeDAO.create(employee);
     }
 
     public void updateEmployee(EmployeeCreateDTO employeeCreateDTO) {
-        var employee = createEmployee(employeeCreateDTO);
-        employeeDAO.update(employee);
+        String finalPasswordHash;
+        if (employeeCreateDTO.rawPassword() == null || employeeCreateDTO.rawPassword().trim().isEmpty()) {
+            finalPasswordHash = employeeDAO.getPasswordById(employeeCreateDTO.id())
+                    .orElseThrow(() -> new RuntimeException("Employee record not found in database."));
+        } else {
+            finalPasswordHash = PasswordManager.generatePassword(employeeCreateDTO.rawPassword());
+        }
+        employeeDAO.update(createEmployee(employeeCreateDTO, finalPasswordHash));
     }
 
     public void deleteEmployee(String id) {
@@ -47,10 +54,10 @@ public class EmployeeService {
         return passwordHash.filter(string -> PasswordManager.verifyPassword(rawPassword, string)).isPresent();
     }
 
-    private Employee createEmployee(EmployeeCreateDTO employeeCreateDTO) {
+    private Employee createEmployee(EmployeeCreateDTO employeeCreateDTO, String passwordHash) {
         return Employee.builder()
                 .id(employeeCreateDTO.id())
-                .passwordHash(PasswordManager.generatePassword(employeeCreateDTO.rawPassword()))
+                .passwordHash(passwordHash)
                 .surname(employeeCreateDTO.surname())
                 .name(employeeCreateDTO.name())
                 .patronymic(employeeCreateDTO.patronymic())
