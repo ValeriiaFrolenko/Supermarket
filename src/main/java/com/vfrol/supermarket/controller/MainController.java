@@ -28,4 +28,9 @@ public class MainController {
     public void goToEmployees() {
         viewManager.navigateTo(AppView.EMPLOYEE_LIST);
     }
+
+    @FXML
+    public void goToCategories() {
+        viewManager.navigateTo(AppView.CATEGORY_LIST);
+    }
 }

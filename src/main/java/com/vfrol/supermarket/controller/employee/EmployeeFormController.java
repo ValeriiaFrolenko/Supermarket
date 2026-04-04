@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 public class EmployeeFormController {
 
     @FXML private VBox formPanel;
+    @FXML private Label label;
     @FXML private TextField idField;
     @FXML private PasswordField passwordField;
     @FXML private TextField surnameField;
@@ -38,12 +39,13 @@ public class EmployeeFormController {
 
     @FXML
     public void initialize() {
+        label.setText("Add Employee");
         roleComboBox.getItems().setAll(EmployeeRole.values());
     }
 
     public void setEmployee(EmployeeDetailsDTO dto) {
         this.isEditMode = true;
-
+        label.setText("Edit Employee");
         idField.setText(dto.id());
         idField.setDisable(true);
         surnameField.setText(dto.surname());

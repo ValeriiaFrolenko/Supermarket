@@ -15,6 +15,7 @@
                 <Insets top="20" right="10" bottom="20" left="10"/>
             </padding>
             <Button text="Employees" onAction="#goToEmployees" prefWidth="180"/>
+            <Button text="Categories" onAction="#goToCategories" prefWidth="180"/>
         </VBox>
     </left>
 

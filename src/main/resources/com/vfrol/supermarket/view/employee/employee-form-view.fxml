@@ -8,7 +8,7 @@
       maxWidth="450" maxHeight="600" spacing="15"
       style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;">
 
-    <Label text="Edit Employee" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    <Label fx:id="label" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
 
     <GridPane hgap="10" vgap="10">
         <columnConstraints>

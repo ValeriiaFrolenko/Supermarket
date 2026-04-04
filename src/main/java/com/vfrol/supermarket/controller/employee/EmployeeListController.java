@@ -25,6 +25,7 @@ public class EmployeeListController {
     private final ViewManager viewManager;
 
     @FXML private TextField searchField;
+
     @FXML private TableView<EmployeeListDTO> employeeTable;
     @FXML private TableColumn<EmployeeListDTO, String> surnameColumn;
     @FXML private TableColumn<EmployeeListDTO, String> nameColumn;
@@ -87,10 +88,10 @@ public class EmployeeListController {
 
         if (searchText != null && !searchText.isBlank()) {
             String[] parts = searchText.trim().split("\\s+");
-            surname = formatName(parts[0]);
+            surname = (parts[0] != null && !parts[0].isBlank()) ? parts[0].trim() : null;
 
             if (parts.length > 1) {
-                name = formatName(parts[1]);
+                name = (parts[1] != null && !parts[1].isBlank()) ? parts[1].trim() : null;
             }
         }
 
@@ -109,15 +110,6 @@ public class EmployeeListController {
         employeeData.addAll(filteredEmployees);
     }
 
-    private String formatName(String input) {
-        if (input == null || input.isBlank()) {
-            return null;
-        }
-        if (input.length() == 1) {
-            return input.toUpperCase();
-        }
-        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
-    }
 
     @FXML
     public void onClearFilterClick() {

@@ -16,6 +16,7 @@ module com.vfrol.supermarket {
     requires org.slf4j;
     requires com.h2database;
     requires java.naming;
+    requires org.checkerframework.checker.qual;
 
     opens com.vfrol.supermarket to javafx.fxml, com.google.guice;
     opens com.vfrol.supermarket.controller to javafx.fxml, com.google.guice;
@@ -24,6 +25,7 @@ module com.vfrol.supermarket {
     opens com.vfrol.supermarket.service to com.google.guice;
     opens com.vfrol.supermarket.tools to com.google.guice, javafx.fxml;
     opens com.vfrol.supermarket.controller.employee to com.google.guice, javafx.fxml;
+    opens com.vfrol.supermarket.controller.category to com.google.guice, javafx.fxml;
     opens com.vfrol.supermarket.config to com.google.guice, javafx.fxml;
 
     exports com.vfrol.supermarket;

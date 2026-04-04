@@ -41,4 +41,10 @@ public interface CategoryDAO {
     FROM Category ORDER BY category_name
     """)
     List<CategoryListDTO> findAll();
+
+    @SqlQuery("""
+    SELECT category_number, category_name
+    FROM Category WHERE category_name ILIKE '%' || :name || '%'
+    """)
+    List<CategoryListDTO> findByName(@Bind("name") String name);
 }

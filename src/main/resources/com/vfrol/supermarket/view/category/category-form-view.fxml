@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="formPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.vfrol.supermarket.controller.category.CategoryFormController"
+            maxWidth="450" maxHeight="600" spacing="15"
+            style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;">
+
+    <Label text="Edit Category" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label fx:id="label" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="nameField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        </GridPane>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button text="Cancel" onAction="#onCancel"/>
+        <Button text="Save" onAction="#onSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+
+</VBox>
