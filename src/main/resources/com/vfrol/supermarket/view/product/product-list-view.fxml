@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.product.ProductListController"
+      spacing="10" prefHeight="600.0" prefWidth="800.0">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Enter product name to search" prefWidth="400"/>
+        <Button text="Filters" onAction="#onToggleFilterClick"/>
+        <Button fx:id="addButton" text="Add Product" onAction="#onAddProductClick"/>
+    </HBox>
+
+    <VBox fx:id="filterPanel" spacing="10" visible="false" managed="false"
+          style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Category:"/>
+            <ComboBox fx:id="categoryFilterComboBox" prefWidth="150"/>
+
+            <Label text="Sort By:"/>
+            <ComboBox fx:id="sortByComboBox" prefWidth="150"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Clear" onAction="#onClearFilterClick"/>
+            <Button text="Apply" onAction="#applyFilter" defaultButton="true"/>
+        </HBox>
+    </VBox>
+
+    <TableView fx:id="productTable" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Name"/>
+            <TableColumn fx:id="categoryColumn" text="Category"/>
+        </columns>
+    </TableView>
+
+</VBox>

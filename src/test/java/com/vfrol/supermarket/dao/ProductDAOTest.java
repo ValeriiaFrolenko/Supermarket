@@ -2,6 +2,7 @@ package com.vfrol.supermarket.dao;
 
 import com.vfrol.supermarket.entity.Category;
 import com.vfrol.supermarket.entity.Product;
+import com.vfrol.supermarket.enums.sortby.ProductSortBy;
 import com.vfrol.supermarket.filter.ProductFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,8 +100,8 @@ class ProductDAOTest extends BaseDAOTest {
     @Test
     void findByFilter_byCategoryId_returnsMatchingProducts() {
         productDAO.create(createTestProduct("Test Product"));
-
-        var result = productDAO.findByFilter(ProductFilter.builder().categoryId(1).build());
+        var result = productDAO.findByFilter(ProductFilter.builder().categoryId(1)
+                        .sortBy(ProductSortBy.CATEGORY).build());
         assertEquals(1, result.size());
     }
 

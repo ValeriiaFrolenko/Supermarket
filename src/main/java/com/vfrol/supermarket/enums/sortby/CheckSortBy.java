@@ -12,7 +12,7 @@ public enum CheckSortBy implements SortBy {
     }
 
     @Override
-    public String column() {
+    public String getColumn() {
         return column;
     }
 }

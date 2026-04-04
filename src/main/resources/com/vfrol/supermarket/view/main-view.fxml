@@ -9,17 +9,35 @@
             fx:controller="com.vfrol.supermarket.controller.MainController"
             prefHeight="600.0" prefWidth="900.0">
 
+    <!-- Ліва панель — спочатку прихована -->
     <left>
-        <VBox spacing="8" style="-fx-background-color: #f4f4f4; -fx-padding: 15;">
+        <VBox fx:id="sideBar" spacing="8"
+              style="-fx-background-color: #f4f4f4; -fx-padding: 15;"
+              visible="false" managed="false">
             <padding>
                 <Insets top="20" right="10" bottom="20" left="10"/>
             </padding>
-            <Button text="Employees" onAction="#goToEmployees" prefWidth="180"/>
-            <Button text="Categories" onAction="#goToCategories" prefWidth="180"/>
+            <Button fx:id="accountButton" text="Account" onAction="#goToAccount" prefWidth="180"/>
+            <Button fx:id="employeesButton" text="Employees" onAction="#goToEmployees" prefWidth="180"/>
+            <Button fx:id="categoriesButton" text="Categories" onAction="#goToCategories" prefWidth="180"/>
+            <Button fx:id="productsButton" text="Products" onAction="#goToProducts" prefWidth="180"/>
+            <Button fx:id="storeProductsButton" text="Store Products" onAction="#goToStoreProducts" prefWidth="180"/>
+            <Button fx:id="checksButton" text="Checks" onAction="#goToChecks" prefWidth="180"/>
+            <Button fx:id="customersButton" text="Customers" onAction="#goToCustomers" prefWidth="180"/>
         </VBox>
     </left>
 
     <center>
-        <StackPane fx:id="contentArea"/>
+        <StackPane fx:id="contentArea">
+            <VBox fx:id="centerMenu" spacing="8" alignment="CENTER">
+                <Button text="Account" onAction="#goToAccount" prefWidth="180"/>
+                <Button text="Employees" onAction="#goToEmployees" prefWidth="180"/>
+                <Button text="Categories" onAction="#goToCategories" prefWidth="180"/>
+                <Button text="Products" onAction="#goToProducts" prefWidth="180"/>
+                <Button text="Store Products" onAction="#goToStoreProducts" prefWidth="180"/>
+                <Button text="Checks" onAction="#goToChecks" prefWidth="180"/>
+                <Button text="Customers" onAction="#goToCustomers" prefWidth="180"/>
+            </VBox>
+        </StackPane>
     </center>
 </BorderPane>

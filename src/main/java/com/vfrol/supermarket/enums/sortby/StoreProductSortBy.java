@@ -12,7 +12,7 @@ public enum StoreProductSortBy implements SortBy{
     }
 
     @Override
-    public String column() {
+    public String getColumn() {
         return column;
     }
 }

@@ -11,7 +11,7 @@ public enum CustomerCardSortBy implements SortBy{
     }
 
     @Override
-    public String column() {
+    public String getColumn() {
         return column;
     }
 }

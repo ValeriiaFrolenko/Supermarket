@@ -10,7 +10,16 @@ public enum AppView {
 
     CATEGORY_LIST("view/category/category-list-view.fxml"),
     CATEGORY_FORM("view/category/category-form-view.fxml"),
-    CATEGORY_DETAILS("view/category/category-details-view.fxml");
+    CATEGORY_DETAILS("view/category/category-details-view.fxml"),
+
+    PRODUCT_LIST("view/product/product-list-view.fxml"),
+    PRODUCT_FORM("view/product/product-form-view.fxml"),
+    PRODUCT_DETAILS("view/product/product-details-view.fxml"),
+
+    CUSTOMER_CARD_LIST("view/customer_card/customer-card-list-view.fxml"),
+    CUSTOMER_CARD_FORM("view/customer_card/customer-card-form-view.fxml"),
+    CUSTOMER_CARD_DETAILS("view/customer_card/customer-card-details-view.fxml");
+
 
     private final String fxmlPath;
 

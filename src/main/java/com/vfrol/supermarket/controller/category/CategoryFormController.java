@@ -28,12 +28,12 @@ public class CategoryFormController {
 
     @FXML
     public void initialize() {
-        label.setText("Add Employee");
+        label.setText("Add Category");
     }
 
     public void setCategory(CategoryListDTO dto) {
         this.isEditMode = true;
-        label.setText("Edit Employee");
+        label.setText("Edit Category");
         categoryListDTO = dto;
         nameField.setText(dto.name());
     }

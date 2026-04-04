@@ -5,10 +5,14 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.CategoryDAO;
+import com.vfrol.supermarket.dao.CustomerCardDAO;
 import com.vfrol.supermarket.dao.EmployeeDAO;
+import com.vfrol.supermarket.dao.ProductDAO;
 import com.vfrol.supermarket.database.DatabaseInitializer;
 import com.vfrol.supermarket.service.CategoryService;
+import com.vfrol.supermarket.service.CustomerCardService;
 import com.vfrol.supermarket.service.EmployeeService;
+import com.vfrol.supermarket.service.ProductService;
 import org.checkerframework.checker.units.qual.C;
 import org.h2.jdbcx.JdbcDataSource;
 import org.jdbi.v3.core.Jdbi;
@@ -68,6 +72,18 @@ public class SupermarketModule extends AbstractModule {
 
     @Provides
     @Singleton
+    public ProductDAO provideProductDAO(Jdbi jdbi) {
+        return jdbi.onDemand(ProductDAO.class);
+    }
+
+    @Provides
+    @Singleton
+    public CustomerCardDAO provideCustomerCardDAO(Jdbi jdbi) {
+        return jdbi.onDemand(CustomerCardDAO.class);
+    }
+
+    @Provides
+    @Singleton
     public EmployeeService provideEmployeeService(EmployeeDAO employeeDAO) {
         return new EmployeeService(employeeDAO);
     }
@@ -78,5 +94,16 @@ public class SupermarketModule extends AbstractModule {
         return new CategoryService(categoryDAO);
     }
 
+    @Provides
+    @Singleton
+    public ProductService provideProductService(ProductDAO productDAO) {
+        return new ProductService(productDAO);
+    }
+
+    @Provides
+    @Singleton
+    public CustomerCardService provideCustomerCardService(CustomerCardDAO customerCardDAO) {
+        return new CustomerCardService(customerCardDAO);
+    }
 
 }
