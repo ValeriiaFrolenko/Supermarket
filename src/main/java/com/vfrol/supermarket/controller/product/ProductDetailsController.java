@@ -2,17 +2,16 @@ package com.vfrol.supermarket.controller.product;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
 import com.vfrol.supermarket.service.ProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class ProductDetailsController {
+public class ProductDetailsController extends BaseModalController {
 
     @FXML private VBox detailsPanel;
     @FXML private Label nameLabel;
@@ -24,24 +23,15 @@ public class ProductDetailsController {
 
     private ProductDetailsDTO currentProduct;
     private final ProductService productService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @Inject
-    public ProductDetailsController(ProductService productService, ViewManager viewManager, SessionManager sessionManager) {
+    public ProductDetailsController(ProductService productService) {
         this.productService = productService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
     }
 
     @FXML
     public void initialize() {
-        if (!sessionManager.isManager()) {
-            editButton.setVisible(false);
-            editButton.setManaged(false);
-            deleteButton.setVisible(false);
-            deleteButton.setManaged(false);
-        }
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
     public void setProductDetails(ProductDetailsDTO dto) {
@@ -66,7 +56,6 @@ public class ProductDetailsController {
 
     @FXML
     public void hide() {
-        Stage window = (Stage) detailsPanel.getScene().getWindow();
-        if (window != null) window.close();
+        closeWindow(detailsPanel);
     }
 }

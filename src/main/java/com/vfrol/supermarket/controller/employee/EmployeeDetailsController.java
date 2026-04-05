@@ -2,19 +2,18 @@ package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.service.EmployeeService;
-import com.vfrol.supermarket.config.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
-public class EmployeeDetailsController {
+public class EmployeeDetailsController extends BaseModalController {
 
     @FXML private VBox detailsPanel;
 
@@ -36,35 +35,15 @@ public class EmployeeDetailsController {
 
     private EmployeeDetailsDTO currentEmployee;
     private final EmployeeService employeeService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @Inject
-    public EmployeeDetailsController(EmployeeService employeeService, ViewManager viewManager, SessionManager sessionManager) {
+    public EmployeeDetailsController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
     }
 
     @FXML
     public void initialize() {
-        configureForRole();
-    }
-
-    private void configureForRole() {
-        if (!sessionManager.isManager()) {
-            editButton.setVisible(false);
-            editButton.setManaged(false);
-
-            deleteButton.setVisible(false);
-            deleteButton.setManaged(false);
-        } else {
-            editButton.setVisible(true);
-            editButton.setManaged(true);
-
-            deleteButton.setVisible(true);
-            deleteButton.setManaged(true);
-        }
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
     public void setEmployeeDetails(EmployeeDetailsDTO dto) {
@@ -95,7 +74,6 @@ public class EmployeeDetailsController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this employee?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                // TODO: Додати try-catch для обробки помилки видалення (касир з чеками) під час етапу валідації
                 employeeService.deleteEmployee(currentEmployee.id());
                 hide();
             }
@@ -104,9 +82,6 @@ public class EmployeeDetailsController {
 
     @FXML
     public void hide() {
-        Stage window = (Stage) detailsPanel.getScene().getWindow();
-        if (window != null) {
-            window.close();
-        }
+        closeWindow(detailsPanel);
     }
 }

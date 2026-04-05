@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.controller.store_product;
 
 import com.google.inject.Inject;
+import com.vfrol.supermarket.controller.BaseModalController;
 import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
@@ -9,9 +10,8 @@ import com.vfrol.supermarket.service.StoreProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class StoreProductFormController {
+public class StoreProductFormController extends BaseModalController {
 
     @FXML private VBox formPanel;
     @FXML private Label titleLabel;
@@ -123,7 +123,7 @@ public class StoreProductFormController {
                 storeProductService.addStoreProduct(dto);
             }
 
-            closeWindow();
+            closeWindow(formPanel);
         } catch (NumberFormatException e) {
             new Alert(Alert.AlertType.ERROR, "Invalid price or quantity format").showAndWait();
         } catch (Exception e) {
@@ -133,11 +133,6 @@ public class StoreProductFormController {
 
     @FXML
     public void onCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage window = (Stage) formPanel.getScene().getWindow();
-        if (window != null) window.close();
+        closeWindow(formPanel);
     }
 }

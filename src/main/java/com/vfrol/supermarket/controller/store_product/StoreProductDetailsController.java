@@ -2,16 +2,15 @@ package com.vfrol.supermarket.controller.store_product;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.service.StoreProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class StoreProductDetailsController {
+public class StoreProductDetailsController extends BaseModalController {
 
     @FXML private VBox detailsPanel;
 
@@ -28,26 +27,15 @@ public class StoreProductDetailsController {
 
     private StoreProductDetailsDTO currentStoreProduct;
     private final StoreProductService storeProductService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @Inject
-    public StoreProductDetailsController(StoreProductService storeProductService,
-                                         ViewManager viewManager,
-                                         SessionManager sessionManager) {
+    public StoreProductDetailsController(StoreProductService storeProductService) {
         this.storeProductService = storeProductService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
     }
 
     @FXML
     public void initialize() {
-        if (!sessionManager.isManager()) {
-            editButton.setVisible(false);
-            editButton.setManaged(false);
-            deleteButton.setVisible(false);
-            deleteButton.setManaged(false);
-        }
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
     public void setStoreProductDetails(StoreProductDetailsDTO dto) {
@@ -83,7 +71,6 @@ public class StoreProductDetailsController {
 
     @FXML
     public void hide() {
-        Stage window = (Stage) detailsPanel.getScene().getWindow();
-        if (window != null) window.close();
+        closeWindow(detailsPanel);
     }
 }

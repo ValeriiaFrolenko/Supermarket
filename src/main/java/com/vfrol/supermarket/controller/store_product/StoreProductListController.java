@@ -2,8 +2,8 @@ package com.vfrol.supermarket.controller.store_product;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseListController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
@@ -21,12 +21,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
-public class StoreProductListController {
+public class StoreProductListController extends BaseListController<StoreProductListDTO> {
 
     private final StoreProductService storeProductService;
     private final ProductService productService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @FXML private TextField searchField;
     @FXML private Button addButton;
@@ -47,27 +45,28 @@ public class StoreProductListController {
 
     @Inject
     public StoreProductListController(StoreProductService storeProductService,
-                                      ProductService productService,
-                                      ViewManager viewManager,
-                                      SessionManager sessionManager) {
+                                      ProductService productService) {
         this.storeProductService = storeProductService;
         this.productService = productService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
+    }
+
+    @Override
+    protected TableView<StoreProductListDTO> getTableView() {
+        return storeProductTable;
+    }
+
+    @Override
+    protected void showDetails(StoreProductListDTO item) {
+        showStoreProductDetails(item.UPC());
     }
 
     @FXML
     public void initialize() {
-        configureForRole();
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
         initializeTable();
         initializeFilters();
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilter());
         loadStoreProducts();
-    }
-
-    private void configureForRole() {
-        addButton.setVisible(sessionManager.isManager());
-        addButton.setManaged(sessionManager.isManager());
     }
 
     private void initializeTable() {
@@ -82,14 +81,7 @@ public class StoreProductListController {
 
         storeProductTable.setItems(storeProductData);
 
-        storeProductTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                StoreProductListDTO selected = storeProductTable.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    showStoreProductDetails(selected.UPC());
-                }
-            }
-        });
+        setupTableDoubleClick();
     }
 
     private void initializeFilters() {
@@ -126,9 +118,7 @@ public class StoreProductListController {
 
     @FXML
     public void onToggleFilterClick() {
-        boolean isCurrentlyVisible = filterPanel.isVisible();
-        filterPanel.setVisible(!isCurrentlyVisible);
-        filterPanel.setManaged(!isCurrentlyVisible);
+        toggleFilterPanel(filterPanel);
     }
 
     private void loadStoreProducts() {

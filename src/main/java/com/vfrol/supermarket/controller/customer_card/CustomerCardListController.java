@@ -2,8 +2,8 @@ package com.vfrol.supermarket.controller.customer_card;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseListController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
 import com.vfrol.supermarket.enums.sortby.CustomerCardSortBy;
@@ -19,11 +19,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-public class CustomerCardListController {
+public class CustomerCardListController extends BaseListController<CustomerCardListDTO> {
 
     private final CustomerCardService customerCardService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @FXML private TextField searchField;
     @FXML private Button addButton;
@@ -44,12 +42,18 @@ public class CustomerCardListController {
     private ObservableList<CustomerCardListDTO> customerCardData;
 
     @Inject
-    public CustomerCardListController(CustomerCardService customerCardService,
-                                      ViewManager viewManager,
-                                      SessionManager sessionManager) {
+    public CustomerCardListController(CustomerCardService customerCardService) {
         this.customerCardService = customerCardService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
+    }
+
+    @Override
+    protected TableView<CustomerCardListDTO> getTableView() {
+        return customerCardTable;
+    }
+
+    @Override
+    protected void showDetails(CustomerCardListDTO item) {
+        showCustomerCardDetails(item.cardNumber());
     }
 
     @FXML
@@ -57,7 +61,7 @@ public class CustomerCardListController {
         initializeTable();
         sortByComboBox.getItems().addAll(CustomerCardSortBy.values());
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
-        configureForRole();
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
         loadCustomerCards();
     }
 
@@ -71,27 +75,12 @@ public class CustomerCardListController {
         phoneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().phone()));
 
         customerCardTable.setItems(customerCardData);
-
-        customerCardTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                CustomerCardListDTO selected = customerCardTable.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    showCustomerCardDetails(selected.cardNumber());
-                }
-            }
-        });
-    }
-
-    private void configureForRole() {
-        addButton.setVisible(sessionManager.isManager());
-        addButton.setManaged(sessionManager.isManager());
+        setupTableDoubleClick();
     }
 
     @FXML
     public void onToggleFilterClick() {
-        boolean isCurrentlyVisible = filterPanel.isVisible();
-        filterPanel.setVisible(!isCurrentlyVisible);
-        filterPanel.setManaged(!isCurrentlyVisible);
+        toggleFilterPanel(filterPanel);
     }
 
     @FXML

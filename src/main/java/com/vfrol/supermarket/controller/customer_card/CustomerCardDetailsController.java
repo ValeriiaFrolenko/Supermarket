@@ -2,16 +2,15 @@ package com.vfrol.supermarket.controller.customer_card;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class CustomerCardDetailsController {
+public class CustomerCardDetailsController extends BaseModalController {
 
     @FXML private VBox detailsPanel;
 
@@ -30,31 +29,15 @@ public class CustomerCardDetailsController {
 
     private CustomerCardDetailsDTO currentCard;
     private final CustomerCardService customerCardService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @Inject
-    public CustomerCardDetailsController(CustomerCardService customerCardService,
-                                         ViewManager viewManager,
-                                         SessionManager sessionManager) {
+    public CustomerCardDetailsController(CustomerCardService customerCardService) {
         this.customerCardService = customerCardService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
     }
 
     @FXML
     public void initialize() {
-        configureForRole();
-    }
-
-    private void configureForRole() {
-        boolean isManager = sessionManager.isManager();
-
-        editButton.setVisible(true);
-        editButton.setManaged(true);
-
-        deleteButton.setVisible(isManager);
-        deleteButton.setManaged(isManager);
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, deleteButton);
     }
 
     public void setCustomerCardDetails(CustomerCardDetailsDTO dto) {
@@ -92,9 +75,6 @@ public class CustomerCardDetailsController {
 
     @FXML
     public void hide() {
-        Stage window = (Stage) detailsPanel.getScene().getWindow();
-        if (window != null) {
-            window.close();
-        }
+        closeWindow(detailsPanel);
     }
 }

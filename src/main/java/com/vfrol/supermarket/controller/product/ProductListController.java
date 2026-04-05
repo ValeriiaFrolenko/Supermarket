@@ -2,8 +2,8 @@ package com.vfrol.supermarket.controller.product;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseListController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
 import com.vfrol.supermarket.dto.product.ProductListDTO;
@@ -18,12 +18,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
-public class ProductListController {
+public class ProductListController extends BaseListController<ProductListDTO> {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @FXML private TextField searchField;
     @FXML private Button addButton;
@@ -38,31 +36,31 @@ public class ProductListController {
     private ObservableList<ProductListDTO> productData;
 
     @Inject
-    public ProductListController(ProductService productService, CategoryService categoryService, ViewManager viewManager, SessionManager sessionManager) {
+    public ProductListController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
         this.categoryService = categoryService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
+    }
+
+    @Override
+    protected TableView<ProductListDTO> getTableView() {
+        return productTable;
+    }
+
+    @Override
+    protected void showDetails(ProductListDTO item) {
+        showProductDetails(item.id());
     }
 
     @FXML
     public void initialize() {
-        configureForRole();
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
         initializeTable();
         initializeFilters();
 
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilter();
-        });
+        searchField.textProperty().addListener((observable, oldValue, newValue) ->
+                applyFilter());
 
         loadProducts();
-    }
-
-    private void configureForRole() {
-        if (!sessionManager.isManager()) {
-            addButton.setVisible(false);
-            addButton.setManaged(false);
-        }
     }
 
     private void initializeTable() {
@@ -71,14 +69,7 @@ public class ProductListController {
         categoryColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().categoryName()));
         productTable.setItems(productData);
 
-        productTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                ProductListDTO selected = productTable.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    showProductDetails(selected.id());
-                }
-            }
-        });
+        setupTableDoubleClick();
     }
 
     private void initializeFilters() {
@@ -110,9 +101,7 @@ public class ProductListController {
 
     @FXML
     public void onToggleFilterClick() {
-        boolean isCurrentlyVisible = filterPanel.isVisible();
-        filterPanel.setVisible(!isCurrentlyVisible);
-        filterPanel.setManaged(!isCurrentlyVisible);
+        toggleFilterPanel(filterPanel);
     }
 
     @FXML
@@ -147,9 +136,8 @@ public class ProductListController {
     private void showProductDetails(int productId) {
         ProductDetailsDTO details = productService.getProductById(productId);
         if (details != null) {
-            viewManager.showDialog(AppView.PRODUCT_DETAILS, (ProductDetailsController controller) -> {
-                controller.setProductDetails(details);
-            });
+            viewManager.showDialog(AppView.PRODUCT_DETAILS, (ProductDetailsController controller) ->
+                    controller.setProductDetails(details));
         }
         applyFilter();
     }

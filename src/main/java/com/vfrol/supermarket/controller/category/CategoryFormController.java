@@ -1,15 +1,15 @@
 package com.vfrol.supermarket.controller.category;
 
 import com.google.inject.Inject;
+import com.vfrol.supermarket.controller.BaseModalController;
 import com.vfrol.supermarket.dto.category.CategoryCreateDTO;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class CategoryFormController {
+public class CategoryFormController extends BaseModalController {
 
     @FXML private VBox formPanel;
     @FXML private Label label;
@@ -18,7 +18,6 @@ public class CategoryFormController {
     private final CategoryService categoryService;
 
     private boolean isEditMode = false;
-
     private CategoryListDTO categoryListDTO;
 
     @Inject
@@ -51,7 +50,7 @@ public class CategoryFormController {
             } else {
                 categoryService.addCategory(dto);
             }
-            closeWindow();
+            closeWindow(formPanel);
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "An error occurred while saving: " + e.getMessage());
             alert.showAndWait();
@@ -60,13 +59,6 @@ public class CategoryFormController {
 
     @FXML
     public void onCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage window = (Stage) formPanel.getScene().getWindow();
-        if (window != null) {
-            window.close();
-        }
+        closeWindow(formPanel);
     }
 }

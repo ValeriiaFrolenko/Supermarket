@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseListController;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
@@ -20,9 +20,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-public class EmployeeListController {
+public class EmployeeListController extends BaseListController<EmployeeListDTO> {
+
     private final EmployeeService employeeListService;
-    private final ViewManager viewManager;
 
     @FXML private TextField searchField;
 
@@ -39,9 +39,18 @@ public class EmployeeListController {
     private ObservableList<EmployeeListDTO> employeeData;
 
     @Inject
-    public EmployeeListController(EmployeeService employeeService, ViewManager viewManager) {
+    public EmployeeListController(EmployeeService employeeService) {
         this.employeeListService = employeeService;
-        this.viewManager = viewManager;
+    }
+
+    @Override
+    protected TableView<EmployeeListDTO> getTableView() {
+        return employeeTable;
+    }
+
+    @Override
+    protected void showDetails(EmployeeListDTO item) {
+        showEmployeeDetails(item.id());
     }
 
     @FXML
@@ -63,21 +72,12 @@ public class EmployeeListController {
         phoneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().phoneNumber()));
         employeeTable.setItems(employeeData);
 
-        employeeTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                EmployeeListDTO selected = employeeTable.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    showEmployeeDetails(selected.id());
-                }
-            }
-        });
+        setupTableDoubleClick();
     }
 
     @FXML
     public void onToggleFilterClick() {
-        boolean isCurrentlyVisible = filterPanel.isVisible();
-        filterPanel.setVisible(!isCurrentlyVisible);
-        filterPanel.setManaged(!isCurrentlyVisible);
+        toggleFilterPanel(filterPanel);
     }
 
     @FXML
@@ -109,7 +109,6 @@ public class EmployeeListController {
         employeeData.clear();
         employeeData.addAll(filteredEmployees);
     }
-
 
     @FXML
     public void onClearFilterClick() {

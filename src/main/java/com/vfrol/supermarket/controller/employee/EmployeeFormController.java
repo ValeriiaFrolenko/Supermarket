@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
+import com.vfrol.supermarket.controller.BaseModalController;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
@@ -8,9 +9,8 @@ import com.vfrol.supermarket.service.EmployeeService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class EmployeeFormController {
+public class EmployeeFormController extends BaseModalController {
 
     @FXML private VBox formPanel;
     @FXML private Label label;
@@ -91,7 +91,7 @@ public class EmployeeFormController {
             } else {
                 employeeService.addEmployee(dto);
             }
-            closeWindow();
+            closeWindow(formPanel);
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid salary format. Please enter a valid number.");
             alert.showAndWait();
@@ -103,13 +103,6 @@ public class EmployeeFormController {
 
     @FXML
     public void onCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage window = (Stage) formPanel.getScene().getWindow();
-        if (window != null) {
-            window.close();
-        }
+        closeWindow(formPanel);
     }
 }

@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.controller.product;
 
 import com.google.inject.Inject;
+import com.vfrol.supermarket.controller.BaseModalController;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.dto.product.ProductCreateDTO;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
@@ -9,12 +10,10 @@ import com.vfrol.supermarket.service.ProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 import java.util.List;
 
-public class ProductFormController {
+public class ProductFormController extends BaseModalController {
 
     @FXML private VBox formPanel;
     @FXML private Label titleLabel;
@@ -68,16 +67,11 @@ public class ProductFormController {
         } else {
             productService.addProduct(dto);
         }
-        closeWindow();
+        closeWindow(formPanel);
     }
 
     @FXML
     public void onCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage window = (Stage) formPanel.getScene().getWindow();
-        if (window != null) window.close();
+        closeWindow(formPanel);
     }
 }

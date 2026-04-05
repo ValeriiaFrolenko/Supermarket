@@ -1,15 +1,15 @@
 package com.vfrol.supermarket.controller.customer_card;
 
 import com.google.inject.Inject;
+import com.vfrol.supermarket.controller.BaseModalController;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardCreateDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class CustomerCardFormController {
+public class CustomerCardFormController extends BaseModalController {
 
     @FXML private VBox formPanel;
     @FXML private Label label;
@@ -77,7 +77,7 @@ public class CustomerCardFormController {
             } else {
                 customerCardService.addCard(dto);
             }
-            closeWindow();
+            closeWindow(formPanel);
         } catch (NumberFormatException e) {
             new Alert(Alert.AlertType.ERROR, "Invalid discount format. Please enter a whole number.").showAndWait();
         } catch (Exception e) {
@@ -87,13 +87,6 @@ public class CustomerCardFormController {
 
     @FXML
     public void onCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage window = (Stage) formPanel.getScene().getWindow();
-        if (window != null) {
-            window.close();
-        }
+        closeWindow(formPanel);
     }
 }

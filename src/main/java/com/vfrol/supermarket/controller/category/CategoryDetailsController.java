@@ -2,8 +2,8 @@ package com.vfrol.supermarket.controller.category;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.config.SessionManager;
-import com.vfrol.supermarket.config.ViewManager;
+import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.SecurityUIHelper;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.fxml.FXML;
@@ -12,48 +12,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class CategoryDetailsController {
-    @FXML
-    private VBox detailsPanel;
+public class CategoryDetailsController extends BaseModalController {
 
+    @FXML private VBox detailsPanel;
     @FXML private Label nameLabel;
-
     @FXML private Button editButton;
     @FXML private Button deleteButton;
 
     private CategoryListDTO currentCategory;
     private final CategoryService categoryService;
-    private final ViewManager viewManager;
-    private final SessionManager sessionManager;
 
     @Inject
-    public CategoryDetailsController(CategoryService categoryService, ViewManager viewManager, SessionManager sessionManager) {
+    public CategoryDetailsController(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.viewManager = viewManager;
-        this.sessionManager = sessionManager;
     }
 
     @FXML
     public void initialize() {
-        configureForRole();
-    }
-
-    private void configureForRole() {
-        if (!sessionManager.isManager()) {
-            editButton.setVisible(false);
-            editButton.setManaged(false);
-
-            deleteButton.setVisible(false);
-            deleteButton.setManaged(false);
-        } else {
-            editButton.setVisible(true);
-            editButton.setManaged(true);
-
-            deleteButton.setVisible(true);
-            deleteButton.setManaged(true);
-        }
+        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
     public void setCategoryDetails(CategoryListDTO dto) {
@@ -81,9 +58,6 @@ public class CategoryDetailsController {
 
     @FXML
     public void hide() {
-        Stage window = (Stage) detailsPanel.getScene().getWindow();
-        if (window != null) {
-            window.close();
-        }
+        closeWindow(detailsPanel);
     }
 }
