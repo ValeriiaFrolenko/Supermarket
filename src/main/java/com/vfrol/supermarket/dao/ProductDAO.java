@@ -2,6 +2,7 @@ package com.vfrol.supermarket.dao;
 
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
 import com.vfrol.supermarket.dto.product.ProductListDTO;
+import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.entity.Product;
 import com.vfrol.supermarket.filter.ProductFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @RegisterConstructorMapper(Product.class)
 @RegisterConstructorMapper(ProductDetailsDTO.class)
 @RegisterConstructorMapper(ProductListDTO.class)
+@RegisterConstructorMapper(ProductNameDTO.class)
 public interface ProductDAO {
 
     @SqlUpdate("""
@@ -46,12 +48,26 @@ public interface ProductDAO {
     Optional<ProductDetailsDTO> findById(@Bind("id") int id);
 
     @SqlQuery("""
+    SELECT id_product, product_name FROM Product
+    WHERE product_name LIKE '%' || :name || '%'
+    ORDER BY product_name
+    """)
+    List<ProductNameDTO> findByName(@Bind("name") String name);
+
+    @SqlQuery("""
     SELECT p.id_product, p.product_name, c.category_name
     FROM Product p
     JOIN Category c ON p.category_number = c.category_number
     ORDER BY p.product_name
     """)
     List<ProductListDTO> findAll();
+
+    @SqlQuery("""
+    SELECT p.id_product, p.product_name
+    FROM Product p
+    ORDER BY p.product_name
+    """)
+    List<ProductNameDTO> findAllNames();
 
     @SqlQuery("""
     SELECT p.id_product, p.product_name, c.category_name

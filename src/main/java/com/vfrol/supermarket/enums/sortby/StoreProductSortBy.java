@@ -2,7 +2,7 @@ package com.vfrol.supermarket.enums.sortby;
 
 public enum StoreProductSortBy implements SortBy{
     NAME("product_name"),
-    QUANTITY("product_number"),
+    QUANTITY("products_number"),
     PRICE("selling_price");
 
     private final String column;

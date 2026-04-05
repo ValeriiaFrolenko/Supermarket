@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="formPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.store_product.StoreProductFormController"
+      maxWidth="450" maxHeight="480" spacing="15"
+      style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;">
+
+    <Label fx:id="titleLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="UPC:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="upcField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="UPC Promo:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="upcPromField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Required for promotional products"/>
+
+        <CheckBox fx:id="promotionalCheckBox"
+                  text="This is a promotional product"
+                  GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Product:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="productComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                  prefWidth="200" promptText="Type to search..."/>
+
+        <Label text="Price:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="priceField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="0.00"/>
+
+        <Label text="Quantity:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="quantityField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button text="Cancel" onAction="#onCancel"/>
+        <Button text="Save" onAction="#onSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

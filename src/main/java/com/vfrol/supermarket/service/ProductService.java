@@ -4,6 +4,7 @@ import com.vfrol.supermarket.dao.ProductDAO;
 import com.vfrol.supermarket.dto.product.ProductCreateDTO;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
 import com.vfrol.supermarket.dto.product.ProductListDTO;
+import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.entity.Product;
 import com.vfrol.supermarket.filter.ProductFilter;
 
@@ -43,11 +44,21 @@ public class ProductService {
         return productDAO.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
+    public List<ProductNameDTO> getProductByName(String name) {
+        return productDAO.findByName(name);
+    }
+
     public List<ProductListDTO> getAllProducts() {
         return productDAO.findAll();
+    }
+
+    public List<ProductNameDTO> getAllProductNames() {
+        return productDAO.findAllNames();
     }
 
     public List<ProductListDTO> getProductsByFilter(ProductFilter filter) {
         return productDAO.findByFilter(filter);
     }
+
+
 }
