@@ -8,6 +8,7 @@ public record CustomerCardListDTO(
         @ColumnName("card_number") String cardNumber,
         @ColumnName("cust_surname") String surname,
         @ColumnName("cust_name") String name,
-        @ColumnName("percent") int discount
+        @ColumnName("percent") int discount,
+        @ColumnName("phone_number") String phone
 ) {
 }

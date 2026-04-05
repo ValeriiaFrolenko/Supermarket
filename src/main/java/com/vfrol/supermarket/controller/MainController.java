@@ -92,6 +92,7 @@ public class MainController {
     @FXML
     public void goToStoreProducts(ActionEvent actionEvent) {
         activateSideBar();
+        viewManager.navigateTo(AppView.STORE_PRODUCT_LIST);
     }
 
     @FXML
@@ -102,5 +103,6 @@ public class MainController {
     @FXML
     public void goToCustomers(ActionEvent actionEvent) {
         activateSideBar();
+        viewManager.navigateTo(AppView.CUSTOMER_CARD_LIST);
     }
 }

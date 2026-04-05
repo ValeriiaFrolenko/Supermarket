@@ -27,6 +27,8 @@ module com.vfrol.supermarket {
     opens com.vfrol.supermarket.controller.employee to com.google.guice, javafx.fxml;
     opens com.vfrol.supermarket.controller.category to com.google.guice, javafx.fxml;
     opens com.vfrol.supermarket.controller.product to com.google.guice, javafx.fxml;
+    opens com.vfrol.supermarket.controller.customer_card to com.google.guice, javafx.fxml;
+    opens com.vfrol.supermarket.controller.store_product to com.google.guice, javafx.fxml;
     opens com.vfrol.supermarket.config to com.google.guice, javafx.fxml;
 
     exports com.vfrol.supermarket;

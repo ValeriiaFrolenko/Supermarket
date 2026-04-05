@@ -48,13 +48,13 @@ public interface CustomerCardDAO {
     Optional<CustomerCardDetailsDTO> findById(@Bind("cardNumber") String cardNumber);
 
     @SqlQuery("""
-    SELECT card_number, cust_surname, cust_name, percent
+    SELECT card_number, cust_surname, cust_name, percent, phone_number
     FROM Customer_Card ORDER BY cust_surname
     """)
     List<CustomerCardListDTO> findAll();
 
     @SqlQuery("""
-    SELECT card_number, cust_surname, cust_name, percent
+    SELECT card_number, cust_surname, cust_name, percent, phone_number
     FROM Customer_Card
     WHERE 1=1
     <if(filter.surname)> AND cust_surname LIKE '%' || :surname || '%' <endif>

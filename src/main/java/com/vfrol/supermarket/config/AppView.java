@@ -18,7 +18,13 @@ public enum AppView {
 
     CUSTOMER_CARD_LIST("view/customer_card/customer-card-list-view.fxml"),
     CUSTOMER_CARD_FORM("view/customer_card/customer-card-form-view.fxml"),
-    CUSTOMER_CARD_DETAILS("view/customer_card/customer-card-details-view.fxml");
+    CUSTOMER_CARD_DETAILS("view/customer_card/customer-card-details-view.fxml"),
+
+    STORE_PRODUCT_LIST("view/store_product/store-product-list-view.fxml"),
+    STORE_PRODUCT_FORM("view/store_product/store-product-form-view.fxml"),
+    STORE_PRODUCT_DETAILS("view/store_product/store-product-details-view.fxml"),;
+
+
 
 
     private final String fxmlPath;
