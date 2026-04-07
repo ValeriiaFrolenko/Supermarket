@@ -4,12 +4,14 @@ import com.google.inject.Inject;
 import com.vfrol.supermarket.dao.CheckDAO;
 import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.config.TransactionManager;
+import com.vfrol.supermarket.dao.StoreProductDAO;
 import com.vfrol.supermarket.dto.check.CheckCreateDTO;
 import com.vfrol.supermarket.dto.check.CheckDetailsDTO;
 import com.vfrol.supermarket.dto.check.CheckListDTO;
 import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
 import com.vfrol.supermarket.entity.Check;
 import com.vfrol.supermarket.entity.Sale;
+import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.CheckFilter;
 
 import java.util.List;
@@ -29,7 +31,7 @@ public class CheckService {
         transactionManager.useTransaction(handle -> {
             CheckDAO checkDAO = handle.attach(CheckDAO.class);
             SaleDAO saleDAO = handle.attach(SaleDAO.class);
-
+            StoreProductDAO storeProductDAO = handle.attach(StoreProductDAO.class);
             List<SaleCreateDTO> sales = dto.sales();
 
             double sumTotal = 0.0;
@@ -47,15 +49,20 @@ public class CheckService {
             checkDAO.create(check);
 
             for (SaleCreateDTO saleDTO : sales) {
-                Sale sale = Sale.builder()
-                        .UPC(saleDTO.UPC())
-                        .checkNumber(saleDTO.checkNumber())
-                        .quantity(saleDTO.quantity())
-                        .price(saleDTO.price())
-                        .build();
-                saleDAO.create(sale);
+                createSale(saleDAO, storeProductDAO, saleDTO);
             }
         });
+    }
+
+    private void createSale(SaleDAO saleDAO, StoreProductDAO storeProductDAO, SaleCreateDTO saleDTO) {
+        Sale sale = Sale.builder()
+                .UPC(saleDTO.UPC())
+                .checkNumber(saleDTO.checkNumber())
+                .quantity(saleDTO.quantity())
+                .price(saleDTO.price())
+                .build();
+        saleDAO.create(sale);
+        storeProductDAO.sellStoreProduct(saleDTO.UPC(), saleDTO.quantity());
     }
 
     public void deleteCheckByNumber(String checkNumber) {

@@ -76,4 +76,10 @@ public interface StoreProductDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>p.product_name<endif>
     """)
     List<StoreProductListDTO> findByFilter(@BindBean @Define("filter") StoreProductFilter filter);
+
+    @SqlQuery("""
+    UPDATE Store_Product SET products_number = products_number - :quantity
+    WHERE UPC = :upc AND products_number >= :quantity
+    """)
+    void sellStoreProduct(@Bind("upc") String upc, @Bind("quantity") int quantity);
 }
