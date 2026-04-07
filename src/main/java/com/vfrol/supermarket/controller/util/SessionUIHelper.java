@@ -1,11 +1,11 @@
-package com.vfrol.supermarket.controller;
+package com.vfrol.supermarket.controller.util;
 
 import com.vfrol.supermarket.config.SessionManager;
 import javafx.scene.Node;
 
-public final class SecurityUIHelper {
+public final class SessionUIHelper {
 
-    private SecurityUIHelper() {}
+    private SessionUIHelper() {}
 
     public static void configureManagerOnlyNodes(SessionManager sessionManager, Node... nodes) {
         boolean isManager = sessionManager.isManager();

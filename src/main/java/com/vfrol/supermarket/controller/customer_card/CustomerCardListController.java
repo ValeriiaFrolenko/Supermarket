@@ -3,7 +3,7 @@ package com.vfrol.supermarket.controller.customer_card;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.BaseListController;
-import com.vfrol.supermarket.controller.SecurityUIHelper;
+import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
 import com.vfrol.supermarket.enums.sortby.CustomerCardSortBy;
@@ -61,7 +61,7 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
         initializeTable();
         sortByComboBox.getItems().addAll(CustomerCardSortBy.values());
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
-        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
         loadCustomerCards();
     }
 

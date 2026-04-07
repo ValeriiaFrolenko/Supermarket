@@ -3,7 +3,7 @@ package com.vfrol.supermarket.controller.category;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.BaseModalController;
-import com.vfrol.supermarket.controller.SecurityUIHelper;
+import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.fxml.FXML;
@@ -30,7 +30,7 @@ public class CategoryDetailsController extends BaseModalController {
 
     @FXML
     public void initialize() {
-        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
     public void setCategoryDetails(CategoryListDTO dto) {

@@ -3,7 +3,8 @@ package com.vfrol.supermarket.controller.store_product;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.BaseListController;
-import com.vfrol.supermarket.controller.SecurityUIHelper;
+import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
+import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
@@ -62,7 +63,7 @@ public class StoreProductListController extends BaseListController<StoreProductL
 
     @FXML
     public void initialize() {
-        SecurityUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
         initializeTable();
         initializeFilters();
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilter());
@@ -85,7 +86,12 @@ public class StoreProductListController extends BaseListController<StoreProductL
     }
 
     private void initializeFilters() {
-        SearchableProductComboBoxHelper.configure(productFilterComboBox, productService);
+        SearchableComboBoxHelper.configure(
+                productFilterComboBox,
+                productService::getAllProductNames,
+                productService::getProductByName,
+                ProductNameDTO::name
+        );
     }
 
     @FXML
