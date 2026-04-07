@@ -3,14 +3,6 @@
 
 -- Employee table
 
-DROP TABLE IF EXISTS Sale;
-DROP TABLE IF EXISTS Check_Table;
-DROP TABLE IF EXISTS Customer_Card;
-DROP TABLE IF EXISTS Store_Product;
-DROP TABLE IF EXISTS Product;
-DROP TABLE IF EXISTS Category;
-DROP TABLE IF EXISTS Employee;
-
 CREATE TABLE IF NOT EXISTS Employee (
                                         id_employee VARCHAR(50) PRIMARY KEY,
                                         password_hash VARCHAR(255) NOT NULL,

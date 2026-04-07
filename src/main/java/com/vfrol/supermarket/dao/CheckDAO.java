@@ -27,7 +27,7 @@ public interface CheckDAO {
     VALUES (:checkNumber, :idEmployee, :cardNumber, :sumTotal, :vat)
     """)
     void create(@BindMethods Check check);
-    
+
     @SqlUpdate("DELETE FROM Check_Table WHERE check_number = :checkNumber")
     void delete(@Bind("checkNumber") String checkNumber);
 
@@ -35,7 +35,7 @@ public interface CheckDAO {
     SELECT c.check_number,
            e.empl_surname || ' ' || e.empl_name AS employee_name,
            c.card_number,
-           CASE WHEN cc.card_number IS NOT NULL 
+           CASE WHEN cc.card_number IS NOT NULL
                 THEN cc.cust_surname || ' ' || cc.cust_name 
                 ELSE NULL 
            END AS customer_name,

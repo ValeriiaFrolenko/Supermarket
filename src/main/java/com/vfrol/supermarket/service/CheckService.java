@@ -11,7 +11,6 @@ import com.vfrol.supermarket.dto.check.CheckListDTO;
 import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
 import com.vfrol.supermarket.entity.Check;
 import com.vfrol.supermarket.entity.Sale;
-import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.CheckFilter;
 
 import java.util.List;

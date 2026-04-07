@@ -37,7 +37,7 @@ public final class SearchableComboBoxHelper {
             }
         });
 
-        comboBox.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
+        comboBox.getEditor().textProperty().addListener((_, _, newVal) -> {
             if (matchesCurrentValue(comboBox, newVal, toStringFunction)) {
                 return;
             }

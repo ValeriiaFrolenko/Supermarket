@@ -77,7 +77,7 @@ public interface StoreProductDAO {
     """)
     List<StoreProductListDTO> findByFilter(@BindBean @Define("filter") StoreProductFilter filter);
 
-    @SqlQuery("""
+    @SqlUpdate("""
     UPDATE Store_Product SET products_number = products_number - :quantity
     WHERE UPC = :upc AND products_number >= :quantity
     """)

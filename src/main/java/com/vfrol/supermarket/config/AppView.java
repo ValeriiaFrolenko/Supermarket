@@ -22,10 +22,12 @@ public enum AppView {
 
     STORE_PRODUCT_LIST("view/store_product/store-product-list-view.fxml"),
     STORE_PRODUCT_FORM("view/store_product/store-product-form-view.fxml"),
-    STORE_PRODUCT_DETAILS("view/store_product/store-product-details-view.fxml"),;
+    STORE_PRODUCT_DETAILS("view/store_product/store-product-details-view.fxml"),
 
-
-
+    CHECK_LIST("view/check/check-list-view.fxml"),
+    CHECK_FORM("view/check/check-form-view.fxml"),
+    CHECK_DETAILS("view/check/check-details-view.fxml"),
+    SALE_FORM("view/check/sale-form-view.fxml");
 
     private final String fxmlPath;
 

@@ -86,6 +86,8 @@ public class StoreProductListController extends BaseListController<StoreProductL
     }
 
     private void initializeFilters() {
+        promotionalFilterComboBox.getItems().setAll(true, false);
+        sortByComboBox.getItems().setAll(StoreProductSortBy.values());
         SearchableComboBoxHelper.configure(
                 productFilterComboBox,
                 productService::getAllProductNames,

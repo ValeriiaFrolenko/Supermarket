@@ -30,7 +30,7 @@ public interface SaleDAO {
     WHERE s.check_number = :checkNumber
     ORDER BY p.product_name
     """)
-    Optional<SaleListDTO> findByCheckNumber(@Bind("checkNumber") String checkNumber);
+    List<SaleListDTO> findByCheckNumber(@Bind("checkNumber") String checkNumber);
 
     @SqlQuery("""
     SELECT s.UPC, p.product_name, s.product_number, s.selling_price,

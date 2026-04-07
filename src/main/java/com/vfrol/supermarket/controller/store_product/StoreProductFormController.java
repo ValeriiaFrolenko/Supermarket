@@ -40,9 +40,8 @@ public class StoreProductFormController extends BaseModalController {
         titleLabel.setText("Add Store Product");
         configureComboBox();
         promotionalCheckBox.setSelected(false);
-        promotionalCheckBox.selectedProperty().addListener((obs, oldVal, isPromotional) -> {
-            updateFieldVisibility(isPromotional);
-        });
+        promotionalCheckBox.selectedProperty().addListener((_, _, isPromotional) ->
+                updateFieldVisibility(isPromotional));
         updateFieldVisibility(false);
     }
 

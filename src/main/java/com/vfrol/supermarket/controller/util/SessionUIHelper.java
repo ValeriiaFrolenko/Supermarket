@@ -16,4 +16,14 @@ public final class SessionUIHelper {
             }
         }
     }
+
+    public static void configureCashierOnlyNodes(SessionManager sessionManager, Node... nodes) {
+        boolean isCashier = !sessionManager.isManager();
+        for (Node node : nodes) {
+            if (node != null) {
+                node.setVisible(isCashier);
+                node.setManaged(isCashier);
+            }
+        }
+    }
 }

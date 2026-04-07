@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.check.CheckListController"
+      spacing="10"
+      prefHeight="600.0" prefWidth="800.0">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Enter check number to search" prefWidth="400"/>
+        <Button text="Filters" onAction="#onToggleFilterClick"/>
+        <Button fx:id="addButton" text="Add Check" onAction="#onAddCheckClick"/>
+    </HBox>
+
+    <VBox fx:id="filterPanel" spacing="10" visible="false" managed="false"
+          style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Cashier Surname:"/>
+            <TextField fx:id="cashierSurnameFilterField" promptText="Surname" prefWidth="120"/>
+
+            <Label text="Date from:"/>
+            <DatePicker fx:id="dateFromPicker" prefWidth="120"/>
+
+            <Label text="to:"/>
+            <DatePicker fx:id="dateToPicker" prefWidth="120"/>
+
+            <Label text="Sort by:"/>
+            <ComboBox fx:id="sortByComboBox" prefWidth="130"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Clear" onAction="#onClearFilterClick"/>
+            <Button text="Apply" onAction="#applyFilter" defaultButton="true"/>
+        </HBox>
+    </VBox>
+
+    <TableView fx:id="checkTable" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="checkNumberColumn" text="Check Number"/>
+            <TableColumn fx:id="employeeNameColumn" text="Cashier Name"/>
+            <TableColumn fx:id="dateColumn" text="Date &amp; Time"/>
+            <TableColumn fx:id="sumTotalColumn" text="Total Sum"/>
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="formPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.check.SaleFormController"
+      prefWidth="400" prefHeight="250" spacing="15"
+      style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5;">
+
+    <Label text="Add Item to Check" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Product: *" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="storeProductComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="250"/>
+
+        <Label text="Unit Price: *" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="priceField" promptText="0.00" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Quantity: *" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="quantityField" promptText="Enter quantity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button text="Cancel" onAction="#onCancel"/>
+        <Button text="Add" onAction="#onAdd" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

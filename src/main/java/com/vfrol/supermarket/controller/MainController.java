@@ -98,6 +98,7 @@ public class MainController {
     @FXML
     public void goToChecks(ActionEvent actionEvent) {
         activateSideBar();
+        viewManager.navigateTo(AppView.CHECK_LIST);
     }
 
     @FXML
