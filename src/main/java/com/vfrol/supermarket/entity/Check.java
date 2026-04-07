@@ -9,7 +9,6 @@ public record Check(
         String checkNumber,
         String idEmployee,
         String cardNumber,
-        LocalDateTime dateTime,
         double sumTotal,
         double vat
 ) {

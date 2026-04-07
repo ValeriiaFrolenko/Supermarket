@@ -40,6 +40,12 @@ public class SupermarketModule extends AbstractModule {
 
     @Provides
     @Singleton
+    public TransactionManager provideTransactionManager(Jdbi jdbi) {
+        return new TransactionManager(jdbi);
+    }
+
+    @Provides
+    @Singleton
     public ViewManager provideViewManager(Injector injector) {
         return new ViewManager(injector);
     }
@@ -82,6 +88,18 @@ public class SupermarketModule extends AbstractModule {
 
     @Provides
     @Singleton
+    public SaleDAO provideSaleDAO(Jdbi jdbi){
+        return jdbi.onDemand(SaleDAO.class);
+    }
+
+    @Provides
+    @Singleton
+    public CheckDAO provideCheckDAO(Jdbi jdbi){
+        return jdbi.onDemand(CheckDAO.class);
+    }
+
+    @Provides
+    @Singleton
     public EmployeeService provideEmployeeService(EmployeeDAO employeeDAO) {
         return new EmployeeService(employeeDAO);
     }
@@ -108,6 +126,18 @@ public class SupermarketModule extends AbstractModule {
     @Singleton
     public StoreProductService provideStoreProductService(StoreProductDAO storeProductDAO){
         return new StoreProductService(storeProductDAO);
+    }
+
+    @Provides
+    @Singleton
+    public CheckService provideCheckService(TransactionManager transactionManager, CheckDAO checkDAO) {
+        return new CheckService(transactionManager, checkDAO);
+    }
+
+    @Provides
+    @Singleton
+    public SaleService provideSaleService(SaleDAO saleDAO){
+        return new SaleService(saleDAO);
     }
 
 }

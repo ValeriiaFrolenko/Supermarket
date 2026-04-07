@@ -2,6 +2,15 @@
 -- Creates tables only if they don't exist
 
 -- Employee table
+
+DROP TABLE IF EXISTS Sale;
+DROP TABLE IF EXISTS Check_Table;
+DROP TABLE IF EXISTS Customer_Card;
+DROP TABLE IF EXISTS Store_Product;
+DROP TABLE IF EXISTS Product;
+DROP TABLE IF EXISTS Category;
+DROP TABLE IF EXISTS Employee;
+
 CREATE TABLE IF NOT EXISTS Employee (
                                         id_employee VARCHAR(50) PRIMARY KEY,
                                         password_hash VARCHAR(255) NOT NULL,
@@ -69,7 +78,7 @@ CREATE TABLE IF NOT EXISTS Check_Table (
                                            check_number VARCHAR(50) PRIMARY KEY,
                                            id_employee VARCHAR(50) NOT NULL,
                                            card_number VARCHAR(50),
-                                           print_date TIMESTAMP NOT NULL,
+                                           print_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                            sum_total DECIMAL(10,2) NOT NULL CHECK (sum_total >= 0),
                                            vat DECIMAL(10,2) NOT NULL CHECK (vat >= 0),
                                            FOREIGN KEY (id_employee) REFERENCES Employee(id_employee)

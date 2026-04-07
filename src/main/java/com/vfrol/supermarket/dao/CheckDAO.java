@@ -23,18 +23,11 @@ import java.util.Optional;
 public interface CheckDAO {
 
     @SqlUpdate("""
-    INSERT INTO Check_Table (check_number, id_employee, card_number, print_date, sum_total, vat)
-    VALUES (:checkNumber, :idEmployee, :cardNumber, :dateTime, :sumTotal, :vat)
+    INSERT INTO Check_Table (check_number, id_employee, card_number, sum_total, vat)
+    VALUES (:checkNumber, :idEmployee, :cardNumber, :sumTotal, :vat)
     """)
     void create(@BindMethods Check check);
-
-    @SqlUpdate("""
-    UPDATE Check_Table SET id_employee = :idEmployee, card_number = :cardNumber,
-    print_date = :dateTime, sum_total = :sumTotal, vat = :vat
-    WHERE check_number = :checkNumber
-    """)
-    void update(@BindMethods Check check);
-
+    
     @SqlUpdate("DELETE FROM Check_Table WHERE check_number = :checkNumber")
     void delete(@Bind("checkNumber") String checkNumber);
 

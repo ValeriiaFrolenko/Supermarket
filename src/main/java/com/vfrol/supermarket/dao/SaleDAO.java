@@ -21,12 +21,6 @@ public interface SaleDAO {
     """)
     void create(@BindMethods Sale sale);
 
-    @SqlUpdate("""
-    UPDATE Sale SET product_number = :quantity, selling_price = :price
-    WHERE UPC = :UPC AND check_number = :checkNumber
-    """)
-    void update(@BindMethods Sale sale);
-
     @SqlQuery("""
     SELECT s.UPC, p.product_name, s.product_number, s.selling_price,
            (s.product_number * s.selling_price) AS total_price
