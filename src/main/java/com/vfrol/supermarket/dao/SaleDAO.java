@@ -9,6 +9,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Optional;
 
 @RegisterConstructorMapper(Sale.class)
 @RegisterConstructorMapper(SaleListDTO.class)
@@ -26,9 +27,6 @@ public interface SaleDAO {
     """)
     void update(@BindMethods Sale sale);
 
-    @SqlUpdate("DELETE FROM Sale WHERE UPC = :upc AND check_number = :checkNumber")
-    void delete(@Bind("upc") String upc, @Bind("checkNumber") String checkNumber);
-
     @SqlQuery("""
     SELECT s.UPC, p.product_name, s.product_number, s.selling_price,
            (s.product_number * s.selling_price) AS total_price
@@ -38,7 +36,7 @@ public interface SaleDAO {
     WHERE s.check_number = :checkNumber
     ORDER BY p.product_name
     """)
-    List<SaleListDTO> findByCheckNumber(@Bind("checkNumber") String checkNumber);
+    Optional<SaleListDTO> findByCheckNumber(@Bind("checkNumber") String checkNumber);
 
     @SqlQuery("""
     SELECT s.UPC, p.product_name, s.product_number, s.selling_price,
