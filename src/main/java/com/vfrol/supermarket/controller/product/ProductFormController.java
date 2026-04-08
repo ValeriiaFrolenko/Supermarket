@@ -1,7 +1,7 @@
 package com.vfrol.supermarket.controller.product;
 
 import com.google.inject.Inject;
-import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseModalController;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.dto.product.ProductCreateDTO;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;

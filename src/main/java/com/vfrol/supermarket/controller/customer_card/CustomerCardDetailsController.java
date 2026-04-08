@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.customer_card;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseModalController;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.service.CustomerCardService;

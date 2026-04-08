@@ -2,6 +2,7 @@ package com.vfrol.supermarket.config;
 
 import com.google.inject.Singleton;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
+import com.vfrol.supermarket.enums.EmployeeRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ public class SessionManager {
     private EmployeeDetailsDTO currentUser;
 
     public boolean isManager() {
-        return false;
+        return currentUser != null && currentUser.role() == (EmployeeRole.MANAGER);
     }
 
     public void logout() {

@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.check;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.BaseListController;
+import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.check.CheckDetailsDTO;
 import com.vfrol.supermarket.dto.check.CheckListDTO;

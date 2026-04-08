@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.category;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.BaseListController;
+import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.beans.property.SimpleStringProperty;

@@ -10,15 +10,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class MainController {
 
+public class MainController {
     private final ViewManager viewManager;
     private final SessionManager sessionManager;
 
     @FXML private StackPane contentArea;
     @FXML private VBox sideBar;
     @FXML private VBox centerMenu;
-
     @FXML Button accountButton;
     @FXML Button employeesButton;
     @FXML Button categoriesButton;
@@ -37,8 +36,8 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        configureForRole();
         viewManager.setContentArea(contentArea);
+        configureForRole();
     }
 
     private void activateSideBar() {
@@ -57,8 +56,6 @@ public class MainController {
             employeesButton.setManaged(false);
             categoriesButton.setVisible(false);
             categoriesButton.setManaged(false);
-
-
             centerMenu.getChildren().get(1).setVisible(false);
             centerMenu.getChildren().get(1).setManaged(false);
             centerMenu.getChildren().get(2).setVisible(false);
@@ -69,41 +66,42 @@ public class MainController {
     @FXML
     public void goToAccount(ActionEvent actionEvent) {
         activateSideBar();
+        viewManager.navigateToContent(AppView.ACCOUNT_VIEW);
     }
 
     @FXML
     public void goToEmployees() {
         activateSideBar();
-        viewManager.navigateTo(AppView.EMPLOYEE_LIST);
+        viewManager.navigateToContent(AppView.EMPLOYEE_LIST);
     }
 
     @FXML
     public void goToCategories() {
         activateSideBar();
-        viewManager.navigateTo(AppView.CATEGORY_LIST);
+        viewManager.navigateToContent(AppView.CATEGORY_LIST);
     }
 
     @FXML
     public void goToProducts() {
         activateSideBar();
-        viewManager.navigateTo(AppView.PRODUCT_LIST);
+        viewManager.navigateToContent(AppView.PRODUCT_LIST);
     }
 
     @FXML
     public void goToStoreProducts(ActionEvent actionEvent) {
         activateSideBar();
-        viewManager.navigateTo(AppView.STORE_PRODUCT_LIST);
+        viewManager.navigateToContent(AppView.STORE_PRODUCT_LIST);
     }
 
     @FXML
     public void goToChecks(ActionEvent actionEvent) {
         activateSideBar();
-        viewManager.navigateTo(AppView.CHECK_LIST);
+        viewManager.navigateToContent(AppView.CHECK_LIST);
     }
 
     @FXML
     public void goToCustomers(ActionEvent actionEvent) {
         activateSideBar();
-        viewManager.navigateTo(AppView.CUSTOMER_CARD_LIST);
+        viewManager.navigateToContent(AppView.CUSTOMER_CARD_LIST);
     }
 }

@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.BaseListController;
+import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;

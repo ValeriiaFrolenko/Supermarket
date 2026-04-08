@@ -36,8 +36,8 @@ public interface CheckDAO {
            e.empl_surname || ' ' || e.empl_name AS employee_name,
            c.card_number,
            CASE WHEN cc.card_number IS NOT NULL
-                THEN cc.cust_surname || ' ' || cc.cust_name 
-                ELSE NULL 
+                THEN cc.cust_surname || ' ' || cc.cust_name
+                ELSE NULL
            END AS customer_name,
            c.print_date, c.sum_total, c.vat
     FROM Check_Table c

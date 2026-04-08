@@ -4,6 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum AppView {
+
+    LOGIN("view/login-view.fxml"),
+    MAIN("view/main-view.fxml"),
+
+    ACCOUNT_VIEW("view/account/account-view.fxml"),
+
     EMPLOYEE_LIST("view/employee/employee-list-view.fxml"),
     EMPLOYEE_DETAILS("view/employee/employee-details-view.fxml"),
     EMPLOYEE_FORM("view/employee/employee-form-view.fxml"),

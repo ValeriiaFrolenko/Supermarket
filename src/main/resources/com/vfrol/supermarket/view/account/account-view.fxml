@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.account.AccountController"
+      spacing="20" alignment="TOP_CENTER" style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="My Account" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="15" vgap="15" maxWidth="400" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" halignment="RIGHT"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="idLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Surname:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="surnameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="nameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Role:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="roleLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="phoneLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Address:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="addressLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Button text="Logout" onAction="#onLogout" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-padding: 10 20;"/>
+
+</VBox>

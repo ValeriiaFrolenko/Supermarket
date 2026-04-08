@@ -1,7 +1,7 @@
 package com.vfrol.supermarket.controller.check;
 
 import com.google.inject.Inject;
-import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseModalController;
 import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
 import com.vfrol.supermarket.filter.StoreProductFilter;

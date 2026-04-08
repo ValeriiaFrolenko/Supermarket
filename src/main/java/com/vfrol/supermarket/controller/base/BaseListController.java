@@ -1,4 +1,4 @@
-package com.vfrol.supermarket.controller;
+package com.vfrol.supermarket.controller.base;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.SessionManager;

@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.check;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseModalController;
 import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.dto.check.CheckCreateDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;

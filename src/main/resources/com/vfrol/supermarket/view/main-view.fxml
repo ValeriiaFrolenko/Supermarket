@@ -9,7 +9,6 @@
             fx:controller="com.vfrol.supermarket.controller.MainController"
             prefHeight="600.0" prefWidth="900.0">
 
-    <!-- Ліва панель — спочатку прихована -->
     <left>
         <VBox fx:id="sideBar" spacing="8"
               style="-fx-background-color: #f4f4f4; -fx-padding: 15;"

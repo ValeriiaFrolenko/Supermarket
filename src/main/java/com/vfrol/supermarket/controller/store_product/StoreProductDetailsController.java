@@ -2,7 +2,7 @@ package com.vfrol.supermarket.controller.store_product;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseModalController;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.service.StoreProductService;
