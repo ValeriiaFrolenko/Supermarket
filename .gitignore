@@ -42,3 +42,4 @@ build/
 *.db
 *.db-journal
 *.db-wal
+/src/main.zip
