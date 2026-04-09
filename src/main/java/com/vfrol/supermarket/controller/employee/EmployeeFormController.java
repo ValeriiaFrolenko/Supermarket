@@ -2,6 +2,9 @@ package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.controller.base.BaseModalController;
+import com.vfrol.supermarket.controller.ui_validator.EmployeeFormValidator;
+import com.vfrol.supermarket.controller.util.AsyncRunner;
+import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
@@ -9,6 +12,9 @@ import com.vfrol.supermarket.service.EmployeeService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import net.synedra.validatorfx.Validator;
+
+import java.math.BigDecimal;
 
 public class EmployeeFormController extends BaseModalController {
 
@@ -27,9 +33,10 @@ public class EmployeeFormController extends BaseModalController {
     @FXML private TextField cityField;
     @FXML private TextField streetField;
     @FXML private TextField zipField;
+    @FXML private Button saveButton;
 
     private final EmployeeService employeeService;
-
+    private final Validator validator = new Validator();
     private boolean isEditMode = false;
 
     @Inject
@@ -41,6 +48,26 @@ public class EmployeeFormController extends BaseModalController {
     public void initialize() {
         label.setText("Add Employee");
         roleComboBox.getItems().setAll(EmployeeRole.values());
+        setupValidation();
+    }
+
+    private void setupValidation() {
+        EmployeeFormValidator employeeValidator = new EmployeeFormValidator(validator, () -> !isEditMode);
+
+        employeeValidator.validateId(idField);
+        employeeValidator.validatePassword(passwordField);
+        employeeValidator.validateSurname(surnameField);
+        employeeValidator.validateName(nameField);
+        employeeValidator.validatePatronymic(patronymicField);
+        employeeValidator.validateRole(roleComboBox);
+        employeeValidator.validateSalary(salaryField);
+        employeeValidator.validateDates(dobPicker, dosPicker);
+        employeeValidator.validatePhone(phoneField);
+        employeeValidator.validateCity(cityField);
+        employeeValidator.validateStreet(streetField);
+        employeeValidator.validateZipCode(zipField);
+
+        saveButton.disableProperty().bind(validator.containsErrorsProperty());
     }
 
     public void setEmployee(EmployeeDetailsDTO dto) {
@@ -52,7 +79,7 @@ public class EmployeeFormController extends BaseModalController {
         nameField.setText(dto.name());
         patronymicField.setText(dto.patronymic() != null ? dto.patronymic() : "");
         roleComboBox.setValue(dto.role());
-        salaryField.setText(String.valueOf(dto.salary()));
+        salaryField.setText(BigDecimal.valueOf(dto.salary()).toPlainString());
         dobPicker.setValue(dto.dateOfBirth());
         dosPicker.setValue(dto.dateOfStart());
         phoneField.setText(dto.phoneNumber());
@@ -63,42 +90,35 @@ public class EmployeeFormController extends BaseModalController {
 
     @FXML
     public void onSave() {
-        if (!isEditMode && (passwordField.getText() == null || passwordField.getText().isBlank())) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Password is required for a new employee.");
-            alert.showAndWait();
-            return;
-        }
+        EmployeeCreateDTO dto = EmployeeCreateDTO.builder()
+                .id(InputHelper.getString(idField))
+                .rawPassword(InputHelper.getString(passwordField))
+                .surname(InputHelper.getString(surnameField))
+                .name(InputHelper.getString(nameField))
+                .patronymic(InputHelper.getString(patronymicField))
+                .role(roleComboBox.getValue())
+                .salary(InputHelper.getDouble(salaryField))
+                .dateOfBirth(dobPicker.getValue())
+                .dateOfStart(dosPicker.getValue())
+                .phoneNumber(InputHelper.getString(phoneField))
+                .city(InputHelper.getString(cityField))
+                .street(InputHelper.getString(streetField))
+                .zipCode(InputHelper.getString(zipField))
+                .build();
 
-        try {
-            EmployeeCreateDTO dto = EmployeeCreateDTO.builder()
-                    .id(idField.getText())
-                    .rawPassword(passwordField.getText())
-                    .surname(surnameField.getText())
-                    .name(nameField.getText())
-                    .patronymic(patronymicField.getText().isBlank() ? null : patronymicField.getText())
-                    .role(roleComboBox.getValue())
-                    .salary(Double.parseDouble(salaryField.getText()))
-                    .dateOfBirth(dobPicker.getValue())
-                    .dateOfStart(dosPicker.getValue())
-                    .phoneNumber(phoneField.getText())
-                    .city(cityField.getText())
-                    .street(streetField.getText())
-                    .zipCode(zipField.getText())
-                    .build();
+        AsyncRunner.runAsync(() -> saveEmployee(dto), this::closeForm, formPanel);
+    }
 
-            if (isEditMode) {
-                employeeService.updateEmployee(dto);
-            } else {
-                employeeService.addEmployee(dto);
-            }
-            closeWindow(formPanel);
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid salary format. Please enter a valid number.");
-            alert.showAndWait();
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "An error occurred while saving: " + e.getMessage());
-            alert.showAndWait();
+    private void saveEmployee(EmployeeCreateDTO dto) {
+        if (isEditMode) {
+            employeeService.updateEmployee(dto);
+        } else {
+            employeeService.addEmployee(dto);
         }
+    }
+
+    private void closeForm() {
+        closeWindow(formPanel);
     }
 
     @FXML
