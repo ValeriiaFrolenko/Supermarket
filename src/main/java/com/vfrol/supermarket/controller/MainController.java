@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.config.SessionManager;
 import com.vfrol.supermarket.config.ViewManager;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -64,7 +63,7 @@ public class MainController {
     }
 
     @FXML
-    public void goToAccount(ActionEvent actionEvent) {
+    public void goToAccount() {
         activateSideBar();
         viewManager.navigateToContent(AppView.ACCOUNT_VIEW);
     }
@@ -88,19 +87,19 @@ public class MainController {
     }
 
     @FXML
-    public void goToStoreProducts(ActionEvent actionEvent) {
+    public void goToStoreProducts() {
         activateSideBar();
         viewManager.navigateToContent(AppView.STORE_PRODUCT_LIST);
     }
 
     @FXML
-    public void goToChecks(ActionEvent actionEvent) {
+    public void goToChecks() {
         activateSideBar();
         viewManager.navigateToContent(AppView.CHECK_LIST);
     }
 
     @FXML
-    public void goToCustomers(ActionEvent actionEvent) {
+    public void goToCustomers() {
         activateSideBar();
         viewManager.navigateToContent(AppView.CUSTOMER_CARD_LIST);
     }

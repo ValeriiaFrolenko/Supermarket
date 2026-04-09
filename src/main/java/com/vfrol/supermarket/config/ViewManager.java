@@ -4,9 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.vfrol.supermarket.SupermarketApp;
+import com.vfrol.supermarket.controller.util.AsyncRunner;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,16 +38,34 @@ public class ViewManager {
     }
 
     public void navigateTo(AppView view) {
-        Parent root = cache.computeIfAbsent(view, this::loadView);
-        rootArea.getChildren().setAll(root);
+        navigateAsync(view, rootArea);
     }
 
     public void navigateToContent(AppView view) {
         if (contentArea == null) {
             throw new IllegalStateException("ContentArea not set!");
         }
-        Parent root = cache.computeIfAbsent(view, this::loadView);
-        contentArea.getChildren().setAll(root);
+        navigateAsync(view, contentArea);
+    }
+
+    private void navigateAsync(AppView view, StackPane targetPane) {
+        if (cache.containsKey(view)) {
+            targetPane.getChildren().setAll(cache.get(view));
+            return;
+        }
+
+        ProgressIndicator spinner = new ProgressIndicator();
+        spinner.setMaxSize(50, 50);
+        targetPane.getChildren().setAll(spinner);
+
+        AsyncRunner.runAsync(
+                () -> loadView(view),
+                root -> {
+                    cache.put(view, root);
+                    targetPane.getChildren().setAll(root);
+                },
+                null
+        );
     }
 
     private Parent loadView(AppView view) {
