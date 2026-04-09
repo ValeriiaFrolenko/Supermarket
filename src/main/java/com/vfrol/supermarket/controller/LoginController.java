@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.config.SessionManager;
 import com.vfrol.supermarket.config.ViewManager;
-import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
+import com.vfrol.supermarket.controller.util.AsyncRunner;
 import com.vfrol.supermarket.service.EmployeeService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -38,12 +38,24 @@ public class LoginController {
             errorLabel.setText("Please enter both ID and password.");
             return;
         }
+        errorLabel.setText("");
 
-        if (employeeService.authenticateEmployee(id, password)) {
-            EmployeeDetailsDTO employeeDetails = employeeService.getEmployeeById(id);
-            sessionManager.setCurrentUser(employeeDetails);
-            viewManager.navigateTo(AppView.MAIN);
-        }
-
+        AsyncRunner.runAsync(
+                () -> {
+                    if (employeeService.authenticateEmployee(id, password)) {
+                        return employeeService.getEmployeeById(id);
+                    }
+                    return null;
+                },
+                employeeDetails -> {
+                    if (employeeDetails != null) {
+                        sessionManager.setCurrentUser(employeeDetails);
+                        viewManager.navigateTo(AppView.MAIN);
+                    } else {
+                        errorLabel.setText("Invalid ID or password.");
+                    }
+                },
+                idField
+        );
     }
 }

@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="com.vfrol.supermarket.controller.LoginController"
-       alignment="CENTER" spacing="20"
-       style="-fx-background-color: #f0f0f0; -fx-padding: 40;"
-       fillWidth="false">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.LoginController"
+      alignment="CENTER" spacing="20"
+      style="-fx-background-color: #f0f0f0; -fx-padding: 40;"
+      fillWidth="false">
 
     <Label text="Supermarket Management System" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
@@ -24,6 +24,8 @@
         <Label text="Password:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
     </GridPane>
+
+    <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-weight: bold;"/>
 
     <Button text="Login" onAction="#onLogin" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 20;"/>
 
