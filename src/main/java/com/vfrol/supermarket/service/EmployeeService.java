@@ -56,6 +56,10 @@ public class EmployeeService {
         return employeeDAO.findByFilter(filter);
     }
 
+    public List<EmployeeDetailsDTO> getAllEmployeeDetails() {
+        return employeeDAO.findAllDetails();
+    }
+
     public boolean authenticateEmployee(String id, String rawPassword) {
         return employeeDAO.getPasswordById(id)
                 .filter(hash -> PasswordManager.verifyPassword(rawPassword, hash))

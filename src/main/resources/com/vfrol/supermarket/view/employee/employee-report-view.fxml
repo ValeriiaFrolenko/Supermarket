@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.vfrol.supermarket.controller.employee.EmployeeReportController"
+            prefWidth="1100" prefHeight="500">
+
+    <center>
+        <TableView fx:id="previewTable">
+            <columns>
+                <TableColumn fx:id="idColumn"          text="ID"/>
+                <TableColumn fx:id="surnameColumn"     text="Surname"/>
+                <TableColumn fx:id="nameColumn"        text="Name"/>
+                <TableColumn fx:id="patronymicColumn"  text="Patronymic"/>
+                <TableColumn fx:id="roleColumn"        text="Role"/>
+                <TableColumn fx:id="salaryColumn"      text="Salary"/>
+                <TableColumn fx:id="dateOfBirthColumn" text="Date of Birth"/>
+                <TableColumn fx:id="dateOfStartColumn" text="Date of Start"/>
+                <TableColumn fx:id="phoneColumn"       text="Phone"/>
+                <TableColumn fx:id="cityColumn"        text="City"/>
+                <TableColumn fx:id="streetColumn"      text="Street"/>
+                <TableColumn fx:id="zipCodeColumn"     text="Zip Code"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-alignment: center-right;">
+            <Button text="Cancel" onAction="#onCancel"/>
+            <Button fx:id="exportButton" text="Export" onAction="#onExport" defaultButton="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

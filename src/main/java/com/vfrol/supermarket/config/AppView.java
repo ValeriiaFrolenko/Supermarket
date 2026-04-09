@@ -10,9 +10,11 @@ public enum AppView {
 
     ACCOUNT_VIEW("view/account/account-view.fxml"),
 
+
     EMPLOYEE_LIST("view/employee/employee-list-view.fxml"),
     EMPLOYEE_DETAILS("view/employee/employee-details-view.fxml"),
     EMPLOYEE_FORM("view/employee/employee-form-view.fxml"),
+    EMPLOYEE_REPORT("view/employee/employee-report-view.fxml"),
 
     CATEGORY_LIST("view/category/category-list-view.fxml"),
     CATEGORY_FORM("view/category/category-form-view.fxml"),

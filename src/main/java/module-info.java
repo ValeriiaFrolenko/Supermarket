@@ -17,6 +17,8 @@ open module com.vfrol.supermarket {
     requires com.h2database;
     requires java.naming;
     requires org.checkerframework.checker.qual;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
     exports com.vfrol.supermarket;
 }

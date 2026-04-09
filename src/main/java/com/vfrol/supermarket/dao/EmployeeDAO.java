@@ -3,7 +3,6 @@ package com.vfrol.supermarket.dao;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.entity.Employee;
-import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.filter.EmployeeFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -22,10 +21,6 @@ import java.util.Optional;
 @RegisterConstructorMapper(EmployeeDetailsDTO.class)
 @RegisterConstructorMapper(EmployeeListDTO.class)
 public interface EmployeeDAO {
-
-    @SqlQuery("SELECT COUNT(*) FROM Employee WHERE empl_role = :role")
-    int countByRole(@Bind("role") EmployeeRole role);
-
 
     @SqlQuery("""
     SELECT password_hash FROM Employee WHERE id_employee = :id
@@ -70,6 +65,17 @@ public interface EmployeeDAO {
     List<EmployeeListDTO> findAll();
 
     @SqlQuery("""
+        SELECT id_employee, password_hash,
+        empl_surname, empl_name, empl_patronymic,
+        empl_role, salary, date_of_birth,
+        date_of_start, phone_number,
+        city, street, zip_code
+        FROM Employee
+        ORDER BY empl_surname, empl_name
+        """)
+    List<EmployeeDetailsDTO> findAllDetails();
+
+    @SqlQuery("""
         SELECT id_employee, empl_surname, empl_name, empl_role, phone_number
         FROM Employee
         WHERE 1=1
@@ -80,4 +86,7 @@ public interface EmployeeDAO {
         ORDER BY empl_surname, empl_name
         """)
     List<EmployeeListDTO> findByFilter(@BindBean @Define("filter") EmployeeFilter filter);
+
+    @SqlQuery("SELECT COUNT(*) FROM Employee WHERE empl_role = :role")
+    int countByRole(@Bind("role") com.vfrol.supermarket.enums.EmployeeRole role);
 }

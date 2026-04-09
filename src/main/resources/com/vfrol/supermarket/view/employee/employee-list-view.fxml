@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import org.controlsfx.property.editor.AbstractObjectField?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.vfrol.supermarket.controller.employee.EmployeeListController"
@@ -19,6 +18,8 @@
         <TextField fx:id="searchField" promptText="Enter surname to search" prefWidth="400"/>
         <Button text="Filters" onAction="#onToggleFilterClick"/>
         <Button text="Add Employee" onAction="#onAddEmployeeClick"/>
+
+        <Button text="Export to Excel" onAction="#onExportClick" style="-fx-background-color: #217346; -fx-text-fill: white;"/>
     </HBox>
 
     <VBox fx:id="filterPanel" spacing="10" visible="false" managed="false"

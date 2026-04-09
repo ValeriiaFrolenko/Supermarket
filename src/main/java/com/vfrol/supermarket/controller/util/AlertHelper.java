@@ -20,4 +20,12 @@ public final class AlertHelper {
                 ButtonType.YES, ButtonType.NO);
         return alert.showAndWait().filter(response -> response == ButtonType.YES).isPresent();
     }
+
+    public static void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
