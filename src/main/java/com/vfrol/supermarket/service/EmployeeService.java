@@ -6,34 +6,41 @@ import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.entity.Employee;
 import com.vfrol.supermarket.filter.EmployeeFilter;
+import com.vfrol.supermarket.service.validator.EmployeeValidator;
+import com.vfrol.supermarket.service.validator.ValidationException;
 import com.vfrol.supermarket.tools.PasswordManager;
 
 import java.util.List;
 
 public class EmployeeService {
     private final EmployeeDAO employeeDAO;
-    public EmployeeService(EmployeeDAO employeeDAO) {
+    private final EmployeeValidator employeeValidator;
+
+    public EmployeeService(EmployeeDAO employeeDAO, EmployeeValidator employeeValidator) {
         this.employeeDAO = employeeDAO;
+        this.employeeValidator = employeeValidator;
     }
 
-    public void addEmployee(EmployeeCreateDTO employeeCreateDTO) {
-        String passwordHash = PasswordManager.generatePassword(employeeCreateDTO.rawPassword());
-        var employee = createEmployee(employeeCreateDTO, passwordHash);
-        employeeDAO.create(employee);
+    public void addEmployee(EmployeeCreateDTO dto) {
+        employeeValidator.validateForCreate(dto);
+        String passwordHash = PasswordManager.generatePassword(dto.rawPassword());
+        employeeDAO.create(createEmployee(dto, passwordHash));
     }
 
-    public void updateEmployee(EmployeeCreateDTO employeeCreateDTO) {
+    public void updateEmployee(EmployeeCreateDTO dto) {
+        employeeValidator.validateForUpdate(dto);
         String finalPasswordHash;
-        if (employeeCreateDTO.rawPassword() == null || employeeCreateDTO.rawPassword().trim().isEmpty()) {
-            finalPasswordHash = employeeDAO.getPasswordById(employeeCreateDTO.id())
-                    .orElseThrow(() -> new RuntimeException("Employee record not found in database."));
+        if (dto.rawPassword() == null || dto.rawPassword().trim().isEmpty()) {
+            finalPasswordHash = employeeDAO.getPasswordById(dto.id())
+                    .orElseThrow(() -> new ValidationException("Employee record not found in database."));
         } else {
-            finalPasswordHash = PasswordManager.generatePassword(employeeCreateDTO.rawPassword());
+            finalPasswordHash = PasswordManager.generatePassword(dto.rawPassword());
         }
-        employeeDAO.update(createEmployee(employeeCreateDTO, finalPasswordHash));
+        employeeDAO.update(createEmployee(dto, finalPasswordHash));
     }
 
     public void deleteEmployee(String id) {
+        employeeValidator.validateForDelete(id);
         employeeDAO.delete(id);
     }
 
@@ -50,25 +57,26 @@ public class EmployeeService {
     }
 
     public boolean authenticateEmployee(String id, String rawPassword) {
-        var passwordHash = employeeDAO.getPasswordById(id);
-        return passwordHash.filter(string -> PasswordManager.verifyPassword(rawPassword, string)).isPresent();
+        return employeeDAO.getPasswordById(id)
+                .filter(hash -> PasswordManager.verifyPassword(rawPassword, hash))
+                .isPresent();
     }
 
-    private Employee createEmployee(EmployeeCreateDTO employeeCreateDTO, String passwordHash) {
+    private Employee createEmployee(EmployeeCreateDTO dto, String passwordHash) {
         return Employee.builder()
-                .id(employeeCreateDTO.id())
+                .id(dto.id())
                 .passwordHash(passwordHash)
-                .surname(employeeCreateDTO.surname())
-                .name(employeeCreateDTO.name())
-                .patronymic(employeeCreateDTO.patronymic())
-                .role(employeeCreateDTO.role())
-                .salary(employeeCreateDTO.salary())
-                .dateOfBirth(employeeCreateDTO.dateOfBirth())
-                .dateOfStart(employeeCreateDTO.dateOfStart())
-                .phoneNumber(employeeCreateDTO.phoneNumber())
-                .city(employeeCreateDTO.city())
-                .street(employeeCreateDTO.street())
-                .zipCode(employeeCreateDTO.zipCode())
+                .surname(dto.surname())
+                .name(dto.name())
+                .patronymic(dto.patronymic())
+                .role(dto.role())
+                .salary(dto.salary())
+                .dateOfBirth(dto.dateOfBirth())
+                .dateOfStart(dto.dateOfStart())
+                .phoneNumber(dto.phoneNumber())
+                .city(dto.city())
+                .street(dto.street())
+                .zipCode(dto.zipCode())
                 .build();
     }
 }

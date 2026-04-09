@@ -3,6 +3,7 @@ package com.vfrol.supermarket.dao;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.entity.Employee;
+import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.filter.EmployeeFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -21,6 +22,10 @@ import java.util.Optional;
 @RegisterConstructorMapper(EmployeeDetailsDTO.class)
 @RegisterConstructorMapper(EmployeeListDTO.class)
 public interface EmployeeDAO {
+
+    @SqlQuery("SELECT COUNT(*) FROM Employee WHERE empl_role = :role")
+    int countByRole(@Bind("role") EmployeeRole role);
+
 
     @SqlQuery("""
     SELECT password_hash FROM Employee WHERE id_employee = :id
