@@ -115,6 +115,19 @@ public final class ValidationHelper {
                 .immediate();
     }
 
+    public static void checkDateDifferenceFromNowMinYears(Validator validator, DatePicker datePicker, int minYears, String message) {
+        validator.createCheck()
+                .dependsOn("date", datePicker.valueProperty())
+                .withMethod(c -> {
+                    LocalDate date = c.get("date");
+                    if (date != null && ChronoUnit.YEARS.between(date, LocalDate.now()) < minYears) {
+                        c.error(message);
+                    }
+                })
+                .decorates(datePicker)
+                .immediate();
+    }
+
     public static void checkDateDifferenceMinYears(Validator validator, DatePicker startDatePicker, DatePicker endDatePicker, int minYears, String message) {
         validator.createCheck()
                 .dependsOn("start", startDatePicker.valueProperty())

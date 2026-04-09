@@ -60,6 +60,7 @@ public class EmployeeFormValidator {
     public void validateDates(DatePicker dobPicker, DatePicker dosPicker) {
         ValidationHelper.checkRequiredDate(validator, dobPicker, "Date of birth is required");
         ValidationHelper.checkRequiredDate(validator, dosPicker, "Date of start is required");
+        ValidationHelper.checkDateDifferenceFromNowMinYears(validator, dobPicker, 18, "Employee must be at least 18 years old");
         ValidationHelper.checkDateDifferenceMinYears(validator, dobPicker, dosPicker, 18, "Employee must be at least 18 years old at start date");
     }
 
