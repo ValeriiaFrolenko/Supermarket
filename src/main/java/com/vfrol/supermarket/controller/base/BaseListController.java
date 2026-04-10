@@ -3,6 +3,9 @@ package com.vfrol.supermarket.controller.base;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.SessionManager;
 import com.vfrol.supermarket.config.ViewManager;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 
@@ -17,6 +20,10 @@ public abstract class BaseListController<T> {
     protected abstract TableView<T> getTableView();
 
     protected abstract void showDetails(T item);
+
+    protected Node getRootNode(){
+        return getTableView().getScene().getRoot();
+    }
 
     protected void setupTableDoubleClick() {
         getTableView().setOnMouseClicked(event -> {
@@ -33,5 +40,13 @@ public abstract class BaseListController<T> {
         boolean isCurrentlyVisible = filterPanel.isVisible();
         filterPanel.setVisible(!isCurrentlyVisible);
         filterPanel.setManaged(!isCurrentlyVisible);
+    }
+
+    protected void setProgressIndicator() {
+        getTableView().setPlaceholder(new ProgressIndicator());
+    }
+
+    protected void removeProgressIndicator() {
+        getTableView().setPlaceholder(new Label("No content in table"));
     }
 }
