@@ -69,7 +69,7 @@ public interface StoreProductDAO {
     FROM Store_Product sp
     JOIN Product p ON sp.id_product = p.id_product
     WHERE 1=1
-    <if(filter.upc)> AND sp.UPC LIKE '%' || :upc || '%' <endif>
+    <if(filter.upc)> AND sp.UPC LIKE :upc || '%' <endif>
     <if(filter.productName)> AND p.product_name LIKE '%' || :productName || '%' <endif>
     <if(filter.categoryId)> AND p.category_number = :categoryId <endif>
     <if(filter.promotional)> AND sp.promotional_product = :promotional <endif>

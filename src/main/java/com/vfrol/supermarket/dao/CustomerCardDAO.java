@@ -57,8 +57,8 @@ public interface CustomerCardDAO {
     SELECT card_number, cust_surname, cust_name, percent, phone_number
     FROM Customer_Card
     WHERE 1=1
-    <if(filter.surname)> AND cust_surname LIKE '%' || :surname || '%' <endif>
-    <if(filter.phoneNumber)> AND phone_number LIKE '%' || :phoneNumber || '%' <endif>
+    <if(filter.surname)> AND cust_surname LIKE :surname || '%' <endif>
+    <if(filter.phoneNumber)> AND phone_number LIKE :phoneNumber || '%' <endif>
     <if(filter.discountFrom)> AND percent >= :discountFrom <endif>
     <if(filter.discountTo)> AND percent \\<= :discountTo <endif>
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>cust_surname<endif>

@@ -80,6 +80,6 @@ public interface ProductDAO {
     """)
     List<ProductListDTO> findByFilter(@BindBean @Define("filter") ProductFilter filter);
 
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Category WHERE category_number = :id)")
-    boolean categoryExists(@Bind("id") int id);
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Product WHERE category_number = :id)")
+    boolean existsByCategoryId(@Bind("id") int id);
 }

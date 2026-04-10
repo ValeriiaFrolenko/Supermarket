@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class CheckFilter{
+public class CheckFilter {
     private String checkNumber;
     private String cashierSurname;
     private LocalDate dateFrom;
@@ -16,10 +16,22 @@ public class CheckFilter{
     private CheckSortBy sortBy;
 
     public boolean isEmpty() {
-        return  checkNumber == null &&
-                cashierSurname == null &&
+        return getCheckNumber() == null &&
+                getCashierSurname() == null &&
                 dateFrom == null &&
                 dateTo == null &&
                 sortBy == null;
+    }
+
+    public String getCheckNumber() {
+        if (checkNumber == null) return null;
+        if (!checkNumber.matches("[0-9]+")) return null;
+        return checkNumber;
+    }
+
+    public String getCashierSurname() {
+        if (cashierSurname == null) return null;
+        if (!cashierSurname.matches("[a-zA-Zа-яА-ЯіІїЇєЄ'\\- ]+")) return null;
+        return cashierSurname;
     }
 }

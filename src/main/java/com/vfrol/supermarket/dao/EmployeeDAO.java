@@ -79,9 +79,9 @@ public interface EmployeeDAO {
         SELECT id_employee, empl_surname, empl_name, empl_role, phone_number
         FROM Employee
         WHERE 1=1
-        <if(filter.surname)> AND empl_surname LIKE '%' || :surname || '%' <endif>
-        <if(filter.name)> AND empl_name LIKE '%' || :name || '%' <endif>
-        <if(filter.phoneNumber)> AND phone_number LIKE '%' || :phoneNumber || '%' <endif>
+        <if(filter.surname)> AND empl_surname LIKE :surname || '%' <endif>
+        <if(filter.name)> AND empl_name LIKE :name || '%' <endif>
+        <if(filter.phoneNumber)> AND phone_number LIKE :phoneNumber || '%' <endif>
         <if(filter.role)> AND empl_role = :role <endif>
         ORDER BY empl_surname, empl_name
         """)

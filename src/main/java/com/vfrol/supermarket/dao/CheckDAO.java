@@ -64,8 +64,8 @@ public interface CheckDAO {
     FROM Check_Table c
     JOIN Employee e ON c.id_employee = e.id_employee
     WHERE 1=1
-    <if(filter.checkNumber)> AND c.check_number LIKE '%' || :checkNumber || '%' <endif>
-    <if(filter.cashierSurname)> AND e.empl_surname LIKE '%' || :cashierSurname || '%' <endif>
+    <if(filter.checkNumber)> AND c.check_number LIKE :checkNumber || '%' <endif>
+    <if(filter.cashierSurname)> AND e.empl_surname LIKE :cashierSurname || '%' <endif>
     <if(filter.dateFrom)> AND DATE(c.print_date) >= :dateFrom <endif>
     <if(filter.dateTo)> AND DATE(c.print_date) \\<= :dateTo <endif>
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>c.print_date DESC<endif>

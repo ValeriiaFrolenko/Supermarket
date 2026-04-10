@@ -12,8 +12,14 @@ public class ProductFilter {
     private ProductSortBy sortBy;
 
     public boolean isEmpty() {
-        return name == null &&
+        return getName() == null &&
                 categoryId == null &&
                 sortBy == null;
+    }
+
+    public String getName() {
+        if (name == null) return null;
+        if (!name.matches("[a-zA-Zа-яА-ЯіІїЇєЄ0-9'\\- ]+")) return null;
+        return name;
     }
 }
