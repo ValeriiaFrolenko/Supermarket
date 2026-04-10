@@ -1,5 +1,6 @@
 package com.vfrol.supermarket.service;
 
+import com.google.inject.Inject;
 import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;

@@ -2,22 +2,19 @@ package com.vfrol.supermarket.controller.employee;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.base.BaseModalController;
-import com.vfrol.supermarket.controller.util.AlertHelper;
-import com.vfrol.supermarket.controller.util.AsyncRunner;
+import com.vfrol.supermarket.controller.base.BaseDetailsController;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.service.EmployeeService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
-
+import javafx.scene.control.Label;
 import java.util.Locale;
 
-public class EmployeeDetailsController extends BaseModalController {
+public class EmployeeDetailsController extends BaseDetailsController<EmployeeDetailsDTO> {
 
-    @FXML private VBox detailsPanel;
+    private final EmployeeService employeeService;
+
     @FXML private Label idLabel;
     @FXML private Label surnameLabel;
     @FXML private Label nameLabel;
@@ -33,9 +30,6 @@ public class EmployeeDetailsController extends BaseModalController {
     @FXML private Button editButton;
     @FXML private Button deleteButton;
 
-    private EmployeeDetailsDTO currentEmployee;
-    private final EmployeeService employeeService;
-
     @Inject
     public EmployeeDetailsController(EmployeeService employeeService) {
         this.employeeService = employeeService;
@@ -43,19 +37,22 @@ public class EmployeeDetailsController extends BaseModalController {
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
+            SessionUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
-    public void setEmployeeDetails(EmployeeDetailsDTO dto) {
-        this.currentEmployee = dto;
+    @Override
+    protected String getEntityName() {
+        return "Employee";
+    }
+
+    @Override
+    protected void populateFields(EmployeeDetailsDTO dto) {
         idLabel.setText(dto.id());
         surnameLabel.setText(dto.surname());
         nameLabel.setText(dto.name());
         patronymicLabel.setText(dto.patronymic() != null ? dto.patronymic() : "");
         roleLabel.setText(dto.role().name());
-
         salaryLabel.setText(String.format(Locale.US, "%.2f", dto.salary()));
-
         dobLabel.setText(dto.dateOfBirth().toString());
         dosLabel.setText(dto.dateOfStart().toString());
         phoneLabel.setText(dto.phoneNumber());
@@ -64,26 +61,14 @@ public class EmployeeDetailsController extends BaseModalController {
         zipLabel.setText(dto.zipCode());
     }
 
-    @FXML
-    public void onEdit() {
+    @Override
+    protected void deleteEntity() {
+        employeeService.deleteEmployee(currentItem.id());
+    }
+
+    @Override
+    protected void navigateToForm() {
         viewManager.showDialog(AppView.EMPLOYEE_FORM, (EmployeeFormController controller) ->
-                controller.setEmployee(currentEmployee));
-        hide();
-    }
-
-    @FXML
-    public void onDelete() {
-        if (AlertHelper.confirmDelete("employee")) {
-            AsyncRunner.runAsync(
-                    () -> employeeService.deleteEmployee(currentEmployee.id()),
-                    this::hide,
-                    detailsPanel
-            );
-        }
-    }
-
-    @FXML
-    public void hide() {
-        closeWindow(detailsPanel);
+                controller.setupForEdit(currentItem));
     }
 }

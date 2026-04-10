@@ -6,6 +6,7 @@ import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.controller.util.AsyncRunner;
 import com.vfrol.supermarket.controller.util.Debouncer;
 import com.vfrol.supermarket.controller.util.InputHelper;
+import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.filter.EmployeeFilter;
@@ -22,6 +23,8 @@ import java.util.List;
 public class EmployeeListController extends BaseListController<EmployeeListDTO> {
 
     private final EmployeeService employeeService;
+    private final Debouncer searchDebouncer = new Debouncer(300);
+    private ObservableList<EmployeeListDTO> employeeData;
 
     @FXML private TextField searchField;
     @FXML private TableView<EmployeeListDTO> employeeTable;
@@ -29,16 +32,43 @@ public class EmployeeListController extends BaseListController<EmployeeListDTO> 
     @FXML private TableColumn<EmployeeListDTO, String> nameColumn;
     @FXML private TableColumn<EmployeeListDTO, String> roleColumn;
     @FXML private TableColumn<EmployeeListDTO, String> phoneColumn;
+
     @FXML private VBox filterPanel;
     @FXML private TextField phoneFilterField;
     @FXML private ComboBox<EmployeeRole> roleComboBox;
 
-    private ObservableList<EmployeeListDTO> employeeData;
-    private final Debouncer searchDebouncer = new Debouncer(300);
-
     @Inject
     public EmployeeListController(EmployeeService employeeService) {
         this.employeeService = employeeService;
+    }
+
+    @FXML
+    public void initialize() {
+        initializeTable();
+        initializeFilter();
+        loadAllEmployees();
+    }
+
+    private void initializeTable() {
+        employeeData = FXCollections.observableArrayList();
+
+        surnameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().surname()));
+        nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().name()));
+        roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().role().name()));
+        phoneColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().phoneNumber()));
+
+        employeeTable.setItems(employeeData);
+        setupTableDoubleClick();
+    }
+
+    private void initializeFilter() {
+        searchField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        phoneFilterField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        roleComboBox.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+        roleComboBox.getItems().addAll(EmployeeRole.values());
     }
 
     @Override
@@ -51,32 +81,26 @@ public class EmployeeListController extends BaseListController<EmployeeListDTO> 
         AsyncRunner.runAsync(
                 () -> employeeService.getEmployeeById(item.id()),
                 details -> {
-                    viewManager.showDialog(AppView.EMPLOYEE_DETAILS,
-                            (EmployeeDetailsController controller) -> controller.setEmployeeDetails(details));
-                    loadEmployees();
+                    navigateToDetails(details);
+                    loadAllEmployees();
                 },
                 employeeTable
         );
     }
 
     @FXML
-    public void initialize() {
-        employeeData = FXCollections.observableArrayList();
+    public void onAddEmployeeClick() {
+        navigateToForm();
+        loadAllEmployees();
+    }
 
-        surnameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().surname()));
-        nameColumn.setCellValueFactory(cell    -> new SimpleStringProperty(cell.getValue().name()));
-        roleColumn.setCellValueFactory(cell    -> new SimpleStringProperty(cell.getValue().role().name()));
-        phoneColumn.setCellValueFactory(cell   -> new SimpleStringProperty(cell.getValue().phoneNumber()));
-
-        employeeTable.setItems(employeeData);
-        setupTableDoubleClick();
-
-        searchField.textProperty().addListener((obs, old, val) -> searchDebouncer.debounce(this::applyFilter));
-        phoneFilterField.textProperty().addListener((obs, old, val) -> searchDebouncer.debounce(this::applyFilter));
-        roleComboBox.valueProperty().addListener((obs, old, val) -> applyFilter());
-        roleComboBox.getItems().addAll(EmployeeRole.values());
-
-        loadEmployees();
+    @FXML
+    public void onExportClick() {
+        AsyncRunner.runAsync(
+                employeeService::getAllEmployeeDetails,
+                this::navigateToReport,
+                getRootNode()
+        );
     }
 
     @FXML
@@ -86,29 +110,22 @@ public class EmployeeListController extends BaseListController<EmployeeListDTO> 
 
     @FXML
     public void applyFilter() {
-        String surname = null;
-        String name = null;
-        String searchText = InputHelper.getString(searchField);
+        EmployeeFilter filter = buildFilter();
+        setProgressIndicator();
 
-        if (searchText != null) {
-            String[] parts = searchText.split("\\s+");
-            surname = parts[0];
-            if (parts.length > 1) name = parts[1];
+        if (filter.isEmpty()) {
+            AsyncRunner.runAsync(
+                    employeeService::getAllEmployees,
+                    this::updateTableData,
+                    employeeTable
+            );
+        } else {
+            AsyncRunner.runAsync(
+                    () -> employeeService.getEmployeesByFilter(filter),
+                    this::updateTableData,
+                    employeeTable
+            );
         }
-
-        EmployeeFilter filter = EmployeeFilter.builder()
-                .surname(surname)
-                .name(name)
-                .phoneNumber(InputHelper.getString(phoneFilterField))
-                .role(roleComboBox.getValue())
-                .build();
-
-        employeeTable.setPlaceholder(new ProgressIndicator());
-        AsyncRunner.runAsync(
-                () -> employeeService.getEmployeesByFilter(filter),
-                this::updateTableData,
-                employeeTable
-        );
     }
 
     @FXML
@@ -119,28 +136,27 @@ public class EmployeeListController extends BaseListController<EmployeeListDTO> 
         applyFilter();
     }
 
-    @FXML
-    public void onAddEmployeeClick() {
-        viewManager.showDialog(AppView.EMPLOYEE_FORM);
-        loadEmployees();
+   private EmployeeFilter buildFilter() {
+        String surname = null;
+        String name = null;
+        String searchText = InputHelper.getString(searchField);
+
+        if (searchText != null) {
+            String[] parts = searchText.split("\\s+");
+            surname = parts[0];
+            if (parts.length > 1) name = parts[1];
+        }
+
+        return EmployeeFilter.builder()
+                .surname(surname)
+                .name(name)
+                .phoneNumber(InputHelper.getString(phoneFilterField))
+                .role(roleComboBox.getValue())
+                .build();
     }
 
-    @FXML
-    public void onExportClick() {
-        employeeTable.setPlaceholder(new ProgressIndicator());
-        AsyncRunner.runAsync(
-                employeeService::getAllEmployeeDetails,
-                employees -> {
-                    employeeTable.setPlaceholder(new Label("No content in table"));
-                    viewManager.showDialog(AppView.EMPLOYEE_REPORT,
-                            (EmployeeReportController controller) -> controller.setData(employees));
-                },
-                employeeTable
-        );
-    }
-
-    private void loadEmployees() {
-        employeeTable.setPlaceholder(new ProgressIndicator());
+    private void loadAllEmployees() {
+        setProgressIndicator();
         AsyncRunner.runAsync(
                 employeeService::getAllEmployees,
                 this::updateTableData,
@@ -150,6 +166,22 @@ public class EmployeeListController extends BaseListController<EmployeeListDTO> 
 
     private void updateTableData(List<EmployeeListDTO> data) {
         employeeData.setAll(data);
-        employeeTable.setPlaceholder(new Label("No content in table"));
+        removeProgressIndicator();
+    }
+
+    private void navigateToDetails(EmployeeDetailsDTO details) {
+        viewManager.showDialog(AppView.EMPLOYEE_DETAILS,
+                (EmployeeDetailsController controller) ->
+                        controller.setDetails(details));
+    }
+
+    private void navigateToForm() {
+        viewManager.showDialog(AppView.EMPLOYEE_FORM);
+    }
+
+    private void navigateToReport(List<EmployeeDetailsDTO> employees) {
+        viewManager.showDialog(AppView.EMPLOYEE_REPORT,
+                (EmployeeReportController controller) ->
+                        controller.setData(employees));
     }
 }

@@ -41,8 +41,8 @@ public class EmployeeExcelExporter extends BaseExcelExporter<EmployeeDetailsDTO>
         dos.setCellStyle(styles.date);
 
         row.createCell(8).setCellValue(emp.phoneNumber());
-        row.createCell(9).setCellValue(emp.city() != null ? emp.city() : "");
-        row.createCell(10).setCellValue(emp.street() != null ? emp.street() : "");
-        row.createCell(11).setCellValue(emp.zipCode() != null ? emp.zipCode() : "");
+        row.createCell(9).setCellValue(emp.city());
+        row.createCell(10).setCellValue(emp.street());
+        row.createCell(11).setCellValue(emp.zipCode());
     }
 }

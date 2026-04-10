@@ -1,5 +1,6 @@
 package com.vfrol.supermarket.service.validator;
 
+import com.google.inject.Inject;
 import com.vfrol.supermarket.config.SessionManager;
 import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
@@ -10,6 +11,7 @@ public class EmployeeValidator extends BaseValidator {
     private final EmployeeDAO employeeDAO;
     private final SessionManager sessionManager;
 
+    @Inject
     public EmployeeValidator(EmployeeDAO employeeDAO, SessionManager sessionManager) {
         this.employeeDAO = employeeDAO;
         this.sessionManager = sessionManager;
