@@ -1,18 +1,19 @@
 package com.vfrol.supermarket.controller.customer_card;
 
 import com.google.inject.Inject;
-import com.vfrol.supermarket.controller.base.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseFormController;
+import com.vfrol.supermarket.controller.ui_validator.CustomerCardFormValidator;
+import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardCreateDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
 
-public class CustomerCardFormController extends BaseModalController {
+public class CustomerCardFormController extends BaseFormController<CustomerCardCreateDTO, CustomerCardDetailsDTO> {
 
-    @FXML private VBox formPanel;
-    @FXML private Label label;
+    private final CustomerCardService customerCardService;
+
     @FXML private TextField cardNumberField;
     @FXML private TextField surnameField;
     @FXML private TextField nameField;
@@ -23,24 +24,35 @@ public class CustomerCardFormController extends BaseModalController {
     @FXML private TextField zipField;
     @FXML private TextField discountField;
 
-    private final CustomerCardService customerCardService;
-    private boolean isEditMode = false;
-
     @Inject
     public CustomerCardFormController(CustomerCardService customerCardService) {
         this.customerCardService = customerCardService;
     }
 
-    @FXML
-    public void initialize() {
-        label.setText("Add Customer Card");
+    @Override
+    protected String getEntityName() {
+        return "Customer Card";
     }
 
-    public void setCustomerCard(CustomerCardDetailsDTO dto) {
-        this.isEditMode = true;
-        label.setText("Edit Customer Card");
+    @Override
+    protected void setupValidation() {
+        CustomerCardFormValidator cardValidator = new CustomerCardFormValidator(validator);
+
+        cardValidator.validateCardNumber(cardNumberField);
+        cardValidator.validateSurname(surnameField);
+        cardValidator.validateName(nameField);
+        cardValidator.validatePatronymic(patronymicField);
+        cardValidator.validatePhone(phoneField);
+        cardValidator.validateCity(cityField);
+        cardValidator.validateStreet(streetField);
+        cardValidator.validateZipCode(zipField);
+        cardValidator.validateDiscount(discountField);
+    }
+
+    @Override
+    protected void populateFields(CustomerCardDetailsDTO dto) {
         cardNumberField.setText(dto.cardNumber());
-        cardNumberField.setDisable(true);
+        cardNumberField.setDisable(true); // Заборона редагування ID
         surnameField.setText(dto.surname());
         nameField.setText(dto.name());
         patronymicField.setText(dto.patronymic() != null ? dto.patronymic() : "");
@@ -51,42 +63,27 @@ public class CustomerCardFormController extends BaseModalController {
         discountField.setText(String.valueOf(dto.discount()));
     }
 
-    @FXML
-    public void onSave() {
-        try {
-            int discount = Integer.parseInt(discountField.getText().trim());
-            if (discount < 0 || discount > 100) {
-                new Alert(Alert.AlertType.WARNING, "Discount must be between 0 and 100.").showAndWait();
-                return;
-            }
-
-            CustomerCardCreateDTO dto = new CustomerCardCreateDTO(
-                    cardNumberField.getText().trim(),
-                    surnameField.getText().trim(),
-                    nameField.getText().trim(),
-                    patronymicField.getText().isBlank() ? null : patronymicField.getText().trim(),
-                    phoneField.getText().trim(),
-                    cityField.getText().isBlank() ? null : cityField.getText().trim(),
-                    streetField.getText().isBlank() ? null : streetField.getText().trim(),
-                    zipField.getText().isBlank() ? null : zipField.getText().trim(),
-                    discount
-            );
-
-            if (isEditMode) {
-                customerCardService.updateCard(dto);
-            } else {
-                customerCardService.addCard(dto);
-            }
-            closeWindow(formPanel);
-        } catch (NumberFormatException e) {
-            new Alert(Alert.AlertType.ERROR, "Invalid discount format. Please enter a whole number.").showAndWait();
-        } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "An error occurred while saving: " + e.getMessage()).showAndWait();
-        }
+    @Override
+    protected CustomerCardCreateDTO buildDTO() {
+        return CustomerCardCreateDTO.builder()
+                .cardNumber(InputHelper.getString(cardNumberField))
+                .surname(InputHelper.getString(surnameField))
+                .name(InputHelper.getString(nameField))
+                .patronymic(InputHelper.getString(patronymicField))
+                .phoneNumber(InputHelper.getString(phoneField))
+                .city(InputHelper.getString(cityField))
+                .street(InputHelper.getString(streetField))
+                .zipCode(InputHelper.getString(zipField))
+                .discount(InputHelper.getInt(discountField) != null ? InputHelper.getInt(discountField) : 0)
+                .build();
     }
 
-    @FXML
-    public void onCancel() {
-        closeWindow(formPanel);
+    @Override
+    protected void saveEntity(CustomerCardCreateDTO dto) {
+        if (isEditMode) {
+            customerCardService.updateCard(dto);
+        } else {
+            customerCardService.addCard(dto);
+        }
     }
 }

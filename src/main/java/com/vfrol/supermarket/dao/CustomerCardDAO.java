@@ -54,6 +54,14 @@ public interface CustomerCardDAO {
     List<CustomerCardListDTO> findAll();
 
     @SqlQuery("""
+    SELECT card_number, cust_surname, cust_name,
+    cust_patronymic, phone_number, city,
+    street, zip_code, percent
+    FROM Customer_Card ORDER BY cust_surname, cust_name
+    """)
+    List<CustomerCardDetailsDTO> findAllDetails();
+
+    @SqlQuery("""
     SELECT card_number, cust_surname, cust_name, percent, phone_number
     FROM Customer_Card
     WHERE 1=1

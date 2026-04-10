@@ -2,17 +2,17 @@ package com.vfrol.supermarket.controller.customer_card;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.base.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseDetailsController;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
-public class CustomerCardDetailsController extends BaseModalController {
+public class CustomerCardDetailsController extends BaseDetailsController<CustomerCardDetailsDTO> {
 
-    @FXML private VBox detailsPanel;
+    private final CustomerCardService customerCardService;
 
     @FXML private Label cardNumberLabel;
     @FXML private Label surnameLabel;
@@ -27,9 +27,6 @@ public class CustomerCardDetailsController extends BaseModalController {
     @FXML private Button editButton;
     @FXML private Button deleteButton;
 
-    private CustomerCardDetailsDTO currentCard;
-    private final CustomerCardService customerCardService;
-
     @Inject
     public CustomerCardDetailsController(CustomerCardService customerCardService) {
         this.customerCardService = customerCardService;
@@ -37,11 +34,16 @@ public class CustomerCardDetailsController extends BaseModalController {
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, deleteButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
-    public void setCustomerCardDetails(CustomerCardDetailsDTO dto) {
-        this.currentCard = dto;
+    @Override
+    protected String getEntityName() {
+        return "Customer Card";
+    }
+
+    @Override
+    protected void populateFields(CustomerCardDetailsDTO dto) {
         cardNumberLabel.setText(dto.cardNumber());
         surnameLabel.setText(dto.surname());
         nameLabel.setText(dto.name());
@@ -53,28 +55,14 @@ public class CustomerCardDetailsController extends BaseModalController {
         discountLabel.setText(dto.discount() + "%");
     }
 
-    @FXML
-    public void onEdit() {
+    @Override
+    protected void deleteEntity() {
+        customerCardService.deleteCard(currentItem.cardNumber());
+    }
+
+    @Override
+    protected void navigateToForm() {
         viewManager.showDialog(AppView.CUSTOMER_CARD_FORM, (CustomerCardFormController controller) ->
-                controller.setCustomerCard(currentCard));
-        hide();
-    }
-
-    @FXML
-    public void onDelete() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to delete this customer card?",
-                ButtonType.YES, ButtonType.NO);
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                customerCardService.deleteCard(currentCard.cardNumber());
-                hide();
-            }
-        });
-    }
-
-    @FXML
-    public void hide() {
-        closeWindow(detailsPanel);
+                controller.setupForEdit(currentItem));
     }
 }

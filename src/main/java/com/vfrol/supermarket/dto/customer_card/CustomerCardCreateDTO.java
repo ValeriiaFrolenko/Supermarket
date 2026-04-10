@@ -1,5 +1,8 @@
 package com.vfrol.supermarket.dto.customer_card;
 
+import lombok.Builder;
+
+@Builder
 public record CustomerCardCreateDTO(
         String cardNumber,
         String surname,

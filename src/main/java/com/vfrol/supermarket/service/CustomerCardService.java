@@ -42,6 +42,10 @@ public class CustomerCardService {
         return customerCardDAO.findAll();
     }
 
+    public List<CustomerCardDetailsDTO> getAllCustomerCardDetails() {
+        return customerCardDAO.findAllDetails();
+    }
+
     public List<CustomerCardListDTO> getCardsByFilter(CustomerCardFilter filter) {
         return customerCardDAO.findByFilter(filter);
     }

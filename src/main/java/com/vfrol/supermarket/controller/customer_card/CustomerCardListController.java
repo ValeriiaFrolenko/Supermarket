@@ -3,6 +3,9 @@ package com.vfrol.supermarket.controller.customer_card;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.base.BaseListController;
+import com.vfrol.supermarket.controller.util.AsyncRunner;
+import com.vfrol.supermarket.controller.util.Debouncer;
+import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
@@ -22,16 +25,17 @@ import java.util.List;
 public class CustomerCardListController extends BaseListController<CustomerCardListDTO> {
 
     private final CustomerCardService customerCardService;
+    private final Debouncer searchDebouncer = new Debouncer(300);
+    private ObservableList<CustomerCardListDTO> customerCardData;
 
     @FXML private TextField searchField;
-    @FXML private Button addButton;
-
     @FXML private TableView<CustomerCardListDTO> customerCardTable;
     @FXML private TableColumn<CustomerCardListDTO, String> cardNumberColumn;
     @FXML private TableColumn<CustomerCardListDTO, String> surnameColumn;
     @FXML private TableColumn<CustomerCardListDTO, String> nameColumn;
     @FXML private TableColumn<CustomerCardListDTO, Number> discountColumn;
     @FXML private TableColumn<CustomerCardListDTO, String> phoneColumn;
+    @FXML private Button addButton;
 
     @FXML private VBox filterPanel;
     @FXML private TextField phoneFilterField;
@@ -39,11 +43,45 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
     @FXML private TextField discountToField;
     @FXML private ComboBox<CustomerCardSortBy> sortByComboBox;
 
-    private ObservableList<CustomerCardListDTO> customerCardData;
-
     @Inject
     public CustomerCardListController(CustomerCardService customerCardService) {
         this.customerCardService = customerCardService;
+    }
+
+    @FXML
+    public void initialize() {
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
+        initializeTable();
+        initializeFilters();
+        loadAllCustomerCards();
+    }
+
+    private void initializeTable() {
+        customerCardData = FXCollections.observableArrayList();
+
+        cardNumberColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().cardNumber()));
+        surnameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().surname()));
+        nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().name()));
+        discountColumn.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().discount()));
+        phoneColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().phone()));
+
+        customerCardTable.setItems(customerCardData);
+        setupTableDoubleClick();
+    }
+
+    private void initializeFilters() {
+        searchField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        phoneFilterField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        discountFromField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        discountToField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        sortByComboBox.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+
+        sortByComboBox.getItems().addAll(CustomerCardSortBy.values());
     }
 
     @Override
@@ -53,29 +91,29 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
 
     @Override
     protected void showDetails(CustomerCardListDTO item) {
-        showCustomerCardDetails(item.cardNumber());
+        AsyncRunner.runAsync(
+                () -> customerCardService.getCardById(item.cardNumber()),
+                details -> {
+                    navigateToDetails(details);
+                    loadAllCustomerCards();
+                },
+                customerCardTable
+        );
     }
 
     @FXML
-    public void initialize() {
-        initializeTable();
-        sortByComboBox.getItems().addAll(CustomerCardSortBy.values());
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
-        loadCustomerCards();
+    public void onAddCustomerCardClick() {
+        navigateToForm();
+        loadAllCustomerCards();
     }
 
-    private void initializeTable() {
-        customerCardData = FXCollections.observableArrayList();
-
-        cardNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().cardNumber()));
-        surnameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().surname()));
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().name()));
-        discountColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().discount()));
-        phoneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().phone()));
-
-        customerCardTable.setItems(customerCardData);
-        setupTableDoubleClick();
+    @FXML
+    public void onExportClick() {
+        AsyncRunner.runAsync(
+                customerCardService::getAllCustomerCardDetails,
+                this::navigateToReport,
+                getRootNode()
+        );
     }
 
     @FXML
@@ -85,34 +123,22 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
 
     @FXML
     public void applyFilter() {
-        String searchText = searchField.getText();
-        String surname = (searchText != null && !searchText.isBlank()) ? searchText.trim() : null;
+        CustomerCardFilter filter = buildFilter();
+        setProgressIndicator();
 
-        String phoneText = phoneFilterField.getText();
-        String phone = (phoneText != null && !phoneText.isBlank()) ? phoneText.trim() : null;
-
-        Integer discountFrom = null;
-        Integer discountTo = null;
-        try {
-            String fromText = discountFromField.getText();
-            if (fromText != null && !fromText.isBlank()) discountFrom = Integer.parseInt(fromText.trim());
-        } catch (NumberFormatException ignored) {}
-        try {
-            String toText = discountToField.getText();
-            if (toText != null && !toText.isBlank()) discountTo = Integer.parseInt(toText.trim());
-        } catch (NumberFormatException ignored) {}
-
-        CustomerCardFilter filter = CustomerCardFilter.builder()
-                .surname(surname)
-                .phoneNumber(phone)
-                .discountFrom(discountFrom)
-                .discountTo(discountTo)
-                .sortBy(sortByComboBox.getValue())
-                .build();
-
-        List<CustomerCardListDTO> filtered = customerCardService.getCardsByFilter(filter);
-        customerCardData.clear();
-        customerCardData.addAll(filtered);
+        if (filter.isEmpty()) {
+            AsyncRunner.runAsync(
+                    customerCardService::getAllCards,
+                    this::updateTableData,
+                    customerCardTable
+            );
+        } else {
+            AsyncRunner.runAsync(
+                    () -> customerCardService.getCardsByFilter(filter),
+                    this::updateTableData,
+                    customerCardTable
+            );
+        }
     }
 
     @FXML
@@ -125,29 +151,43 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
         applyFilter();
     }
 
-    private void loadCustomerCards() {
-        List<CustomerCardListDTO> cards = customerCardService.getAllCards();
-        customerCardData.clear();
-        customerCardData.addAll(cards);
+    private CustomerCardFilter buildFilter() {
+        return CustomerCardFilter.builder()
+                .surname(InputHelper.getString(searchField))
+                .phoneNumber(InputHelper.getString(phoneFilterField))
+                .discountFrom(InputHelper.getInt(discountFromField))
+                .discountTo(InputHelper.getInt(discountToField))
+                .sortBy(sortByComboBox.getValue())
+                .build();
     }
 
-    private void showCustomerCardDetails(String cardNumber) {
-        CustomerCardDetailsDTO details = customerCardService.getCardById(cardNumber);
-        if (details != null) {
-            viewManager.showDialog(AppView.CUSTOMER_CARD_DETAILS, (CustomerCardDetailsController controller) -> {
-                controller.setCustomerCardDetails(details);
-            });
-        }
-        refreshCustomerCards();
+    private void loadAllCustomerCards() {
+        setProgressIndicator();
+        AsyncRunner.runAsync(
+                customerCardService::getAllCards,
+                this::updateTableData,
+                customerCardTable
+        );
     }
 
-    public void refreshCustomerCards() {
-        loadCustomerCards();
+    private void updateTableData(List<CustomerCardListDTO> data) {
+        customerCardData.setAll(data);
+        removeProgressIndicator();
     }
 
-    @FXML
-    public void onAddCustomerCardClick() {
+    private void navigateToDetails(CustomerCardDetailsDTO details) {
+        viewManager.showDialog(AppView.CUSTOMER_CARD_DETAILS,
+                (CustomerCardDetailsController controller) ->
+                        controller.setDetails(details));
+    }
+
+    private void navigateToForm() {
         viewManager.showDialog(AppView.CUSTOMER_CARD_FORM);
-        refreshCustomerCards();
+    }
+
+    private void navigateToReport(List<CustomerCardDetailsDTO> cards) {
+        viewManager.showDialog(AppView.CUSTOMER_CARD_REPORT,
+                (CustomerCardReportController controller) ->
+                        controller.setData(cards));
     }
 }
