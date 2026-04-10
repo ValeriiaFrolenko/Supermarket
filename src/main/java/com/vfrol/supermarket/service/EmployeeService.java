@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
@@ -13,10 +14,12 @@ import com.vfrol.supermarket.tools.PasswordManager;
 
 import java.util.List;
 
+@Singleton
 public class EmployeeService {
     private final EmployeeDAO employeeDAO;
     private final EmployeeValidator employeeValidator;
 
+    @Inject
     public EmployeeService(EmployeeDAO employeeDAO, EmployeeValidator employeeValidator) {
         this.employeeDAO = employeeDAO;
         this.employeeValidator = employeeValidator;

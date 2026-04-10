@@ -1,5 +1,7 @@
 package com.vfrol.supermarket.service;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.CustomerCardDAO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardCreateDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
@@ -9,9 +11,11 @@ import com.vfrol.supermarket.filter.CustomerCardFilter;
 
 import java.util.List;
 
+@Singleton
 public class CustomerCardService {
     private final CustomerCardDAO customerCardDAO;
 
+    @Inject
     public CustomerCardService(CustomerCardDAO customerCardDAO) {
         this.customerCardDAO = customerCardDAO;
     }

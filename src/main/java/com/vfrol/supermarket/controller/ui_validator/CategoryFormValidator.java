@@ -1,6 +1,5 @@
 package com.vfrol.supermarket.controller.ui_validator;
 
-import com.google.inject.Inject;
 import javafx.scene.control.TextField;
 import net.synedra.validatorfx.Validator;
 

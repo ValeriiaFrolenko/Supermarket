@@ -1,10 +1,12 @@
 package com.vfrol.supermarket.config;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.HandleConsumer;
 import org.jdbi.v3.core.Jdbi;
 
+@Singleton
 public class TransactionManager {
     private final Jdbi jdbi;
 

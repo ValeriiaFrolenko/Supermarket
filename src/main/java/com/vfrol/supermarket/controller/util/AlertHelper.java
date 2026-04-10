@@ -1,5 +1,6 @@
 package com.vfrol.supermarket.controller.util;
 
+import com.google.inject.Singleton;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 

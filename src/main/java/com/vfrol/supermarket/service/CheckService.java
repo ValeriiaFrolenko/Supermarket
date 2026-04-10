@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.CheckDAO;
 import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.config.TransactionManager;
@@ -15,6 +16,7 @@ import com.vfrol.supermarket.filter.CheckFilter;
 
 import java.util.List;
 
+@Singleton
 public class CheckService {
 
     private final TransactionManager transactionManager;

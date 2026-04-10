@@ -1,10 +1,11 @@
 package com.vfrol.supermarket.database;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.jdbi.v3.core.Jdbi;
 
 import java.nio.charset.StandardCharsets;
-
+@Singleton
 public class DatabaseInitializer {
     private final Jdbi jdbi;
 

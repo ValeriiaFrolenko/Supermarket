@@ -1,5 +1,7 @@
 package com.vfrol.supermarket.service;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.ProductDAO;
 import com.vfrol.supermarket.dto.product.ProductCreateDTO;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
@@ -10,9 +12,11 @@ import com.vfrol.supermarket.filter.ProductFilter;
 
 import java.util.List;
 
+@Singleton
 public class ProductService {
     private final ProductDAO productDAO;
 
+    @Inject
     public ProductService(ProductDAO productDAO) {
         this.productDAO = productDAO;
     }

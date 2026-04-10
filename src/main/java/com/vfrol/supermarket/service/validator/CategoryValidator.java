@@ -1,14 +1,18 @@
 package com.vfrol.supermarket.service.validator;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.CategoryDAO;
 import com.vfrol.supermarket.dto.category.CategoryCreateDTO;
 import com.vfrol.supermarket.service.ProductService;
 
+@Singleton
 public class CategoryValidator extends BaseValidator {
 
     private final CategoryDAO categoryDAO;
     private final ProductService productService;
 
+    @Inject
     public CategoryValidator(CategoryDAO categoryDAO, ProductService productService) {
         this.categoryDAO = categoryDAO;
         this.productService = productService;

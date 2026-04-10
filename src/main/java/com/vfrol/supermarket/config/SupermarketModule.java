@@ -1,14 +1,9 @@
 package com.vfrol.supermarket.config;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.*;
-import com.vfrol.supermarket.database.DatabaseInitializer;
-import com.vfrol.supermarket.service.*;
-import com.vfrol.supermarket.service.validator.CategoryValidator;
-import com.vfrol.supermarket.service.validator.EmployeeValidator;
 import org.h2.jdbcx.JdbcDataSource;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.SqlStatements;
@@ -17,12 +12,6 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import javax.sql.DataSource;
 
 public class SupermarketModule extends AbstractModule {
-
-    @Provides
-    @Singleton
-    public DatabaseInitializer provideDatabaseInitializer(Jdbi jdbi) {
-        return new DatabaseInitializer(jdbi);
-    }
 
     @Provides
     @Singleton
@@ -42,116 +31,29 @@ public class SupermarketModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public TransactionManager provideTransactionManager(Jdbi jdbi) {
-        return new TransactionManager(jdbi);
-    }
+    public EmployeeDAO provideEmployeeDAO(Jdbi jdbi) { return jdbi.onDemand(EmployeeDAO.class); }
 
     @Provides
     @Singleton
-    public ViewManager provideViewManager(Injector injector) {
-        return new ViewManager(injector);
-    }
+    public CategoryDAO provideCategoryDAO(Jdbi jdbi) { return jdbi.onDemand(CategoryDAO.class); }
 
     @Provides
     @Singleton
-    public SessionManager provideSessionManager() {
-        return new SessionManager();
-    }
+    public ProductDAO provideProductDAO(Jdbi jdbi) { return jdbi.onDemand(ProductDAO.class); }
 
     @Provides
     @Singleton
-    public EmployeeDAO provideEmployeeDAO(Jdbi jdbi) {
-        return jdbi.onDemand(EmployeeDAO.class);
-    }
+    public CustomerCardDAO provideCustomerCardDAO(Jdbi jdbi) { return jdbi.onDemand(CustomerCardDAO.class); }
 
     @Provides
     @Singleton
-    public CategoryDAO provideCategoryDAO(Jdbi jdbi) {
-        return jdbi.onDemand(CategoryDAO.class);
-    }
+    public StoreProductDAO provideStoreProductDAO(Jdbi jdbi) { return jdbi.onDemand(StoreProductDAO.class); }
 
     @Provides
     @Singleton
-    public ProductDAO provideProductDAO(Jdbi jdbi) {
-        return jdbi.onDemand(ProductDAO.class);
-    }
+    public SaleDAO provideSaleDAO(Jdbi jdbi) { return jdbi.onDemand(SaleDAO.class); }
 
     @Provides
     @Singleton
-    public CustomerCardDAO provideCustomerCardDAO(Jdbi jdbi) {
-        return jdbi.onDemand(CustomerCardDAO.class);
-    }
-
-    @Provides
-    @Singleton
-    public StoreProductDAO provideStoreProductDAO(Jdbi jdbi){
-        return jdbi.onDemand(StoreProductDAO.class);
-    }
-
-    @Provides
-    @Singleton
-    public SaleDAO provideSaleDAO(Jdbi jdbi){
-        return jdbi.onDemand(SaleDAO.class);
-    }
-
-    @Provides
-    @Singleton
-    public CheckDAO provideCheckDAO(Jdbi jdbi){
-        return jdbi.onDemand(CheckDAO.class);
-    }
-
-    @Provides
-    @Singleton
-    public EmployeeService provideEmployeeService(EmployeeDAO employeeDAO, EmployeeValidator employeeValidator) {
-        return new EmployeeService(employeeDAO, employeeValidator);
-    }
-
-    @Provides
-    @Singleton
-    public CategoryService provideCategoryService(CategoryDAO categoryDAO, CategoryValidator categoryValidator) {
-        return new CategoryService(categoryDAO, categoryValidator);
-    }
-
-    @Provides
-    @Singleton
-    public ProductService provideProductService(ProductDAO productDAO) {
-        return new ProductService(productDAO);
-    }
-
-    @Provides
-    @Singleton
-    public CustomerCardService provideCustomerCardService(CustomerCardDAO customerCardDAO) {
-        return new CustomerCardService(customerCardDAO);
-    }
-
-    @Provides
-    @Singleton
-    public StoreProductService provideStoreProductService(StoreProductDAO storeProductDAO){
-        return new StoreProductService(storeProductDAO);
-    }
-
-    @Provides
-    @Singleton
-    public CheckService provideCheckService(TransactionManager transactionManager, CheckDAO checkDAO) {
-        return new CheckService(transactionManager, checkDAO);
-    }
-
-    @Provides
-    @Singleton
-    public SaleService provideSaleService(SaleDAO saleDAO){
-        return new SaleService(saleDAO);
-    }
-
-    @Provides
-    @Singleton
-    public EmployeeValidator provideEmployeeValidator(EmployeeDAO employeeDAO, SessionManager sessionManager){
-        return new EmployeeValidator(employeeDAO, sessionManager);
-    }
-
-    @Provides
-    @Singleton
-    public CategoryValidator provideCategoryValidator(CategoryDAO categoryDAO, ProductService productService){
-        return new CategoryValidator(categoryDAO, productService);
-    }
-
+    public CheckDAO provideCheckDAO(Jdbi jdbi) { return jdbi.onDemand(CheckDAO.class); }
 }

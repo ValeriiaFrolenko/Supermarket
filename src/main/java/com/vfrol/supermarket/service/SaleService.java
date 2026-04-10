@@ -1,11 +1,13 @@
 package com.vfrol.supermarket.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.dto.sale.SaleListDTO;
 
 import java.util.List;
 
+@Singleton
 public class SaleService {
 
     private final SaleDAO saleDAO;

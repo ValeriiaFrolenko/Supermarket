@@ -1,11 +1,13 @@
 package com.vfrol.supermarket.service.validator;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.vfrol.supermarket.config.SessionManager;
 import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
 
+@Singleton
 public class EmployeeValidator extends BaseValidator {
 
     private final EmployeeDAO employeeDAO;
