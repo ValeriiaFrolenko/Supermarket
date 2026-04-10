@@ -22,16 +22,4 @@ public class CheckFilter {
                 dateTo == null &&
                 sortBy == null;
     }
-
-    public String getCheckNumber() {
-        if (checkNumber == null) return null;
-        if (!checkNumber.matches("[0-9]+")) return null;
-        return checkNumber;
-    }
-
-    public String getCashierSurname() {
-        if (cashierSurname == null) return null;
-        if (!cashierSurname.matches("[a-zA-Zа-яА-ЯіІїЇєЄ'\\- ]+")) return null;
-        return cashierSurname;
-    }
 }

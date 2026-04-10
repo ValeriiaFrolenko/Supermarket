@@ -16,10 +16,4 @@ public class ProductFilter {
                 categoryId == null &&
                 sortBy == null;
     }
-
-    public String getName() {
-        if (name == null) return null;
-        if (!name.matches("[a-zA-Zа-яА-ЯіІїЇєЄ0-9'\\- ]+")) return null;
-        return name;
-    }
 }

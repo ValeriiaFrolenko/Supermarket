@@ -20,16 +20,4 @@ public class StoreProductFilter {
                 promotional == null &&
                 sortBy == null;
     }
-
-    public String getUpc() {
-        if (upc == null) return null;
-        if (!upc.matches("[a-zA-Z0-9]+")) return null;
-        return upc;
-    }
-
-    public String getProductName() {
-        if (productName == null) return null;
-        if (!productName.matches("[a-zA-Zа-яА-ЯіІїЇєЄ0-9'\\- ]+")) return null;
-        return productName;
-    }
 }

@@ -19,18 +19,6 @@ public class EmployeeFilter {
                 role == null;
     }
 
-    public String getSurname() {
-        if (surname == null) return null;
-        if (!surname.matches("[a-zA-Zа-яА-ЯіІїЇєЄ'\\- ]+")) return null;
-        return surname;
-    }
-
-    public String getName() {
-        if (name == null) return null;
-        if (!name.matches("[a-zA-Zа-яА-ЯіІїЇєЄ'\\- ]+")) return null;
-        return name;
-    }
-
     public String getPhoneNumber() {
         if (phoneNumber == null) return null;
         String normalized = phoneNumber.replaceAll("[^+0-9]", "");
