@@ -24,6 +24,7 @@ public enum AppView {
     PRODUCT_LIST("view/product/product-list-view.fxml"),
     PRODUCT_FORM("view/product/product-form-view.fxml"),
     PRODUCT_DETAILS("view/product/product-details-view.fxml"),
+    PRODUCT_REPORT("view/product/product-report-view.fxml"),
 
     CUSTOMER_CARD_LIST("view/customer_card/customer-card-list-view.fxml"),
     CUSTOMER_CARD_FORM("view/customer_card/customer-card-form-view.fxml"),

@@ -3,6 +3,10 @@ package com.vfrol.supermarket.controller.product;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.base.BaseListController;
+import com.vfrol.supermarket.controller.util.AsyncRunner;
+import com.vfrol.supermarket.controller.util.Debouncer;
+import com.vfrol.supermarket.controller.util.InputHelper;
+import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.dto.product.ProductDetailsDTO;
@@ -18,27 +22,65 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class ProductListController extends BaseListController<ProductListDTO> {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final Debouncer searchDebouncer = new Debouncer(300);
+    private ObservableList<ProductListDTO> productData;
 
     @FXML private TextField searchField;
-    @FXML private Button addButton;
     @FXML private TableView<ProductListDTO> productTable;
     @FXML private TableColumn<ProductListDTO, String> nameColumn;
     @FXML private TableColumn<ProductListDTO, String> categoryColumn;
+    @FXML private Button addButton;
 
     @FXML private VBox filterPanel;
     @FXML private ComboBox<CategoryListDTO> categoryFilterComboBox;
     @FXML private ComboBox<ProductSortBy> sortByComboBox;
 
-    private ObservableList<ProductListDTO> productData;
-
     @Inject
     public ProductListController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
         this.categoryService = categoryService;
+    }
+
+    @FXML
+    public void initialize() {
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
+        initializeTable();
+        initializeFilters();
+        loadAllProducts();
+    }
+
+    private void initializeTable() {
+        productData = FXCollections.observableArrayList();
+
+        nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().name()));
+        categoryColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().categoryName()));
+
+        productTable.setItems(productData);
+        setupTableDoubleClick();
+    }
+
+    private void initializeFilters() {
+        searchField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        categoryFilterComboBox.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+        sortByComboBox.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+
+        sortByComboBox.getItems().addAll(ProductSortBy.values());
+
+        SearchableComboBoxHelper.configure(
+                categoryFilterComboBox,
+                categoryService::getAllCategories,
+                categoryService::getCategoriesByName,
+                CategoryListDTO::name
+        );
     }
 
     @Override
@@ -48,55 +90,29 @@ public class ProductListController extends BaseListController<ProductListDTO> {
 
     @Override
     protected void showDetails(ProductListDTO item) {
-        showProductDetails(item.id());
+        AsyncRunner.runAsync(
+                () -> productService.getProductById(item.id()),
+                details -> {
+                    navigateToDetails(details);
+                    loadAllProducts();
+                },
+                productTable
+        );
     }
 
     @FXML
-    public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
-        initializeTable();
-        initializeFilters();
-
-        searchField.textProperty().addListener((observable, oldValue, newValue) ->
-                applyFilter());
-
-        loadProducts();
+    public void onAddProductClick() {
+        navigateToForm();
+        loadAllProducts();
     }
 
-    private void initializeTable() {
-        productData = FXCollections.observableArrayList();
-        nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().name()));
-        categoryColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().categoryName()));
-        productTable.setItems(productData);
-
-        setupTableDoubleClick();
-    }
-
-    private void initializeFilters() {
-        sortByComboBox.getItems().setAll(ProductSortBy.values());
-        refreshCategories();
-
-        filterPanel.visibleProperty().addListener((obs, wasVisible, isNowVisible) -> {
-            if (isNowVisible) {
-                refreshCategories();
-            }
-        });
-
-        categoryFilterComboBox.setOnShowing(e -> refreshCategories());
-    }
-
-    private void refreshCategories() {
-        Integer selectedId = categoryFilterComboBox.getValue() != null
-                ? categoryFilterComboBox.getValue().id()
-                : null;
-
-        categoryFilterComboBox.setItems(
-                FXCollections.observableArrayList(categoryService.getAllCategories())
+    @FXML
+    public void onExportClick() {
+        AsyncRunner.runAsync(
+                productService::getAllProductDetails,
+                this::navigateToReport,
+                getRootNode()
         );
-
-        if (selectedId != null) {
-            categoryFilterComboBox.setValue(categoryService.getCategoryById(selectedId));
-        }
     }
 
     @FXML
@@ -105,50 +121,69 @@ public class ProductListController extends BaseListController<ProductListDTO> {
     }
 
     @FXML
+    public void applyFilter() {
+        ProductFilter filter = buildFilter();
+        setProgressIndicator();
+
+        if (filter.isEmpty()) {
+            AsyncRunner.runAsync(
+                    productService::getAllProducts,
+                    this::updateTableData,
+                    productTable
+            );
+        } else {
+            AsyncRunner.runAsync(
+                    () -> productService.getProductsByFilter(filter),
+                    this::updateTableData,
+                    productTable
+            );
+        }
+    }
+
+    @FXML
     public void onClearFilterClick() {
         searchField.clear();
         categoryFilterComboBox.setValue(null);
+        categoryFilterComboBox.getEditor().clear();
         sortByComboBox.setValue(null);
         applyFilter();
     }
 
-    @FXML
-    public void applyFilter() {
-        String searchText = searchField.getText();
-        if (searchText != null && searchText.isBlank()) {
-            searchText = null;
-        }
-
-        Integer categoryId = null;
-        if (categoryFilterComboBox.getValue() != null) {
-            categoryId = categoryFilterComboBox.getValue().id();
-        }
-
-        ProductFilter filter = ProductFilter.builder()
-                .name(searchText)
-                .categoryId(categoryId)
+    private ProductFilter buildFilter() {
+        return ProductFilter.builder()
+                .name(InputHelper.getString(searchField))
+                .categoryId(categoryFilterComboBox.getValue() != null ? categoryFilterComboBox.getValue().id() : null)
                 .sortBy(sortByComboBox.getValue())
                 .build();
-
-        productData.setAll(productService.getProductsByFilter(filter));
     }
 
-    private void showProductDetails(int productId) {
-        ProductDetailsDTO details = productService.getProductById(productId);
-        if (details != null) {
-            viewManager.showDialog(AppView.PRODUCT_DETAILS, (ProductDetailsController controller) ->
-                    controller.setProductDetails(details));
-        }
-        applyFilter();
+    private void loadAllProducts() {
+        setProgressIndicator();
+        AsyncRunner.runAsync(
+                productService::getAllProducts,
+                this::updateTableData,
+                productTable
+        );
     }
 
-    private void loadProducts() {
-        productData.setAll(productService.getAllProducts());
+    private void updateTableData(List<ProductListDTO> data) {
+        productData.setAll(data);
+        removeProgressIndicator();
     }
 
-    @FXML
-    public void onAddProductClick() {
+    private void navigateToDetails(ProductDetailsDTO details) {
+        viewManager.showDialog(AppView.PRODUCT_DETAILS,
+                (ProductDetailsController controller) ->
+                        controller.setDetails(details));
+    }
+
+    private void navigateToForm() {
         viewManager.showDialog(AppView.PRODUCT_FORM);
-        applyFilter();
+    }
+
+    private void navigateToReport(List<ProductDetailsDTO> products) {
+        viewManager.showDialog(AppView.PRODUCT_REPORT,
+                (ProductReportController controller) ->
+                        controller.setData(products));
     }
 }

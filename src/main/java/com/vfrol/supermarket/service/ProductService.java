@@ -60,6 +60,10 @@ public class ProductService {
         return productDAO.findAllNames();
     }
 
+    public List<ProductDetailsDTO> getAllProductDetails() {
+        return productDAO.findAllDetails();
+    }
+
     public List<ProductListDTO> getProductsByFilter(ProductFilter filter) {
         return productDAO.findByFilter(filter);
     }

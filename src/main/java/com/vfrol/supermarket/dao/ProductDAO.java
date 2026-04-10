@@ -40,7 +40,7 @@ public interface ProductDAO {
     void delete(@Bind("id") int id);
 
     @SqlQuery("""
-    SELECT p.id_product, p.product_name, c.category_name, p.characteristics
+    SELECT p.id_product, p.product_name, p.category_number, c.category_name, p.characteristics
     FROM Product p
     JOIN Category c ON p.category_number = c.category_number
     WHERE p.id_product = :id
@@ -68,6 +68,14 @@ public interface ProductDAO {
     ORDER BY p.product_name
     """)
     List<ProductNameDTO> findAllNames();
+
+    @SqlQuery("""
+    SELECT p.id_product, p.product_name, p.category_number, c.category_name, p.characteristics
+    FROM Product p
+    JOIN Category c ON p.category_number = c.category_number
+    ORDER BY p.product_name
+    """)
+    List<ProductDetailsDTO> findAllDetails();
 
     @SqlQuery("""
     SELECT p.id_product, p.product_name, c.category_name
