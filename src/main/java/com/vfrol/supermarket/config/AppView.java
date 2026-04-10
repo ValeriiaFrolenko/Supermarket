@@ -19,6 +19,7 @@ public enum AppView {
     CATEGORY_LIST("view/category/category-list-view.fxml"),
     CATEGORY_FORM("view/category/category-form-view.fxml"),
     CATEGORY_DETAILS("view/category/category-details-view.fxml"),
+    CATEGORY_REPORT("view/category/category-report-view.fxml"),
 
     PRODUCT_LIST("view/product/product-list-view.fxml"),
     PRODUCT_FORM("view/product/product-form-view.fxml"),

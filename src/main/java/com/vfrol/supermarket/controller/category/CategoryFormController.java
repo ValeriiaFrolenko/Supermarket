@@ -1,64 +1,58 @@
 package com.vfrol.supermarket.controller.category;
 
 import com.google.inject.Inject;
-import com.vfrol.supermarket.controller.base.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseFormController;
+import com.vfrol.supermarket.controller.ui_validator.CategoryFormValidator;
+import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.dto.category.CategoryCreateDTO;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
 
-public class CategoryFormController extends BaseModalController {
-
-    @FXML private VBox formPanel;
-    @FXML private Label label;
-    @FXML private TextField nameField;
+public class CategoryFormController extends BaseFormController<CategoryCreateDTO, CategoryListDTO> {
 
     private final CategoryService categoryService;
+    private CategoryListDTO currentCategory;
 
-    private boolean isEditMode = false;
-    private CategoryListDTO categoryListDTO;
+    @FXML private TextField nameField;
 
     @Inject
     public CategoryFormController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    @FXML
-    public void initialize() {
-        label.setText("Add Category");
+    @Override
+    protected String getEntityName() {
+        return "Category";
     }
 
-    public void setCategory(CategoryListDTO dto) {
-        this.isEditMode = true;
-        label.setText("Edit Category");
-        categoryListDTO = dto;
+    @Override
+    protected void setupValidation() {
+        CategoryFormValidator categoryValidator = new CategoryFormValidator(validator);
+        categoryValidator.validateCategoryName(nameField);
+    }
+
+    @Override
+    protected void populateFields(CategoryListDTO dto) {
+        this.currentCategory = dto;
         nameField.setText(dto.name());
     }
 
-    @FXML
-    public void onSave() {
-        try {
-            CategoryCreateDTO dto = new CategoryCreateDTO(
-                    categoryListDTO == null ? 0 : categoryListDTO.id(),
-                    nameField.getText().trim()
-            );
-
-            if (isEditMode) {
-                categoryService.updateCategory(dto);
-            } else {
-                categoryService.addCategory(dto);
-            }
-            closeWindow(formPanel);
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "An error occurred while saving: " + e.getMessage());
-            alert.showAndWait();
-        }
+    @Override
+    protected CategoryCreateDTO buildDTO() {
+        return new CategoryCreateDTO(
+                currentCategory == null ? 0 : currentCategory.id(),
+                InputHelper.getString(nameField)
+        );
     }
 
-    @FXML
-    public void onCancel() {
-        closeWindow(formPanel);
+    @Override
+    protected void saveEntity(CategoryCreateDTO dto) {
+        if (isEditMode) {
+            categoryService.updateCategory(dto);
+        } else {
+            categoryService.addCategory(dto);
+        }
     }
 }

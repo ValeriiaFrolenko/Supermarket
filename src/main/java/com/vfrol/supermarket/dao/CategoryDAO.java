@@ -47,4 +47,7 @@ public interface CategoryDAO {
     FROM Category WHERE category_name ILIKE '%' || :name || '%'
     """)
     List<CategoryListDTO> findByName(@Bind("name") String name);
+
+    @SqlQuery("SELECT COUNT(*) FROM Category")
+    int count();
 }

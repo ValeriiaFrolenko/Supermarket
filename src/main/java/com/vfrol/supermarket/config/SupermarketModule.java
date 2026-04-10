@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.*;
 import com.vfrol.supermarket.database.DatabaseInitializer;
 import com.vfrol.supermarket.service.*;
+import com.vfrol.supermarket.service.validator.CategoryValidator;
 import com.vfrol.supermarket.service.validator.EmployeeValidator;
 import org.h2.jdbcx.JdbcDataSource;
 import org.jdbi.v3.core.Jdbi;
@@ -107,8 +108,8 @@ public class SupermarketModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public CategoryService provideCategoryService(CategoryDAO categoryDAO) {
-        return new CategoryService(categoryDAO);
+    public CategoryService provideCategoryService(CategoryDAO categoryDAO, CategoryValidator categoryValidator) {
+        return new CategoryService(categoryDAO, categoryValidator);
     }
 
     @Provides
@@ -145,6 +146,12 @@ public class SupermarketModule extends AbstractModule {
     @Singleton
     public EmployeeValidator provideEmployeeValidator(EmployeeDAO employeeDAO, SessionManager sessionManager){
         return new EmployeeValidator(employeeDAO, sessionManager);
+    }
+
+    @Provides
+    @Singleton
+    public CategoryValidator provideCategoryValidator(CategoryDAO categoryDAO, ProductService productService){
+        return new CategoryValidator(categoryDAO, productService);
     }
 
 }

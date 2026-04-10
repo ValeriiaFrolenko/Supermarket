@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -19,6 +16,7 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <TextField fx:id="searchField" promptText="Enter category to search" prefWidth="400"/>
         <Button text="Add Category" onAction="#onAddCategoryClick"/>
+        <Button text="Export to Excel" onAction="#onExportClick" style="-fx-background-color: #217346; -fx-text-fill: white;"/>
     </HBox>
 
     <TableView fx:id="categoryTable" VBox.vgrow="ALWAYS">

@@ -2,26 +2,21 @@ package com.vfrol.supermarket.controller.category;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
-import com.vfrol.supermarket.controller.base.BaseModalController;
+import com.vfrol.supermarket.controller.base.BaseDetailsController;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 
-public class CategoryDetailsController extends BaseModalController {
+public class CategoryDetailsController extends BaseDetailsController<CategoryListDTO> {
 
-    @FXML private VBox detailsPanel;
+    private final CategoryService categoryService;
+
     @FXML private Label nameLabel;
     @FXML private Button editButton;
     @FXML private Button deleteButton;
-
-    private CategoryListDTO currentCategory;
-    private final CategoryService categoryService;
 
     @Inject
     public CategoryDetailsController(CategoryService categoryService) {
@@ -33,31 +28,24 @@ public class CategoryDetailsController extends BaseModalController {
         SessionUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
-    public void setCategoryDetails(CategoryListDTO dto) {
-        this.currentCategory = dto;
+    @Override
+    protected String getEntityName() {
+        return "Category";
+    }
+
+    @Override
+    protected void populateFields(CategoryListDTO dto) {
         nameLabel.setText(dto.name());
     }
 
-    @FXML
-    public void onEdit() {
+    @Override
+    protected void deleteEntity() {
+        categoryService.deleteCategory(currentItem.id());
+    }
+
+    @Override
+    protected void navigateToForm() {
         viewManager.showDialog(AppView.CATEGORY_FORM, (CategoryFormController controller) ->
-                controller.setCategory(currentCategory));
-        hide();
-    }
-
-    @FXML
-    public void onDelete() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this category?", ButtonType.YES, ButtonType.NO);
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                categoryService.deleteCategory(currentCategory.id());
-                hide();
-            }
-        });
-    }
-
-    @FXML
-    public void hide() {
-        closeWindow(detailsPanel);
+                controller.setupForEdit(currentItem));
     }
 }

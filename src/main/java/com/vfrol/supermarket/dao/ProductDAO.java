@@ -79,4 +79,7 @@ public interface ProductDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>product_name<endif>
     """)
     List<ProductListDTO> findByFilter(@BindBean @Define("filter") ProductFilter filter);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Category WHERE category_number = :id)")
+    boolean categoryExists(@Bind("id") int id);
 }
