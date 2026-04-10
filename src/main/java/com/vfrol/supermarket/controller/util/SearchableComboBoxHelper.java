@@ -17,6 +17,8 @@ public final class SearchableComboBoxHelper {
             Function<String, List<T>> searchFunction,
             Function<T, String> toStringFunction) {
 
+        Debouncer debouncer = new Debouncer(300);
+
         comboBox.setEditable(true);
 
         comboBox.setConverter(new StringConverter<>() {
@@ -43,19 +45,35 @@ public final class SearchableComboBoxHelper {
             }
 
             if (newVal == null || newVal.isBlank()) {
-                resetToFullList(comboBox, allItemsSupplier);
+                debouncer.debounce(() ->
+                        AsyncRunner.runAsync(
+                                allItemsSupplier,
+                                items -> resetToFullList(comboBox, items),
+                                null
+                        )
+                );
                 return;
             }
 
-            List<T> results = searchFunction.apply(newVal);
-            comboBox.getItems().setAll(results);
-
-            if (!results.isEmpty()) {
-                comboBox.show();
-            }
+            debouncer.debounce(() ->
+                    AsyncRunner.runAsync(
+                            () -> searchFunction.apply(newVal),
+                            results -> {
+                                comboBox.getItems().setAll(results);
+                                if (!results.isEmpty()) comboBox.show();
+                            },
+                            null
+                    )
+            );
         });
 
-        comboBox.getItems().setAll(allItemsSupplier.get());
+        AsyncRunner.runAsync(allItemsSupplier, (List<T> items) ->
+                comboBox.getItems().setAll(items), null);
+    }
+
+    private static <T> void resetToFullList(ComboBox<T> comboBox, List<T> items) {
+        comboBox.setValue(null);
+        comboBox.getItems().setAll(items);
     }
 
     private static <T> boolean matchesCurrentValue(ComboBox<T> comboBox,
@@ -65,8 +83,4 @@ public final class SearchableComboBoxHelper {
         return current != null && toStringFunction.apply(current).equals(text);
     }
 
-    private static <T> void resetToFullList(ComboBox<T> comboBox, Supplier<List<T>> allItemsSupplier) {
-        comboBox.setValue(null);
-        comboBox.getItems().setAll(allItemsSupplier.get());
-    }
 }
