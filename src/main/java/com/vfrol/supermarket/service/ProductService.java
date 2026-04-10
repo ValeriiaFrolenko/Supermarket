@@ -64,7 +64,7 @@ public class ProductService {
         return productDAO.findByFilter(filter);
     }
 
-    public boolean categoryExists(int id){
-        return productDAO.categoryExists(id);
+    public boolean existsByCategoryId(int id){
+        return productDAO.existsByCategoryId(id);
     }
 }

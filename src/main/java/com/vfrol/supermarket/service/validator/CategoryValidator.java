@@ -37,7 +37,7 @@ public class CategoryValidator extends BaseValidator {
             );
         }
 
-        if (productService.categoryExists(id)) {
+        if (productService.existsByCategoryId(id)) {
             throw new ValidationException(
                     "Cannot delete category with associated products. Reassign or delete those products first."
             );
