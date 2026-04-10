@@ -24,17 +24,7 @@ public class ProductFormValidator {
     }
 
     public void validateCharacteristics(TextArea field) {
-        validator.createCheck()
-                .dependsOn("text", field.textProperty())
-                .withMethod(c -> {
-                    String text = field.getText();
-                    if (text == null || text.trim().isEmpty()) {
-                        c.error("Characteristics are required");
-                    } else if (text.length() > 100) {
-                        c.error("Characteristics max length is 100 characters");
-                    }
-                })
-                .decorates(field)
-                .immediate();
+        ValidationHelper.checkRequiredTextArea(validator, field, "Characteristics are required");
+        ValidationHelper.checkMaxLengthTextArea(validator, field, 100, "Characteristics max length is 100 characters");
     }
 }

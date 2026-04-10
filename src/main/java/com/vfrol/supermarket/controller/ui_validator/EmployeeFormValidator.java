@@ -72,13 +72,13 @@ public class EmployeeFormValidator {
     public void validateCity(TextField field) {
         ValidationHelper.checkRequired(validator, field, "City is required");
         ValidationHelper.checkMaxLength(validator, field, 50, "City max length is 50 characters");
-        ValidationHelper.checkRegex(validator, field, "^[\\p{L}\\p{N}\\s'.,/-]+$", "City contains invalid characters");
+        ValidationHelper.checkRegex(validator, field, "^[\\p{L}\\p{N}\\s'.,/\\-]+$", "City contains invalid characters");
     }
 
     public void validateStreet(TextField field) {
         ValidationHelper.checkRequired(validator, field, "Street is required");
         ValidationHelper.checkMaxLength(validator, field, 50, "Street max length is 50 characters");
-        ValidationHelper.checkRegex(validator, field, "^[\\p{L}\\p{N}\\s'.,/-]+$", "Street contains invalid characters");
+        ValidationHelper.checkRegex(validator, field, "^[\\p{L}\\p{N}\\s'.,/\\-]+$", "Street contains invalid characters");
     }
 
     public void validateZipCode(TextField field) {

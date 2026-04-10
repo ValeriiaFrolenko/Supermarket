@@ -10,6 +10,7 @@ public class CategoryFormValidator {
     public CategoryFormValidator(Validator validator) {
         this.validator = validator;
     }
+
     public void validateCategoryName(TextField field) {
         ValidationHelper.checkRequired(validator, field, "Category Name is required");
         ValidationHelper.checkMaxLength(validator, field, 50, "Category Name max length is 50 characters");
