@@ -90,4 +90,7 @@ public interface ProductDAO {
 
     @SqlQuery("SELECT EXISTS (SELECT 1 FROM Product WHERE category_number = :id)")
     boolean existsByCategoryId(@Bind("id") int id);
+
+    @SqlQuery("SELECT COUNT(*) FROM Product")
+    int count();
 }

@@ -71,4 +71,7 @@ public interface CheckDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>c.print_date DESC<endif>
     """)
     List<CheckListDTO> findByFilter(@BindBean @Define("filter") CheckFilter filter);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Check_Table WHERE card_number = :cardNumber)")
+    boolean existsByCardNumber(@Bind("cardNumber") String cardNumber);
 }

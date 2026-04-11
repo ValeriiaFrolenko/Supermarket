@@ -31,12 +31,6 @@ public class CategoryValidator extends BaseValidator {
                 "Category with ID '" + id + "' does not exist."
         );
 
-        if (categoryDAO.count() <= 1) {
-            throw new ValidationException(
-                    "Cannot delete the last category. Create another category first."
-            );
-        }
-
         if (productService.existsByCategoryId(id)) {
             throw new ValidationException(
                     "Cannot delete category with associated products. Reassign or delete those products first."

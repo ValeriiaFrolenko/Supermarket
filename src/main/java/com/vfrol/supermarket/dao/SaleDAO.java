@@ -45,4 +45,7 @@ public interface SaleDAO {
 
     @SqlUpdate("DELETE FROM Sale WHERE check_number = :checkNumber")
     void deleteByCheckNumber(@Bind("checkNumber") String checkNumber);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Sale WHERE UPC = :upc)")
+    boolean existsByUPC(@Bind("upc") String upc);
 }

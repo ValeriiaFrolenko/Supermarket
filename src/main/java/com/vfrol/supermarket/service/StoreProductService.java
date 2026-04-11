@@ -8,6 +8,7 @@ import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
 import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.StoreProductFilter;
+import com.vfrol.supermarket.service.validator.StoreProductValidator;
 
 import java.util.List;
 
@@ -15,21 +16,26 @@ import java.util.List;
 public class StoreProductService {
 
     private final StoreProductDAO storeProductDAO;
+    private final StoreProductValidator storeProductValidator;
 
     @Inject
-    public StoreProductService(StoreProductDAO storeProductDAO) {
+    public StoreProductService(StoreProductDAO storeProductDAO, StoreProductValidator storeProductValidator) {
         this.storeProductDAO = storeProductDAO;
+        this.storeProductValidator = storeProductValidator;
     }
 
     public void addStoreProduct(StoreProductCreateDTO dto) {
+        storeProductValidator.validateForCreate(dto);
         storeProductDAO.create(buildEntity(dto));
     }
 
     public void updateStoreProduct(StoreProductCreateDTO dto) {
+        storeProductValidator.validateForUpdate(dto);
         storeProductDAO.update(buildEntity(dto));
     }
 
     public void deleteStoreProduct(String upc) {
+        storeProductValidator.validateForDelete(upc);
         storeProductDAO.delete(upc);
     }
 
@@ -63,5 +69,9 @@ public class StoreProductService {
                 .quantity(dto.quantity())
                 .promotional(dto.promotional())
                 .build();
+    }
+
+    public boolean existsByProductId(int id){
+        return storeProductDAO.existsByProductId(id);
     }
 }

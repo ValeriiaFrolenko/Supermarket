@@ -24,4 +24,8 @@ public class SaleService {
     public List<SaleListDTO> getSalesByUPC(String UPC){
         return saleDAO.findByUPC(UPC);
     }
+
+    public boolean existsByUPC(String UPC){
+        return saleDAO.existsByUPC(UPC);
+    }
 }

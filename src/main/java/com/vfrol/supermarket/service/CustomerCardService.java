@@ -8,29 +8,36 @@ import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
 import com.vfrol.supermarket.entity.CustomerCard;
 import com.vfrol.supermarket.filter.CustomerCardFilter;
+import com.vfrol.supermarket.service.validator.CustomerCardValidator;
 
 import java.util.List;
 
 @Singleton
 public class CustomerCardService {
+
     private final CustomerCardDAO customerCardDAO;
+    private final CustomerCardValidator customerCardValidator;
 
     @Inject
-    public CustomerCardService(CustomerCardDAO customerCardDAO) {
+    public CustomerCardService(CustomerCardDAO customerCardDAO, CustomerCardValidator customerCardValidator) {
         this.customerCardDAO = customerCardDAO;
+        this.customerCardValidator = customerCardValidator;
     }
 
     public void addCard(CustomerCardCreateDTO dto) {
+        customerCardValidator.validateForCreate(dto);
         CustomerCard card = buildEntity(dto);
         customerCardDAO.create(card);
     }
 
     public void updateCard(CustomerCardCreateDTO dto) {
+        customerCardValidator.validateForUpdate(dto);
         CustomerCard card = buildEntity(dto);
         customerCardDAO.update(card);
     }
 
     public void deleteCard(String cardNumber) {
+        customerCardValidator.validateForDelete(cardNumber);
         customerCardDAO.delete(cardNumber);
     }
 

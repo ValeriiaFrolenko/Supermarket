@@ -92,4 +92,10 @@ public interface StoreProductDAO {
     WHERE UPC = :upc AND products_number >= :quantity
     """)
     void sellStoreProduct(@Bind("upc") String upc, @Bind("quantity") int quantity);
+
+    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE id_product = :id)")
+    boolean existsByProductId(@Bind("id") int id);
+
+    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC_prom = :upc)")
+    boolean isUsedAsPromoBase(@Bind("upc") String upc);
 }
