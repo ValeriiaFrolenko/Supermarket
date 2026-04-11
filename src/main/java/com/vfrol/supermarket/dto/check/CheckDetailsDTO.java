@@ -1,10 +1,8 @@
 package com.vfrol.supermarket.dto.check;
 
-import com.vfrol.supermarket.dto.sale.SaleListDTO;
 import lombok.Builder;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 public record CheckDetailsDTO(
@@ -14,5 +12,8 @@ public record CheckDetailsDTO(
         @ColumnName("customer_name") String customerName,
         @ColumnName("print_date") LocalDateTime dateTime,
         @ColumnName("sum_total") double sumTotal,
-        @ColumnName("vat") double vat
+        @ColumnName("vat") double vat,
+
+        @ColumnName("base_sum") double baseSum,
+        @ColumnName("discount_amount") double discountAmount
 ) {}

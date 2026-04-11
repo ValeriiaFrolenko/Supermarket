@@ -81,8 +81,16 @@ public class CheckDetailsController extends BaseModalController {
         customerLabel.setText(customerInfo);
 
         dateLabel.setText(check.dateTime() != null ? check.dateTime().format(DATE_FORMATTER) : "");
-        sumTotalLabel.setText(String.format("%.2f ₴", check.sumTotal()));
         vatLabel.setText(String.format("%.2f ₴", check.vat()));
+
+        if (check.discountAmount() > 0.01) {
+            sumTotalLabel.setText(String.format(
+                    "%.2f ₴  (Without discount: %.2f ₴, Discount: %.2f ₴)",
+                    check.sumTotal(), check.baseSum(), check.discountAmount()
+            ));
+        } else {
+            sumTotalLabel.setText(String.format("%.2f ₴", check.sumTotal()));
+        }
 
         loadSalesForCheck(check.checkNumber());
     }

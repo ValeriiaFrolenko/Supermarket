@@ -39,7 +39,14 @@ public interface CheckDAO {
                 THEN cc.cust_surname || ' ' || cc.cust_name
                 ELSE NULL
            END AS customer_name,
-           c.print_date, c.sum_total, c.vat
+           c.print_date,
+           c.sum_total,
+           c.vat,
+           (SELECT COALESCE(SUM(product_number * selling_price), 0)
+            FROM Sale WHERE check_number = c.check_number) AS base_sum,
+           ((SELECT COALESCE(SUM(product_number * selling_price), 0)
+             FROM Sale WHERE check_number = c.check_number) - c.sum_total) AS discount_amount
+
     FROM Check_Table c
     JOIN Employee e ON c.id_employee = e.id_employee
     LEFT JOIN Customer_Card cc ON c.card_number = cc.card_number
@@ -74,4 +81,7 @@ public interface CheckDAO {
 
     @SqlQuery("SELECT EXISTS (SELECT 1 FROM Check_Table WHERE card_number = :cardNumber)")
     boolean existsByCardNumber(@Bind("cardNumber") String cardNumber);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Check_Table WHERE id_employee = :idEmployee)")
+    boolean existsByEmployeeId(@Bind("idEmployee") String idEmployee);
 }

@@ -3,6 +3,7 @@ package com.vfrol.supermarket.service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.CheckDAO;
+import com.vfrol.supermarket.dao.CustomerCardDAO;
 import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.config.TransactionManager;
 import com.vfrol.supermarket.dao.StoreProductDAO;
@@ -36,16 +37,27 @@ public class CheckService {
             List<SaleCreateDTO> sales = dto.sales();
 
             double sumTotal = 0.0;
-            for (SaleCreateDTO saleDTO : sales) {
+            for (SaleCreateDTO saleDTO : dto.sales()) {
                 sumTotal += saleDTO.price() * saleDTO.quantity();
             }
+
+            if (dto.cardNumber() != null && !dto.cardNumber().isBlank()) {
+                CustomerCardDAO cardDAO = handle.attach(CustomerCardDAO.class);
+                var cardOpt = cardDAO.findById(dto.cardNumber());
+                if (cardOpt.isPresent() && dto.useDiscount()) {
+                    double discountPercent = cardOpt.get().discount();
+                    sumTotal = sumTotal * (1.0 - (discountPercent / 100.0));
+                }
+            }
+
+            double vat = sumTotal * 0.20;
 
             Check check = Check.builder()
                     .checkNumber(dto.checkNumber())
                     .idEmployee(dto.idEmployee())
                     .cardNumber(dto.cardNumber())
                     .sumTotal(sumTotal)
-                    .vat(dto.vat())
+                    .vat(vat)
                     .build();
             checkDAO.create(check);
 

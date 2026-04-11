@@ -26,6 +26,9 @@
 
         <Label text="Customer Card:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <ComboBox fx:id="customerCardComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <CheckBox fx:id="useDiscount" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold"/>
+
     </GridPane>
 
     <Separator/>

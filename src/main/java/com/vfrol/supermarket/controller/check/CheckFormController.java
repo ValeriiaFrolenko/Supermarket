@@ -5,6 +5,7 @@ import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.base.BaseModalController;
 import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.dto.check.CheckCreateDTO;
+import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
@@ -32,6 +33,7 @@ public class CheckFormController extends BaseModalController {
     @FXML private TextField checkNumberField;
     @FXML private ComboBox<EmployeeListDTO> cashierComboBox;
     @FXML private ComboBox<CustomerCardListDTO> customerCardComboBox;
+    @FXML private CheckBox useDiscount;
 
     @FXML private TableView<SaleItemModel> salesTable;
     @FXML private TableColumn<SaleItemModel, String> upcColumn;
@@ -46,7 +48,6 @@ public class CheckFormController extends BaseModalController {
     private final CheckService checkService;
     private final EmployeeService employeeService;
     private final CustomerCardService customerCardService;
-
     private final ObservableList<SaleItemModel> salesData = FXCollections.observableArrayList();
 
     @Inject
@@ -59,7 +60,15 @@ public class CheckFormController extends BaseModalController {
     @FXML
     public void initialize() {
         configureComboBoxes();
+        configureDiscountElements(false);
+        useDiscount.selectedProperty().addListener((obs, oldVal, newVal) -> recalculateTotals());
         initializeTable();
+    }
+
+    private void configureDiscountElements(Boolean isDiscountPresent) {
+        useDiscount.setVisible(isDiscountPresent);
+        useDiscount.setManaged(isDiscountPresent);
+        useDiscount.setText("Apply discount (" + (customerCardComboBox.getValue() != null ? customerCardComboBox.getValue().discount() : "0") + "%)");
     }
 
     private void configureComboBoxes() {
@@ -76,6 +85,21 @@ public class CheckFormController extends BaseModalController {
                 text -> customerCardService.getCardsByFilter(CustomerCardFilter.builder().surname(text).build()),
                 card -> card.surname() + " " + card.name() + " [" + card.cardNumber() + "]"
         );
+        customerCardComboBox.valueProperty().addListener((obs, oldVal, newVal) -> setUseDiscountVisible());    }
+
+    private void setUseDiscountVisible() {
+        if (customerCardComboBox.getValue() != null){
+            try {
+                CustomerCardListDTO dto = customerCardComboBox.getValue();
+                if (dto.discount()>0) {
+                    configureDiscountElements(true);
+                    recalculateTotals();
+                }
+            } catch (Exception e) {
+                configureDiscountElements(false);
+                recalculateTotals();
+            }
+        }
     }
 
     private void initializeTable() {
@@ -119,6 +143,15 @@ public class CheckFormController extends BaseModalController {
 
     private void recalculateTotals() {
         double total = salesData.stream().mapToDouble(SaleItemModel::getTotal).sum();
+        if (useDiscount.isSelected() && customerCardComboBox.getValue() != null) {
+            try {
+                CustomerCardListDTO dto = customerCardComboBox.getValue();
+                double discountPercent = dto.discount();
+                total = total * (1.0 - (discountPercent / 100.0));
+            } catch (Exception e) {
+                // If there's an error getting the discount, just ignore it and use the original total
+            }
+        }
         double vat = total * 0.20;
 
         sumTotalLabel.setText(String.format("%.2f", total));
@@ -136,14 +169,18 @@ public class CheckFormController extends BaseModalController {
         }
 
         String cardNumber = customerCardComboBox.getValue() != null ? customerCardComboBox.getValue().cardNumber() : null;
-        double sumTotal = salesData.stream().mapToDouble(SaleItemModel::getTotal).sum();
-        double vat = sumTotal * 0.20;
 
         List<SaleCreateDTO> saleCreateDTOs = salesData.stream()
                 .map(item -> new SaleCreateDTO(item.upc(), checkNumber, item.quantity(), item.price()))
                 .collect(Collectors.toList());
 
-        CheckCreateDTO dto = new CheckCreateDTO(checkNumber, cashier.id(), cardNumber, sumTotal, vat, saleCreateDTOs);
+        CheckCreateDTO dto = CheckCreateDTO.builder()
+                .checkNumber(checkNumber)
+                .cardNumber(cardNumber)
+                .idEmployee(cashier.id())
+                .useDiscount(useDiscount.isSelected())
+                .sales(saleCreateDTOs)
+                .build();
 
         try {
             checkService.createCheck(dto);
