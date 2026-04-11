@@ -21,11 +21,8 @@
         <Label text="Check Number: *" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <TextField fx:id="checkNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="Cashier: *" GridPane.rowIndex="0" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="cashierComboBox" GridPane.rowIndex="0" GridPane.columnIndex="3" prefWidth="200"/>
-
         <Label text="Customer Card:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="customerCardComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200"/>
+        <ComboBox fx:id="customerCardComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="250"/>
 
         <CheckBox fx:id="useDiscount" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold"/>
 

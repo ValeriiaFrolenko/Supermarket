@@ -68,7 +68,12 @@ public class CheckListController extends BaseListController<CheckListDTO> {
 
         SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton);
 
-        loadChecks();
+        if (!sessionManager.isManager()) {
+            cashierSurnameFilterField.setText(sessionManager.getCurrentUser().surname());
+            cashierSurnameFilterField.setDisable(true);
+        }
+
+        applyFilter();
     }
 
     private void initializeTable() {
@@ -104,17 +109,23 @@ public class CheckListController extends BaseListController<CheckListDTO> {
         LocalDate dateFrom = dateFromPicker.getValue();
         LocalDate dateTo = dateToPicker.getValue();
 
+        String employeeId = null;
+        if (!sessionManager.isManager()) {
+            employeeId = sessionManager.getCurrentUser().id();
+            cashierSurname = null;
+        }
+
         CheckFilter filter = CheckFilter.builder()
                 .checkNumber(checkNumber)
                 .cashierSurname(cashierSurname)
+                .employeeId(employeeId)
                 .dateFrom(dateFrom)
                 .dateTo(dateTo)
                 .sortBy(sortByComboBox.getValue())
                 .build();
 
         List<CheckListDTO> filtered = checkService.getCheckByFilter(filter);
-        checkData.clear();
-        checkData.addAll(filtered);
+        checkData.setAll(filtered);
     }
 
     @FXML
@@ -131,6 +142,7 @@ public class CheckListController extends BaseListController<CheckListDTO> {
         List<CheckListDTO> checks = checkService.getAllChecks();
         checkData.clear();
         checkData.addAll(checks);
+        applyFilter();
     }
 
     private void showCheckDetails(String checkNumber) {
