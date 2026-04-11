@@ -65,6 +65,16 @@ public interface StoreProductDAO {
     List<StoreProductListDTO> findAll();
 
     @SqlQuery("""
+    SELECT sp.UPC, sp.UPC_prom, sp.id_product, p.product_name, c.category_name,
+           sp.selling_price, sp.products_number, sp.promotional_product
+    FROM Store_Product sp
+    JOIN Product p ON sp.id_product = p.id_product
+    JOIN Category c ON p.category_number = c.category_number
+    ORDER BY p.product_name
+    """)
+    List<StoreProductDetailsDTO> findAllDetails();
+
+    @SqlQuery("""
     SELECT sp.UPC, p.product_name, sp.selling_price, sp.products_number, sp.promotional_product
     FROM Store_Product sp
     JOIN Product p ON sp.id_product = p.id_product

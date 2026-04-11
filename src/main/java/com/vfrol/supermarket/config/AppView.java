@@ -10,7 +10,6 @@ public enum AppView {
 
     ACCOUNT_VIEW("view/account/account-view.fxml"),
 
-
     EMPLOYEE_LIST("view/employee/employee-list-view.fxml"),
     EMPLOYEE_DETAILS("view/employee/employee-details-view.fxml"),
     EMPLOYEE_FORM("view/employee/employee-form-view.fxml"),
@@ -34,6 +33,7 @@ public enum AppView {
     STORE_PRODUCT_LIST("view/store_product/store-product-list-view.fxml"),
     STORE_PRODUCT_FORM("view/store_product/store-product-form-view.fxml"),
     STORE_PRODUCT_DETAILS("view/store_product/store-product-details-view.fxml"),
+    STORE_PRODUCT_REPORT("view/store_product/store-product-report-view.fxml"),
 
     CHECK_LIST("view/check/check-list-view.fxml"),
     CHECK_FORM("view/check/check-form-view.fxml"),

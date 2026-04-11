@@ -13,6 +13,7 @@ import java.util.List;
 
 @Singleton
 public class StoreProductService {
+
     private final StoreProductDAO storeProductDAO;
 
     @Inject
@@ -21,13 +22,11 @@ public class StoreProductService {
     }
 
     public void addStoreProduct(StoreProductCreateDTO dto) {
-        StoreProduct storeProduct = buildEntity(dto);
-        storeProductDAO.create(storeProduct);
+        storeProductDAO.create(buildEntity(dto));
     }
 
     public void updateStoreProduct(StoreProductCreateDTO dto) {
-        StoreProduct storeProduct = buildEntity(dto);
-        storeProductDAO.update(storeProduct);
+        storeProductDAO.update(buildEntity(dto));
     }
 
     public void deleteStoreProduct(String upc) {
@@ -35,15 +34,24 @@ public class StoreProductService {
     }
 
     public StoreProductDetailsDTO getStoreProductByUpc(String upc) {
-        return storeProductDAO.findById(upc).orElseThrow(() -> new RuntimeException("Store product not found"));
+        return storeProductDAO.findById(upc)
+                .orElseThrow(() -> new RuntimeException("Store product not found: " + upc));
     }
 
     public List<StoreProductListDTO> getAllStoreProducts() {
         return storeProductDAO.findAll();
     }
 
+    public List<StoreProductDetailsDTO> getAllStoreProductDetails() {
+        return storeProductDAO.findAllDetails();
+    }
+
     public List<StoreProductListDTO> getStoreProductsByFilter(StoreProductFilter filter) {
         return storeProductDAO.findByFilter(filter);
+    }
+
+    public Integer getProductIdByUpc(String upc) {
+        return storeProductDAO.findProductIdByUPC(upc);
     }
 
     private StoreProduct buildEntity(StoreProductCreateDTO dto) {
@@ -55,9 +63,5 @@ public class StoreProductService {
                 .quantity(dto.quantity())
                 .promotional(dto.promotional())
                 .build();
-    }
-
-    public Integer getProductIdByUpc(String upcProm) {
-        return storeProductDAO.findProductIdByUPC(upcProm);
     }
 }

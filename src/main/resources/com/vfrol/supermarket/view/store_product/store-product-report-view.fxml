@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.vfrol.supermarket.controller.store_product.StoreProductReportController"
+            prefWidth="1100" prefHeight="500">
+
+    <center>
+        <TableView fx:id="previewTable">
+            <columns>
+                <TableColumn fx:id="upcColumn"         text="UPC"          prefWidth="120"/>
+                <TableColumn fx:id="upcPromColumn"     text="UPC Promo"    prefWidth="120"/>
+                <TableColumn fx:id="productNameColumn" text="Product Name" prefWidth="200"/>
+                <TableColumn fx:id="categoryColumn"    text="Category"     prefWidth="150"/>
+                <TableColumn fx:id="priceColumn"       text="Price"        prefWidth="100"/>
+                <TableColumn fx:id="quantityColumn"    text="Quantity"/>
+                <TableColumn fx:id="promotionalColumn" text="Promotional"  prefWidth="100"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-alignment: center-right;">
+            <Button text="Cancel" onAction="#onCancel"/>
+            <Button fx:id="exportButton" text="Export" onAction="#onExport" defaultButton="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

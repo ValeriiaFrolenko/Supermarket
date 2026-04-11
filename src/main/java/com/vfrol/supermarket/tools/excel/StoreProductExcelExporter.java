@@ -14,7 +14,7 @@ public class StoreProductExcelExporter extends BaseExcelExporter<StoreProductDet
     @Override
     protected String[] getColumns() {
         return new String[]{
-                "UPC", "UPC Promo", "Product ID", "Product Name", "Category", "Price (UAH)", "Quantity", "Promotional"
+                "UPC", "UPC Promo", "Product Name", "Category", "Price (UAH)", "Quantity", "Promotional"
         };
     }
 
@@ -22,17 +22,16 @@ public class StoreProductExcelExporter extends BaseExcelExporter<StoreProductDet
     protected void fillRow(StoreProductDetailsDTO item, Row row, ExcelStyles styles) {
         row.createCell(0).setCellValue(item.UPC());
         row.createCell(1).setCellValue(item.UPCprom() != null ? item.UPCprom() : "");
-        row.createCell(2).setCellValue(item.productId());
-        row.createCell(3).setCellValue(item.productName());
-        row.createCell(4).setCellValue(item.categoryName());
+        row.createCell(2).setCellValue(item.productName());
+        row.createCell(3).setCellValue(item.categoryName());
 
-        Cell priceCell = row.createCell(5);
+        Cell priceCell = row.createCell(4);
         priceCell.setCellValue(item.price());
         priceCell.setCellStyle(styles.money);
 
-        row.createCell(6).setCellValue(item.quantity());
+        row.createCell(5).setCellValue(item.quantity());
 
         boolean isPromotional = item.promotional() != null && item.promotional();
-        row.createCell(7).setCellValue(isPromotional ? "Yes" : "No");
+        row.createCell(6).setCellValue(isPromotional ? "Yes" : "No");
     }
 }

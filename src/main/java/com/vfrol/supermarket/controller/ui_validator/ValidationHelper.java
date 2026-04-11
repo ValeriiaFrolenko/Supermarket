@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.controller.ui_validator;
 
 import com.vfrol.supermarket.controller.util.InputHelper;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
@@ -24,11 +25,27 @@ public final class ValidationHelper {
                 .decorates(field).immediate();
     }
 
-    public static void checkRequiredConditional(Validator validator, TextField field, Supplier<Boolean> condition, String message) {
+    // --- Conditional required (Supplier version — for static conditions like isNewRecord) ---
+
+    public static void checkRequiredConditional(Validator validator, TextField field,
+                                                Supplier<Boolean> condition, String message) {
         validator.createCheck()
                 .dependsOn("text", field.textProperty())
                 .withMethod(c -> {
                     if (condition.get() && InputHelper.getString(field) == null) c.error(message);
+                })
+                .decorates(field).immediate();
+    }
+
+    // Observable version — tracks condition changes (e.g. a CheckBox toggle during the form)
+    public static void checkRequiredConditional(Validator validator, TextField field,
+                                                ObservableBooleanValue conditionObservable, String message) {
+        validator.createCheck()
+                .dependsOn("text",      field.textProperty())
+                .dependsOn("condition", conditionObservable)
+                .withMethod(c -> {
+                    if (Boolean.TRUE.equals(c.get("condition")) && InputHelper.getString(field) == null)
+                        c.error(message);
                 })
                 .decorates(field).immediate();
     }
@@ -122,27 +139,32 @@ public final class ValidationHelper {
                 .decorates(picker).immediate();
     }
 
-    public static void checkDateDifferenceFromNowMinYears(Validator validator, DatePicker datePicker, int minYears, String message) {
+    public static void checkDateDifferenceFromNowMinYears(Validator validator, DatePicker datePicker,
+                                                          int minYears, String message) {
         validator.createCheck()
                 .dependsOn("date", datePicker.valueProperty())
                 .withMethod(c -> {
                     LocalDate date = c.get("date");
-                    if (date != null && ChronoUnit.YEARS.between(date, LocalDate.now()) < minYears) c.error(message);
+                    if (date != null && ChronoUnit.YEARS.between(date, LocalDate.now()) < minYears)
+                        c.error(message);
                 })
                 .decorates(datePicker).immediate();
     }
 
-    public static void checkDateDifferenceMinYears(Validator validator, DatePicker startDatePicker, DatePicker endDatePicker, int minYears, String message) {
+    public static void checkDateDifferenceMinYears(Validator validator, DatePicker startDatePicker,
+                                                   DatePicker endDatePicker, int minYears, String message) {
         validator.createCheck()
                 .dependsOn("start", startDatePicker.valueProperty())
-                .dependsOn("end", endDatePicker.valueProperty())
+                .dependsOn("end",   endDatePicker.valueProperty())
                 .withMethod(c -> {
                     LocalDate start = c.get("start");
-                    LocalDate end = c.get("end");
-                    if (start != null && end != null && ChronoUnit.YEARS.between(start, end) < minYears) c.error(message);
+                    LocalDate end   = c.get("end");
+                    if (start != null && end != null && ChronoUnit.YEARS.between(start, end) < minYears)
+                        c.error(message);
                 })
                 .decorates(endDatePicker).immediate();
     }
+
 
     public static void checkRequiredComboBox(Validator validator, ComboBox<?> box, String message) {
         validator.createCheck()
@@ -153,11 +175,24 @@ public final class ValidationHelper {
                 .decorates(box).immediate();
     }
 
-    public static void checkRequiredComboBoxConditional(Validator validator, ComboBox<?> box, Supplier<Boolean> condition, String message) {
+    public static void checkRequiredComboBoxConditional(Validator validator, ComboBox<?> box,
+                                                        Supplier<Boolean> condition, String message) {
         validator.createCheck()
                 .dependsOn("val", box.valueProperty())
                 .withMethod(c -> {
                     if (condition.get() && c.get("val") == null) c.error(message);
+                })
+                .decorates(box).immediate();
+    }
+
+    public static void checkRequiredComboBoxConditional(Validator validator, ComboBox<?> box,
+                                                        ObservableBooleanValue conditionObservable, String message) {
+        validator.createCheck()
+                .dependsOn("val",       box.valueProperty())
+                .dependsOn("condition", conditionObservable)
+                .withMethod(c -> {
+                    if (Boolean.TRUE.equals(c.get("condition")) && c.get("val") == null)
+                        c.error(message);
                 })
                 .decorates(box).immediate();
     }
@@ -172,7 +207,8 @@ public final class ValidationHelper {
                 .decorates(field).immediate();
     }
 
-    public static void checkMaxLengthTextArea(Validator validator, TextArea field, int maxLength, String message) {
+    public static void checkMaxLengthTextArea(Validator validator, TextArea field, int maxLength,
+                                              String message) {
         validator.createCheck()
                 .dependsOn("text", field.textProperty())
                 .withMethod(c -> {

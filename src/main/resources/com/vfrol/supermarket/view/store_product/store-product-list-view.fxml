@@ -18,6 +18,7 @@
         <TextField fx:id="searchField" promptText="Enter product UPC to search" prefWidth="400"/>
         <Button text="Filters" onAction="#onToggleFilterClick"/>
         <Button fx:id="addButton" text="Add Store Product" onAction="#onAddStoreProductClick"/>
+        <Button text="Export to Excel" onAction="#onExportClick" style="-fx-background-color: #217346; -fx-text-fill: white;"/>
     </HBox>
 
     <VBox fx:id="filterPanel" spacing="10" visible="false" managed="false"
@@ -31,7 +32,7 @@
             <ComboBox fx:id="promotionalFilterComboBox" prefWidth="100"/>
 
             <Label text="Sort by:"/>
-            <ComboBox fx:id="sortByComboBox" prefWidth="120"/>
+            <ComboBox fx:id="sortByComboBox" prefWidth="150"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER_RIGHT">
             <Button text="Clear" onAction="#onClearFilterClick"/>
@@ -44,10 +45,10 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
         </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="upcColumn" text="UPC"/>
-            <TableColumn fx:id="nameColumn" text="Product Name"/>
-            <TableColumn fx:id="priceColumn" text="Price"/>
-            <TableColumn fx:id="quantityColumn" text="Quantity"/>
+            <TableColumn fx:id="upcColumn"         text="UPC"/>
+            <TableColumn fx:id="nameColumn"        text="Product Name"/>
+            <TableColumn fx:id="priceColumn"       text="Price"/>
+            <TableColumn fx:id="quantityColumn"    text="Quantity"/>
             <TableColumn fx:id="promotionalColumn" text="Promotional"/>
         </columns>
     </TableView>
