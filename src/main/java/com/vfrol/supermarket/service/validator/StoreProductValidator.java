@@ -2,23 +2,23 @@ package com.vfrol.supermarket.service.validator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.vfrol.supermarket.dao.ProductDAO;
+import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.dao.StoreProductDAO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
-import com.vfrol.supermarket.service.ProductService;
-import com.vfrol.supermarket.service.SaleService;
 
 @Singleton
 public class StoreProductValidator extends BaseValidator {
 
     private final StoreProductDAO storeProductDAO;
-    private final ProductService productService;
-    private final SaleService saleService;
+    private final ProductDAO productDAO;
+    private final SaleDAO saleDAO;
 
     @Inject
-    public StoreProductValidator(StoreProductDAO storeProductDAO, ProductService productService, SaleService saleService) {
+    public StoreProductValidator(StoreProductDAO storeProductDAO, ProductDAO productDAO, SaleDAO saleDAO) { // Змінено тут
         this.storeProductDAO = storeProductDAO;
-        this.productService = productService;
-        this.saleService = saleService;
+        this.productDAO = productDAO;
+        this.saleDAO = saleDAO;
     }
 
     public void validateForCreate(StoreProductCreateDTO dto) {
@@ -27,7 +27,7 @@ public class StoreProductValidator extends BaseValidator {
                 "Store product with UPC '" + dto.UPC() + "' already exists."
         );
 
-        productService.getProductById(dto.productId());
+        requireExists(productDAO.findById(dto.productId()), "Product does not exist.");
 
         if (dto.promotional()) {
             validatePromotionalRules(dto);
@@ -40,7 +40,7 @@ public class StoreProductValidator extends BaseValidator {
                 "Store product with UPC '" + dto.UPC() + "' does not exist."
         );
 
-        productService.getProductById(dto.productId());
+        requireExists(productDAO.findById(dto.productId()), "Product does not exist.");
 
         if (dto.promotional()) {
             validatePromotionalRules(dto);
@@ -53,7 +53,7 @@ public class StoreProductValidator extends BaseValidator {
                 "Store product with UPC '" + upc + "' does not exist."
         );
 
-        if (saleService.existsByUPC(upc)) {
+        if (saleDAO.existsByUPC(upc)) {
             throw new ValidationException(
                     "Cannot delete store product with UPC '" + upc + "' because it has been sold in existing sales."
             );

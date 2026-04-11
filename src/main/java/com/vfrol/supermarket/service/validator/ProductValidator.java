@@ -2,39 +2,37 @@ package com.vfrol.supermarket.service.validator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.vfrol.supermarket.dao.CategoryDAO;
 import com.vfrol.supermarket.dao.ProductDAO;
+import com.vfrol.supermarket.dao.StoreProductDAO;
 import com.vfrol.supermarket.dto.product.ProductCreateDTO;
-import com.vfrol.supermarket.service.CategoryService;
-import com.vfrol.supermarket.service.StoreProductService;
 
 @Singleton
 public class ProductValidator extends BaseValidator{
 
     private final ProductDAO productDAO;
-    private final CategoryService categoryService;
-    private final StoreProductService storeProductService;
+    private final CategoryDAO categoryDAO;
+    private final StoreProductDAO storeProductDAO;
 
     @Inject
-    public ProductValidator(ProductDAO productDAO, CategoryService categoryService, StoreProductService storeProductService) {
+    public ProductValidator(ProductDAO productDAO, CategoryDAO categoryDAO, StoreProductDAO storeProductDAO) { // Змінено тут
         this.productDAO = productDAO;
-        this.categoryService = categoryService;
-        this.storeProductService = storeProductService;
+        this.categoryDAO = categoryDAO;
+        this.storeProductDAO = storeProductDAO;
     }
 
     public void validateForCreate(ProductCreateDTO dto){
-        categoryService.getCategoryById(dto.categoryId());
+        requireExists(categoryDAO.findById(dto.categoryId()), "Category with ID " + dto.categoryId() + " does not exist.");
     }
 
     public void validateForUpdate(ProductCreateDTO dto){
         requireExists(productDAO.findById(dto.id()), "Product with ID " + dto.id() + " does not exist.");
-        if (categoryService.getCategoryById(dto.categoryId()) == null) {
-            throw new ValidationException("Category with ID " + dto.categoryId() + " does not exist.");
-        }
+        requireExists(categoryDAO.findById(dto.categoryId()), "Category with ID " + dto.categoryId() + " does not exist.");
     }
 
     public void validateForDelete(int id){
         requireExists(productDAO.findById(id), "Product with ID " + id + " does not exist.");
-        if (storeProductService.existsByProductId(id)) {
+        if (storeProductDAO.existsByProductId(id)) {
             throw new ValidationException("Cannot delete product with ID " + id + " because it is associated with store products.");
         }
     }

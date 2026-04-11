@@ -2,6 +2,7 @@ package com.vfrol.supermarket.service.validator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.vfrol.supermarket.dao.CheckDAO;
 import com.vfrol.supermarket.dao.CustomerCardDAO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardCreateDTO;
 import com.vfrol.supermarket.service.CheckService;
@@ -10,12 +11,12 @@ import com.vfrol.supermarket.service.CheckService;
 public class CustomerCardValidator extends BaseValidator {
 
     private final CustomerCardDAO customerCardDAO;
-    private final CheckService checkService;
+    private final CheckDAO checkDAO;
 
     @Inject
-    public CustomerCardValidator(CustomerCardDAO customerCardDAO, CheckService checkService) {
+    public CustomerCardValidator(CustomerCardDAO customerCardDAO, CheckDAO checkDAO) {
         this.customerCardDAO = customerCardDAO;
-        this.checkService = checkService;
+        this.checkDAO = checkDAO;
     }
 
     public void validateForCreate(CustomerCardCreateDTO dto) {
@@ -38,7 +39,7 @@ public class CustomerCardValidator extends BaseValidator {
                 "Customer card with number '" + cardNumber + "' does not exist."
         );
 
-        if (checkService.existsByCardNumber(cardNumber)) {
+        if (checkDAO.existsByCardNumber(cardNumber)) {
             throw new ValidationException(
                     "Cannot delete customer card '" + cardNumber + "' because it has been used in existing checks."
             );

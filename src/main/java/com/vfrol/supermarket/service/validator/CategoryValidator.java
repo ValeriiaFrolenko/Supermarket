@@ -3,19 +3,19 @@ package com.vfrol.supermarket.service.validator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.vfrol.supermarket.dao.CategoryDAO;
+import com.vfrol.supermarket.dao.ProductDAO;
 import com.vfrol.supermarket.dto.category.CategoryCreateDTO;
-import com.vfrol.supermarket.service.ProductService;
 
 @Singleton
 public class CategoryValidator extends BaseValidator {
 
     private final CategoryDAO categoryDAO;
-    private final ProductService productService;
+    private final ProductDAO productDAO;
 
     @Inject
-    public CategoryValidator(CategoryDAO categoryDAO, ProductService productService) {
+    public CategoryValidator(CategoryDAO categoryDAO, ProductDAO productDAO) { // Змінено тут
         this.categoryDAO = categoryDAO;
-        this.productService = productService;
+        this.productDAO = productDAO;
     }
 
     public void validateForUpdate(CategoryCreateDTO dto) {
@@ -31,7 +31,7 @@ public class CategoryValidator extends BaseValidator {
                 "Category with ID '" + id + "' does not exist."
         );
 
-        if (productService.existsByCategoryId(id)) {
+        if (productDAO.existsByCategoryId(id)) {
             throw new ValidationException(
                     "Cannot delete category with associated products. Reassign or delete those products first."
             );
