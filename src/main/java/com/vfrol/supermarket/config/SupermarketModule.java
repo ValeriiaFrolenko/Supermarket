@@ -56,4 +56,15 @@ public class SupermarketModule extends AbstractModule {
     @Provides
     @Singleton
     public CheckDAO provideCheckDAO(Jdbi jdbi) { return jdbi.onDemand(CheckDAO.class); }
+
+    @Provides @Singleton
+    public SalesAnalyticsDAO provideSalesAnalyticsDAO(Jdbi jdbi) {
+        return jdbi.onDemand(SalesAnalyticsDAO.class);
+    }
+
+    @Provides @Singleton
+    public EmployeePerformanceDAO provideEmployeePerformanceDAO(Jdbi jdbi) {
+        return jdbi.onDemand(EmployeePerformanceDAO.class);
+    }
+
 }

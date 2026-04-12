@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vfrol.supermarket.controller.analytics.EmployeePerformanceController"
+      spacing="10" prefHeight="700.0" prefWidth="900.0">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Employee Performance Analytics"
+           style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <VBox spacing="4"
+              style="-fx-background-color: #fff8e1; -fx-padding: 12;
+                     -fx-border-radius: 6; -fx-background-radius: 6; -fx-min-width: 220;">
+            <Label text="Total Receipts" style="-fx-text-fill: #555;"/>
+            <Label fx:id="totalReceiptsLabel" text="—"
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #e65100;"/>
+        </VBox>
+        <VBox spacing="4"
+              style="-fx-background-color: #e8f5e9; -fx-padding: 12;
+                     -fx-border-radius: 6; -fx-background-radius: 6; -fx-min-width: 220;">
+            <Label text="Total Sales Amount" style="-fx-text-fill: #555;"/>
+            <Label fx:id="totalAmountLabel" text="—"
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Quick range:" style="-fx-font-weight: bold;"/>
+        <Button text="Last 7 days"  onAction="#onLast7DaysClick"/>
+        <Button text="Last 30 days" onAction="#onLast30DaysClick"/>
+        <Button text="This month"   onAction="#onThisMonthClick"/>
+        <Button text="This year"    onAction="#onThisYearClick"/>
+    </HBox>
+
+    <VBox fx:id="filterPanel" spacing="10" visible="false" managed="false"
+          style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Date from:"/>
+            <DatePicker fx:id="dateFromPicker" prefWidth="130"/>
+
+            <Label text="to:"/>
+            <DatePicker fx:id="dateToPicker" prefWidth="130"/>
+
+            <Label text="Sort by:"/>
+            <ComboBox fx:id="sortByComboBox" prefWidth="180" promptText="Default (amount desc)"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <CheckBox fx:id="onlyWithCardAlwaysCheckBox"
+                      text="Only cashiers who always process purchases with a customer card"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Clear Filters" onAction="#onClearFilterClick"/>
+            <Button text="Apply"         onAction="#applyFilter" defaultButton="true"/>
+        </HBox>
+    </VBox>
+
+    <!-- Toolbar -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Filters"         onAction="#onToggleFilterClick"/>
+        <Button text="Export to Excel" onAction="#onExportClick"
+                style="-fx-background-color: #217346; -fx-text-fill: white;"/>
+    </HBox>
+
+    <TableView fx:id="analyticsTable" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="cashierNameColumn"  text="Cashier"            prefWidth="280"/>
+            <TableColumn fx:id="receiptCountColumn" text="Receipts"           prefWidth="100"/>
+            <TableColumn fx:id="totalAmountColumn"  text="Total Amount (UAH)" prefWidth="200"/>
+        </columns>
+        <placeholder>
+            <Label text="Apply a filter or use a date shortcut to load data."/>
+        </placeholder>
+    </TableView>
+
+</VBox>

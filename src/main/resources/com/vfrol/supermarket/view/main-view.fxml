@@ -16,6 +16,7 @@
             <padding>
                 <Insets top="20" right="10" bottom="20" left="10"/>
             </padding>
+
             <Button fx:id="accountButton" text="Account" onAction="#goToAccount" prefWidth="180"/>
             <Button fx:id="employeesButton" text="Employees" onAction="#goToEmployees" prefWidth="180"/>
             <Button fx:id="categoriesButton" text="Categories" onAction="#goToCategories" prefWidth="180"/>
@@ -23,6 +24,15 @@
             <Button fx:id="storeProductsButton" text="Store Products" onAction="#goToStoreProducts" prefWidth="180"/>
             <Button fx:id="checksButton" text="Checks" onAction="#goToChecks" prefWidth="180"/>
             <Button fx:id="customersButton" text="Customers" onAction="#goToCustomers" prefWidth="180"/>
+            <Separator/>
+            <Button fx:id="salesAnalyticsButton"
+                    text="Sales Analytics"
+                    onAction="#goToSalesAnalytics"
+                    prefWidth="180"/>
+            <Button fx:id="employeePerformanceButton"
+                    text="Employee Performance"
+                    onAction="#goToEmployeePerformance"
+                    prefWidth="180"/>
         </VBox>
     </left>
 
@@ -36,7 +46,16 @@
                 <Button text="Store Products" onAction="#goToStoreProducts" prefWidth="180"/>
                 <Button text="Checks" onAction="#goToChecks" prefWidth="180"/>
                 <Button text="Customers" onAction="#goToCustomers" prefWidth="180"/>
+                <Button fx:id="salesAnalyticsCenterButton"
+                        text="Sales Analytics"
+                        onAction="#goToSalesAnalytics"
+                        prefWidth="180"/>
+                <Button fx:id="employeePerformanceCenterButton"
+                        text="Employee Performance"
+                        onAction="#goToEmployeePerformance"
+                        prefWidth="180"/>
             </VBox>
         </StackPane>
     </center>
+
 </BorderPane>

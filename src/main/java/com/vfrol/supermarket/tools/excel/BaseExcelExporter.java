@@ -10,9 +10,13 @@ import java.util.List;
 
 public abstract class BaseExcelExporter<T> {
 
-    protected abstract String getSheetName();
+    protected abstract String   getSheetName();
     protected abstract String[] getColumns();
-    protected abstract void fillRow(T item, Row row, ExcelStyles styles);
+    protected abstract void     fillRow(T item, Row row, ExcelStyles styles);
+
+    protected void writeFooter(Sheet sheet, ExcelStyles styles, List<T> data, int nextRowNum) {
+        // default: no footer
+    }
 
     public void export(List<T> data, File file) {
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -25,6 +29,8 @@ public abstract class BaseExcelExporter<T> {
             for (T item : data) {
                 fillRow(item, sheet.createRow(rowNum++), styles);
             }
+
+            writeFooter(sheet, styles, data, rowNum);
 
             for (int i = 0; i < getColumns().length; i++) {
                 sheet.autoSizeColumn(i);
