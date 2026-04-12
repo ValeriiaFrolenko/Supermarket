@@ -21,6 +21,15 @@
 
     <VBox fx:id="filterPanel" spacing="10" visible="false" managed="false"
           style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="Quick range:" style="-fx-font-weight: bold;"/>
+            <Button text="Last 7 days"  onAction="#onLast7DaysClick"/>
+            <Button text="Last 30 days" onAction="#onLast30DaysClick"/>
+            <Button text="This month"   onAction="#onThisMonthClick"/>
+            <Button text="This year"    onAction="#onThisYearClick"/>
+        </HBox>
+
         <HBox spacing="15" alignment="CENTER_LEFT">
             <Label text="Cashier Surname:"/>
             <TextField fx:id="cashierSurnameFilterField" prefWidth="150"/>

@@ -20,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -147,6 +148,34 @@ public class CheckListController extends BaseListController<CheckListDTO> {
                     checkTable
             );
         }
+    }
+
+    @FXML
+    public void onLast7DaysClick() {
+        LocalDate today = LocalDate.now();
+        dateFromPicker.setValue(today.minusDays(6));
+        dateToPicker.setValue(today);
+    }
+
+    @FXML
+    public void onLast30DaysClick() {
+        LocalDate today = LocalDate.now();
+        dateFromPicker.setValue(today.minusDays(29));
+        dateToPicker.setValue(today);
+    }
+
+    @FXML
+    public void onThisMonthClick() {
+        LocalDate today = LocalDate.now();
+        dateFromPicker.setValue(today.withDayOfMonth(1));
+        dateToPicker.setValue(today);
+    }
+
+    @FXML
+    public void onThisYearClick() {
+        LocalDate today = LocalDate.now();
+        dateFromPicker.setValue(today.withDayOfYear(1));
+        dateToPicker.setValue(today);
     }
 
     @FXML
