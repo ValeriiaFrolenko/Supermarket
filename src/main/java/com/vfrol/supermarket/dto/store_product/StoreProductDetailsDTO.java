@@ -12,6 +12,7 @@ public record StoreProductDetailsDTO(
         @ColumnName("category_name") String categoryName,
         @ColumnName("selling_price") double price,
         @ColumnName("products_number") int quantity,
-        @ColumnName("promotional_product") Boolean promotional
+        @ColumnName("promotional_product") Boolean promotional,
+        @ColumnName("discount") Double discount
 ) {
 }

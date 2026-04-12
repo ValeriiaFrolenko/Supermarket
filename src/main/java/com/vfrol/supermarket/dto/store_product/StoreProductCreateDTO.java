@@ -9,6 +9,7 @@ public record StoreProductCreateDTO(
         int productId,
         double price,
         int quantity,
-        Boolean promotional
+        Boolean promotional,
+        Double discount
 ) {
 }

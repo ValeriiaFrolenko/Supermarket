@@ -19,6 +19,7 @@ public class StoreProductDetailsController extends BaseDetailsController<StorePr
     @FXML private Label productNameLabel;
     @FXML private Label categoryNameLabel;
     @FXML private Label priceLabel;
+    @FXML private Label discountLabel;
     @FXML private Label quantityLabel;
     @FXML private Label promotionalLabel;
     @FXML private Button editButton;
@@ -46,6 +47,7 @@ public class StoreProductDetailsController extends BaseDetailsController<StorePr
         productNameLabel.setText(dto.productName());
         categoryNameLabel.setText(dto.categoryName());
         priceLabel.setText(String.format("%.2f", dto.price()));
+        discountLabel.setText(dto.UPCprom() != null ? String.format("%.2f", dto.discount()) : "—");
         quantityLabel.setText(String.valueOf(dto.quantity()));
         promotionalLabel.setText(Boolean.TRUE.equals(dto.promotional()) ? "Yes" : "No");
     }

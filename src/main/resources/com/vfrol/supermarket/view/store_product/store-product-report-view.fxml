@@ -16,6 +16,7 @@
                 <TableColumn fx:id="productNameColumn" text="Product Name" prefWidth="200"/>
                 <TableColumn fx:id="categoryColumn"    text="Category"     prefWidth="150"/>
                 <TableColumn fx:id="priceColumn"       text="Price"        prefWidth="100"/>
+                <TableColumn fx:id="discountColumn"    text="Discount (%)"  prefWidth="100"/>
                 <TableColumn fx:id="quantityColumn"    text="Quantity"/>
                 <TableColumn fx:id="promotionalColumn" text="Promotional"  prefWidth="100"/>
             </columns>

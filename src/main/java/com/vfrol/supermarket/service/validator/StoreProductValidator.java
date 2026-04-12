@@ -58,6 +58,12 @@ public class StoreProductValidator extends BaseValidator {
                     "Cannot delete store product with UPC '" + upc + "' because it has been sold in existing sales."
             );
         }
+
+        if (storeProductDAO.isUsedAsPromoBase(upc)) {
+            throw new ValidationException(
+                    "Cannot delete store product with UPC '" + upc + "' because it is used as a promotional base for another product."
+            );
+        }
     }
 
     private void validatePromotionalRules(StoreProductCreateDTO dto) {

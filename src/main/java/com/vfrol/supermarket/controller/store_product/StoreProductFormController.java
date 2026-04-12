@@ -3,26 +3,32 @@ package com.vfrol.supermarket.controller.store_product;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.controller.base.BaseFormController;
 import com.vfrol.supermarket.controller.ui_validator.StoreProductFormValidator;
-import com.vfrol.supermarket.controller.util.AlertHelper;
+import com.vfrol.supermarket.controller.util.Debouncer;
 import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
+import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
+import com.vfrol.supermarket.filter.StoreProductFilter;
 import com.vfrol.supermarket.service.ProductService;
 import com.vfrol.supermarket.service.StoreProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.util.Locale;
+
 public class StoreProductFormController extends BaseFormController<StoreProductCreateDTO, StoreProductDetailsDTO> {
 
     private final StoreProductService storeProductService;
     private final ProductService productService;
+    private final Debouncer priceDebouncer = new Debouncer(400);
 
     @FXML private TextField upcField;
-    @FXML private TextField upcPromField;
+    @FXML private ComboBox<StoreProductListDTO> upcPromComboBox;
     @FXML private ComboBox<ProductNameDTO> productComboBox;
     @FXML private TextField priceField;
+    @FXML private TextField discountField;
     @FXML private TextField quantityField;
     @FXML private CheckBox promotionalCheckBox;
 
@@ -45,9 +51,42 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
                 ProductNameDTO::name
         );
 
-        promotionalCheckBox.selectedProperty().addListener((_, _, isPromotional) ->
-                updateFieldVisibility(isPromotional));
+        SearchableComboBoxHelper.configure(
+                upcPromComboBox,
+                storeProductService::getAllStoreProducts,
+                text -> storeProductService.getStoreProductsByFilter(StoreProductFilter.builder().upc(text).build()),
+                sp -> sp.UPC() + " (" + sp.productName() + ")"
+        );
+
+        discountField.setText("20");
+
+        discountField.textProperty().addListener((_, _, _) -> priceDebouncer.debounce(this::recalculatePrice));
+        upcPromComboBox.valueProperty().addListener((_, _, _) -> recalculatePrice());
+
+        promotionalCheckBox.selectedProperty().addListener((_, _, isPromotional) -> {
+            updateFieldVisibility(isPromotional);
+            if (isPromotional) {
+                recalculatePrice();
+            }
+        });
+
         updateFieldVisibility(false);
+    }
+
+    private void recalculatePrice() {
+        if (!promotionalCheckBox.isSelected()) return;
+
+        StoreProductListDTO baseProduct = upcPromComboBox.getValue();
+        if (baseProduct == null) {
+            priceField.setText("");
+            return;
+        }
+
+        Double discount = InputHelper.getDouble(discountField);
+        if (discount == null) discount = 20.0;
+
+        double calculatedPrice = baseProduct.price() * (1 - discount / 100.0);
+        priceField.setText(String.format(Locale.US, "%.4f", calculatedPrice));
     }
 
     @Override
@@ -61,9 +100,10 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
                 new StoreProductFormValidator(validator, promotionalCheckBox.selectedProperty());
 
         storeProductValidator.validateUPC(upcField);
-        storeProductValidator.validateUPCProm(upcPromField);
+        storeProductValidator.validateUPCProm(upcPromComboBox); // Оновили валідатор
         storeProductValidator.validateProduct(productComboBox);
         storeProductValidator.validatePrice(priceField);
+        storeProductValidator.validateDiscount(discountField);
         storeProductValidator.validateQuantity(quantityField);
     }
 
@@ -79,7 +119,18 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
         updateFieldVisibility(isPromotional);
 
         if (isPromotional) {
-            upcPromField.setText(dto.UPCprom() != null ? dto.UPCprom() : "");
+            if (dto.UPCprom() != null) {
+
+                StoreProductDetailsDTO baseDetails = storeProductService.getStoreProductByUpc(dto.UPCprom());
+                StoreProductListDTO currentBase = StoreProductListDTO.builder()
+                        .UPC(baseDetails.UPC())
+                        .productName(baseDetails.productName())
+                        .price(baseDetails.price())
+                        .build();
+                upcPromComboBox.getItems().setAll(currentBase);
+                upcPromComboBox.setValue(currentBase);
+            }
+            discountField.setText(dto.discount() != null ? String.valueOf(dto.discount()) : "20.0");
         } else {
             ProductNameDTO current = new ProductNameDTO(dto.productId(), dto.productName());
             productComboBox.getItems().setAll(current);
@@ -90,7 +141,7 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
     @Override
     protected StoreProductCreateDTO buildDTO() {
         boolean isPromotional = promotionalCheckBox.isSelected();
-        String upcProm = isPromotional ? InputHelper.getString(upcPromField) : null;
+        String upcProm = (isPromotional && upcPromComboBox.getValue() != null) ? upcPromComboBox.getValue().UPC() : null;
 
         int productId;
         if (isPromotional) {
@@ -99,13 +150,17 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
             productId = productComboBox.getValue().id();
         }
 
+        Double finalPrice = InputHelper.getDouble(priceField);
+        if (finalPrice == null) finalPrice = 0.0;
+
         return StoreProductCreateDTO.builder()
                 .UPC(InputHelper.getString(upcField))
                 .UPCprom(upcProm)
                 .productId(productId)
-                .price(InputHelper.getDouble(priceField))
+                .price(finalPrice)
                 .quantity(InputHelper.getInt(quantityField))
                 .promotional(isPromotional)
+                .discount(isPromotional ? InputHelper.getDouble(discountField) : null)
                 .build();
     }
 
@@ -118,12 +173,16 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
         }
     }
 
-
     private void updateFieldVisibility(boolean isPromotional) {
-        upcPromField.setVisible(isPromotional);
-        upcPromField.setManaged(isPromotional);
+        upcPromComboBox.setVisible(isPromotional);
+        upcPromComboBox.setManaged(isPromotional);
 
         productComboBox.setVisible(!isPromotional);
         productComboBox.setManaged(!isPromotional);
+
+        priceField.setDisable(isPromotional);
+
+        discountField.setVisible(isPromotional);
+        discountField.setManaged(isPromotional);
     }
 }

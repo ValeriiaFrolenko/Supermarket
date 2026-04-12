@@ -20,8 +20,7 @@
         <TextField fx:id="upcField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
         <Label text="UPC Promo:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-        <TextField fx:id="upcPromField" GridPane.rowIndex="1" GridPane.columnIndex="1"
-                   promptText="Required for promotional products"/>
+        <ComboBox fx:id="upcPromComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200" promptText="Type base product to search..."/>
 
         <CheckBox fx:id="promotionalCheckBox"
                   text="This is a promotional product"
@@ -36,6 +35,9 @@
 
         <Label text="Quantity:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <TextField fx:id="quantityField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <Label text="Discount (%):" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="discountField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
     </GridPane>
 

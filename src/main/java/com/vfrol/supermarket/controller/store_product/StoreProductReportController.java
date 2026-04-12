@@ -17,6 +17,7 @@ public class StoreProductReportController extends BaseReportController<StoreProd
     @FXML private TableColumn<StoreProductDetailsDTO, String>  productNameColumn;
     @FXML private TableColumn<StoreProductDetailsDTO, String>  categoryColumn;
     @FXML private TableColumn<StoreProductDetailsDTO, Number>  priceColumn;
+    @FXML private TableColumn<StoreProductDetailsDTO, Number>  discountColumn;
     @FXML private TableColumn<StoreProductDetailsDTO, Number>  quantityColumn;
     @FXML private TableColumn<StoreProductDetailsDTO, String>  promotionalColumn;
 
@@ -28,6 +29,7 @@ public class StoreProductReportController extends BaseReportController<StoreProd
         productNameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().productName()));
         categoryColumn.setCellValueFactory(cell   -> new SimpleStringProperty(cell.getValue().categoryName()));
         priceColumn.setCellValueFactory(cell      -> new SimpleDoubleProperty(cell.getValue().price()));
+        discountColumn.setCellValueFactory(cell   -> new SimpleDoubleProperty(cell.getValue().UPCprom() != null ? cell.getValue().discount() : 0.0));
         quantityColumn.setCellValueFactory(cell   -> new SimpleIntegerProperty(cell.getValue().quantity()));
         promotionalColumn.setCellValueFactory(cell -> new SimpleStringProperty(
                 Boolean.TRUE.equals(cell.getValue().promotional()) ? "Yes" : "No"));
