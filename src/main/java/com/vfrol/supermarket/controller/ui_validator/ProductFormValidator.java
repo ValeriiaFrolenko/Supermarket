@@ -23,6 +23,12 @@ public class ProductFormValidator {
         ValidationHelper.checkRequiredComboBox(validator, box, "Category is required");
     }
 
+    public void validateManufacturer(TextField field) {
+        ValidationHelper.checkRequired(validator, field, "Manufacturer is required");
+        ValidationHelper.checkMaxLength(validator, field, 50, "Manufacturer max length is 50 characters");
+        ValidationHelper.checkRegex(validator, field, "^[\\p{L}\\p{N}\\s'\\-]*$", "Manufacturer contains invalid characters");
+    }
+
     public void validateCharacteristics(TextArea field) {
         ValidationHelper.checkRequiredTextArea(validator, field, "Characteristics are required");
         ValidationHelper.checkMaxLengthTextArea(validator, field, 100, "Characteristics max length is 100 characters");

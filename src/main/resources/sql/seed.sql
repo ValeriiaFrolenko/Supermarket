@@ -24,21 +24,21 @@ INSERT INTO Category VALUES
 
 -- Insert Products
 INSERT INTO Product VALUES
-                        (1, 1, 'Milk 2.5%', 'UHT milk, 1 liter pack'),
-                        (2, 1, 'Butter', 'Unsalted butter, 200g pack'),
-                        (3, 2, 'Chicken Breast', 'Fresh chicken breast, per kg'),
-                        (4, 3, 'White Bread', 'Sliced white bread, 500g loaf'),
-                        (5, 4, 'Orange Juice', 'Freshly squeezed, 1 liter'),
-                        (6, 5, 'Apples', 'Red apples, per kg'),
-                        (7, 6, 'Ice Cream Vanilla', 'Vanilla ice cream, 500ml tub'),
-                        (8, 7, 'Potato Chips', 'Salted chips, 150g pack'),
-                        (9, 8, 'Dish Soap', 'Liquid dish soap, 500ml bottle'),
-                        (10, 1, 'Yogurt Natural', 'Natural yogurt, 250g cup'),
-                        (11, 2, 'Pork Chops', 'Fresh pork chops, per kg'),
-                        (12, 3, 'Croissant', 'Butter croissant, single piece'),
-                        (13, 4, 'Mineral Water', 'Still mineral water, 1.5 liter'),
-                        (14, 5, 'Tomatoes', 'Fresh tomatoes, per kg'),
-                        (15, 7, 'Chocolate Bar', 'Milk chocolate, 100g bar');
+                        (1, 1, 'Milk 2.5%', 'Molokiya', 'UHT milk, 1 liter pack'),
+                        (2, 1, 'Butter', 'Yagotynske', 'Unsalted butter, 200g pack'),
+                        (3, 2, 'Chicken Breast', 'Nasha Ryaba', 'Fresh chicken breast, per kg'),
+                        (4, 3, 'White Bread', 'Kyivkhlib', 'Sliced white bread, 500g loaf'),
+                        (5, 4, 'Orange Juice', 'Sandora', 'Freshly squeezed, 1 liter'),
+                        (6, 5, 'Apples', 'Farm Fresh', 'Red apples, per kg'),
+                        (7, 6, 'Ice Cream Vanilla', 'Rud', 'Vanilla ice cream, 500ml tub'),
+                        (8, 7, 'Potato Chips', 'Lays', 'Salted chips, 150g pack'),
+                        (9, 8, 'Dish Soap', 'Fairy', 'Liquid dish soap, 500ml bottle'),
+                        (10, 1, 'Yogurt Natural', 'Activia', 'Natural yogurt, 250g cup'),
+                        (11, 2, 'Pork Chops', 'Globino', 'Fresh pork chops, per kg'),
+                        (12, 3, 'Croissant', 'Boulangerie', 'Butter croissant, single piece'),
+                        (13, 4, 'Mineral Water', 'Morshynska', 'Still mineral water, 1.5 liter'),
+                        (14, 5, 'Tomatoes', 'Green Valley', 'Fresh tomatoes, per kg'),
+                        (15, 7, 'Chocolate Bar', 'Roshen', 'Milk chocolate, 100g bar');
 
 -- Insert Store_Products (edge cases: 0 quantity, minimum price, promotional items)
 -- Regular products first (promotional_product = 0, UPC_prom = NULL)

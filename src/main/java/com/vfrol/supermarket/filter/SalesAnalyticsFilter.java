@@ -14,4 +14,12 @@ public class SalesAnalyticsFilter {
     private Integer productId;
     private String employeeId;
     private SalesAnalyticsSortBy sortBy;
+
+    public boolean isEmpty() {
+        return dateFrom == null &&
+                dateTo == null &&
+                productId == null &&
+                employeeId == null &&
+                sortBy == null;
+    }
 }

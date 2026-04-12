@@ -14,6 +14,7 @@ public class ProductReportController extends BaseReportController<ProductDetails
     @FXML private TableColumn<ProductDetailsDTO, Integer> idColumn;
     @FXML private TableColumn<ProductDetailsDTO, String> nameColumn;
     @FXML private TableColumn<ProductDetailsDTO, String> categoryColumn;
+    @FXML private TableColumn<ProductDetailsDTO, String> manufacturerColumn;
     @FXML private TableColumn<ProductDetailsDTO, String> characteristicsColumn;
 
     @FXML
@@ -21,6 +22,7 @@ public class ProductReportController extends BaseReportController<ProductDetails
         idColumn.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().id()).asObject());
         nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().name()));
         categoryColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().categoryName()));
+        manufacturerColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().manufacturer()));
         characteristicsColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().characteristics()));
     }
 

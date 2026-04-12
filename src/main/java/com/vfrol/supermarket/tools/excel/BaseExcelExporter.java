@@ -10,18 +10,33 @@ import java.util.List;
 
 public abstract class BaseExcelExporter<T> {
 
-    protected abstract String   getSheetName();
+    protected abstract String getSheetName();
     protected abstract String[] getColumns();
-    protected abstract void     fillRow(T item, Row row, ExcelStyles styles);
+    protected abstract void fillRow(T item, Row row, ExcelStyles styles);
 
     protected void writeFooter(Sheet sheet, ExcelStyles styles, List<T> data, int nextRowNum) {
-        // default: no footer
     }
 
     public void export(List<T> data, File file) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet(getSheetName());
             ExcelStyles styles = new ExcelStyles(workbook);
+
+            Header header = sheet.getHeader();
+            header.setLeft("&D");
+            header.setCenter(getSheetName());
+            header.setRight("");
+
+            Footer footer = sheet.getFooter();
+            footer.setLeft("");
+            footer.setCenter("");
+            footer.setRight("Page &P of &N");
+
+            sheet.setAutobreaks(true);
+            PrintSetup printSetup = sheet.getPrintSetup();
+            printSetup.setFitWidth((short) 1);
+            printSetup.setFitHeight((short) 0);
+            printSetup.setLandscape(true);
 
             writeHeader(sheet, styles);
 

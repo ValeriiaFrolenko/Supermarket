@@ -21,6 +21,7 @@ public class ProductFormController extends BaseFormController<ProductCreateDTO, 
 
     @FXML private TextField nameField;
     @FXML private ComboBox<CategoryListDTO> categoryComboBox;
+    @FXML private TextField manufacturerField;
     @FXML private TextArea characteristicsArea;
 
     @Inject
@@ -53,6 +54,7 @@ public class ProductFormController extends BaseFormController<ProductCreateDTO, 
 
         productValidator.validateProductName(nameField);
         productValidator.validateCategory(categoryComboBox);
+        productValidator.validateManufacturer(manufacturerField);
         productValidator.validateCharacteristics(characteristicsArea);
     }
 
@@ -60,6 +62,7 @@ public class ProductFormController extends BaseFormController<ProductCreateDTO, 
     protected void populateFields(ProductDetailsDTO dto) {
         this.currentProduct = dto;
         nameField.setText(dto.name());
+        manufacturerField.setText(dto.manufacturer());
         characteristicsArea.setText(dto.characteristics());
 
         CategoryListDTO currentCategory = new CategoryListDTO(dto.categoryId(), dto.categoryName());
@@ -73,6 +76,7 @@ public class ProductFormController extends BaseFormController<ProductCreateDTO, 
                 currentProduct == null ? 0 : currentProduct.id(),
                 categoryComboBox.getValue().id(),
                 InputHelper.getString(nameField),
+                InputHelper.getString(manufacturerField),
                 characteristicsArea.getText().trim()
         );
     }

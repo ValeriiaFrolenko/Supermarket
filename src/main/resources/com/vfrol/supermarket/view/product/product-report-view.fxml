@@ -14,6 +14,7 @@
                 <TableColumn fx:id="idColumn" text="ID"/>
                 <TableColumn fx:id="nameColumn" text="Name" prefWidth="250"/>
                 <TableColumn fx:id="categoryColumn" text="Category" prefWidth="150"/>
+                <TableColumn fx:id="manufacturerColumn" text="Manufacturer" prefWidth="200"/>
                 <TableColumn fx:id="characteristicsColumn" text="Characteristics" prefWidth="400"/>
             </columns>
         </TableView>

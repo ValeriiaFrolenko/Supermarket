@@ -14,8 +14,8 @@ public class StoreProductFilter {
     private StoreProductSortBy sortBy;
 
     public boolean isEmpty() {
-        return getUpc() == null &&
-                getProductName() == null &&
+        return upc == null &&
+                productName == null &&
                 categoryId == null &&
                 promotional == null &&
                 sortBy == null;

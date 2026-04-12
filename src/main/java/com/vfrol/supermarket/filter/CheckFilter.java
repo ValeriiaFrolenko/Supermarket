@@ -10,15 +10,15 @@ import lombok.Getter;
 public class CheckFilter {
     private String checkNumber;
     private String cashierSurname;
-    private String employeeId; // <-- ДОДАНО НОВЕ ПОЛЕ
+    private String employeeId;
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private CheckSortBy sortBy;
 
     public boolean isEmpty() {
-        return getCheckNumber() == null &&
-                getCashierSurname() == null &&
-                getEmployeeId() == null &&
+        return checkNumber == null &&
+                cashierSurname == null &&
+                employeeId == null &&
                 dateFrom == null &&
                 dateTo == null &&
                 sortBy == null;

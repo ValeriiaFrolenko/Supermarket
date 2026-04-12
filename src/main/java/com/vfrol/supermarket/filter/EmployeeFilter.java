@@ -13,8 +13,8 @@ public class EmployeeFilter {
     private EmployeeRole role;
 
     public boolean isEmpty() {
-        return getSurname() == null &&
-                getName() == null &&
+        return surname == null &&
+                name == null &&
                 getPhoneNumber() == null &&
                 role == null;
     }

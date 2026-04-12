@@ -25,13 +25,13 @@ import java.util.Optional;
 public interface ProductDAO {
 
     @SqlUpdate("""
-    INSERT INTO Product (category_number, product_name, characteristics)
-    VALUES (:categoryId, :name, :characteristics)
+    INSERT INTO Product (category_number, product_name, manufacturer, characteristics)
+    VALUES (:categoryId, :name, :manufacturer, :characteristics)
     """)
     void create(@BindMethods Product product);
 
     @SqlUpdate("""
-    UPDATE Product SET category_number = :categoryId, product_name = :name, characteristics = :characteristics
+    UPDATE Product SET category_number = :categoryId, product_name = :name, manufacturer = :manufacturer, characteristics = :characteristics
     WHERE id_product = :id
     """)
     void update(@BindMethods Product product);
@@ -40,7 +40,7 @@ public interface ProductDAO {
     void delete(@Bind("id") int id);
 
     @SqlQuery("""
-    SELECT p.id_product, p.product_name, p.category_number, c.category_name, p.characteristics
+    SELECT p.id_product, p.product_name, p.category_number, c.category_name, p.manufacturer, p.characteristics
     FROM Product p
     JOIN Category c ON p.category_number = c.category_number
     WHERE p.id_product = :id
@@ -70,7 +70,7 @@ public interface ProductDAO {
     List<ProductNameDTO> findAllNames();
 
     @SqlQuery("""
-    SELECT p.id_product, p.product_name, p.category_number, c.category_name, p.characteristics
+    SELECT p.id_product, p.product_name, p.category_number, c.category_name, p.manufacturer, p.characteristics
     FROM Product p
     JOIN Category c ON p.category_number = c.category_number
     ORDER BY p.product_name

@@ -30,6 +30,7 @@ public class ProductService {
         Product product = Product.builder()
                 .categoryId(dto.categoryId())
                 .name(dto.name())
+                .manufacturer(dto.manufacturer())
                 .characteristics(dto.characteristics())
                 .build();
         productDAO.create(product);
@@ -41,6 +42,7 @@ public class ProductService {
                 .id(dto.id())
                 .categoryId(dto.categoryId())
                 .name(dto.name())
+                .manufacturer(dto.manufacturer())
                 .characteristics(dto.characteristics())
                 .build();
         productDAO.update(product);

@@ -14,7 +14,7 @@ public class CustomerCardFilter {
     private CustomerCardSortBy sortBy;
 
     public boolean isEmpty() {
-        return getSurname() == null &&
+        return surname == null &&
                 getPhoneNumber() == null &&
                 discountFrom == null &&
                 discountTo == null &&

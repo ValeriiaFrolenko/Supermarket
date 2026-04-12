@@ -13,4 +13,11 @@ public class EmployeePerformanceFilter {
     private LocalDate dateTo;
     private boolean onlyWithCardAlways;
     private EmployeePerformanceSortBy sortBy;
+
+    public boolean isEmpty() {
+        return dateFrom == null &&
+                dateTo == null &&
+                !onlyWithCardAlways &&
+                sortBy == null;
+    }
 }

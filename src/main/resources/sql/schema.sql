@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS Product (
                                        id_product INT PRIMARY KEY AUTO_INCREMENT,
                                        category_number INT NOT NULL,
                                        product_name VARCHAR(50) NOT NULL,
+    manufacturer VARCHAR(50) NOT NULL,
     characteristics VARCHAR(100) NOT NULL,
     FOREIGN KEY (category_number) REFERENCES Category(category_number)
     ON UPDATE CASCADE

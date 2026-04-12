@@ -16,6 +16,7 @@ public class ProductDetailsController extends BaseDetailsController<ProductDetai
 
     @FXML private Label nameLabel;
     @FXML private Label categoryLabel;
+    @FXML private Label manufacturerLabel;
     @FXML private Label characteristicsLabel;
     @FXML private Button editButton;
     @FXML private Button deleteButton;
@@ -39,6 +40,7 @@ public class ProductDetailsController extends BaseDetailsController<ProductDetai
     protected void populateFields(ProductDetailsDTO dto) {
         nameLabel.setText(dto.name());
         categoryLabel.setText(dto.categoryName());
+        manufacturerLabel.setText(dto.manufacturer());
         characteristicsLabel.setText(dto.characteristics());
     }
 

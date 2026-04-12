@@ -9,6 +9,7 @@ public record ProductDetailsDTO(
         @ColumnName("product_name") String name,
         @ColumnName("category_number") int categoryId,
         @ColumnName("category_name") String categoryName,
+        @ColumnName("manufacturer")  String manufacturer,
         @ColumnName("characteristics") String characteristics
 ) {
 }
