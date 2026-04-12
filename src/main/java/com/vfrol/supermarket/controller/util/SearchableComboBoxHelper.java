@@ -18,7 +18,6 @@ public final class SearchableComboBoxHelper {
             Function<T, String> toStringFunction) {
 
         Debouncer debouncer = new Debouncer(300);
-
         comboBox.setEditable(true);
 
         comboBox.setConverter(new StringConverter<>() {
@@ -29,58 +28,42 @@ public final class SearchableComboBoxHelper {
 
             @Override
             public T fromString(String text) {
-                if (text == null || text.isBlank()) {
-                    return null;
-                }
+                if (text == null || text.isBlank()) return null;
                 return comboBox.getItems().stream()
                         .filter(item -> toStringFunction.apply(item).equals(text))
-                        .findFirst()
-                        .orElse(null);
+                        .findFirst().orElse(null);
             }
         });
 
         comboBox.getEditor().textProperty().addListener((_, _, newVal) -> {
-            if (matchesCurrentValue(comboBox, newVal, toStringFunction)) {
-                return;
-            }
+            if (matchesCurrentValue(comboBox, newVal, toStringFunction)) return;
 
             if (newVal == null || newVal.isBlank()) {
-                debouncer.debounce(() ->
-                        AsyncRunner.runAsync(
-                                allItemsSupplier,
-                                items -> resetToFullList(comboBox, items),
-                                null
-                        )
-                );
+                debouncer.debounce(() -> AsyncRunner.runAsync(allItemsSupplier,
+                        items -> updateItemsAndRestoreValue(comboBox, items), null));
                 return;
             }
 
-            debouncer.debounce(() ->
-                    AsyncRunner.runAsync(
-                            () -> searchFunction.apply(newVal),
-                            results -> {
-                                comboBox.getItems().setAll(results);
-                                if (!results.isEmpty()) comboBox.show();
-                            },
-                            null
-                    )
-            );
+            debouncer.debounce(() -> AsyncRunner.runAsync(() -> searchFunction.apply(newVal),
+                    results -> {
+                        updateItemsAndRestoreValue(comboBox, results);
+                        if (!results.isEmpty()) comboBox.show();
+                    }, null));
         });
 
-        AsyncRunner.runAsync(allItemsSupplier, (List<T> items) ->
-                comboBox.getItems().setAll(items), null);
+        AsyncRunner.runAsync(allItemsSupplier, items -> updateItemsAndRestoreValue(comboBox, items), null);
     }
 
-    private static <T> void resetToFullList(ComboBox<T> comboBox, List<T> items) {
-        comboBox.setValue(null);
-        comboBox.getItems().setAll(items);
+    private static <T> void updateItemsAndRestoreValue(ComboBox<T> comboBox, List<T> newItems) {
+        T current = comboBox.getValue();
+        comboBox.getItems().setAll(newItems);
+        if (current != null) {
+            comboBox.setValue(current);
+        }
     }
 
-    private static <T> boolean matchesCurrentValue(ComboBox<T> comboBox,
-                                                   String text,
-                                                   Function<T, String> toStringFunction) {
+    private static <T> boolean matchesCurrentValue(ComboBox<T> comboBox, String text, Function<T, String> toStringFunction) {
         T current = comboBox.getValue();
         return current != null && toStringFunction.apply(current).equals(text);
     }
-
 }
