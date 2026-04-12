@@ -17,7 +17,6 @@ import com.vfrol.supermarket.service.CheckService;
 import com.vfrol.supermarket.service.EmployeeService;
 import com.vfrol.supermarket.service.ProductService;
 import com.vfrol.supermarket.service.SalesAnalyticsService;
-import com.vfrol.supermarket.tools.excel.SalesAnalyticsExcelExporter;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,9 +25,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -222,26 +219,16 @@ public class SalesAnalyticsController extends BaseListController<SalesAnalyticsD
             return;
         }
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Sales Analytics Report");
-        fileChooser.setInitialFileName("Sales_Analytics_Report.xlsx");
-        fileChooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-
-        File file = fileChooser.showSaveDialog(analyticsTable.getScene().getWindow());
-        if (file == null) return;
-
         List<SalesAnalyticsDTO> snapshot = List.copyOf(tableData);
-
-        AsyncRunner.runAsync(
-                () -> {
-                    new SalesAnalyticsExcelExporter().export(snapshot, file);
-                    return file.getAbsolutePath();
-                },
-                filePath -> AlertHelper.showInfo("Export Successful", "File saved to:\n" + filePath),
-                getRootNode()
-        );
+        navigateToReport(snapshot);
     }
+
+    private void navigateToReport(List<SalesAnalyticsDTO> snapshot) {
+        viewManager.showDialog(AppView.SALES_ANALYTICS_REPORT,
+                (SalesAnalyticsReportController controller) ->
+                        controller.setData(snapshot));
+    }
+
 
     @Override
     protected TableView<SalesAnalyticsDTO> getTableView() {

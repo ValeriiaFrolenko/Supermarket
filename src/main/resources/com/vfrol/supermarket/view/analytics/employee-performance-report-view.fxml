@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.vfrol.supermarket.controller.analytics.EmployeePerformanceReportController"
+            prefWidth="800" prefHeight="500">
+
+    <center>
+        <TableView fx:id="previewTable">
+            <columns>
+                <TableColumn fx:id="cashierNameColumn"  text="Cashier"            prefWidth="280"/>
+                <TableColumn fx:id="receiptCountColumn" text="Receipts"           prefWidth="100"/>
+                <TableColumn fx:id="totalAmountColumn"  text="Total Amount (UAH)" prefWidth="200"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-alignment: center-right;">
+            <Button text="Cancel" onAction="#onCancel"/>
+            <Button fx:id="exportButton" text="Export" onAction="#onExport" defaultButton="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

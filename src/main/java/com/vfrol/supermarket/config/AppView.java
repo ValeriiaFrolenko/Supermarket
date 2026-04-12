@@ -42,8 +42,10 @@ public enum AppView {
     CHECK_REPORT ("view/check/check-report-view.fxml"),
 
     SALES_ANALYTICS              ("view/analytics/sales-analytics-view.fxml"),
-    EMPLOYEE_PERFORMANCE_ANALYTICS("view/analytics/employee-performance-analytics-view.fxml");
+    SALES_ANALYTICS_REPORT       ("view/analytics/sales-analytics-report-view.fxml"),
 
+    EMPLOYEE_PERFORMANCE_ANALYTICS("view/analytics/employee-performance-analytics-view.fxml"),
+    EMPLOYEE_PERFORMANCE_REPORT  ("view/analytics/employee-performance-report-view.fxml");
     private final String fxmlPath;
 
     AppView(String fxmlPath) {

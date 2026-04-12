@@ -1,6 +1,7 @@
 package com.vfrol.supermarket.controller.analytics;
 
 import com.google.inject.Inject;
+import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.controller.util.AlertHelper;
 import com.vfrol.supermarket.controller.util.AsyncRunner;
@@ -8,7 +9,6 @@ import com.vfrol.supermarket.dto.analytics.EmployeePerformanceDTO;
 import com.vfrol.supermarket.enums.sortby.EmployeePerformanceSortBy;
 import com.vfrol.supermarket.filter.EmployeePerformanceFilter;
 import com.vfrol.supermarket.service.EmployeePerformanceService;
-import com.vfrol.supermarket.tools.excel.EmployeePerformanceExcelExporter;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,9 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -166,25 +164,14 @@ public class EmployeePerformanceController extends BaseListController<EmployeePe
             return;
         }
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Employee Performance Report");
-        fileChooser.setInitialFileName("Employee_Performance_Report.xlsx");
-        fileChooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-
-        File file = fileChooser.showSaveDialog(analyticsTable.getScene().getWindow());
-        if (file == null) return;
-
         List<EmployeePerformanceDTO> snapshot = List.copyOf(tableData);
+        navigateToReport(snapshot);
+    }
 
-        AsyncRunner.runAsync(
-                () -> {
-                    new EmployeePerformanceExcelExporter().export(snapshot, file);
-                    return file.getAbsolutePath();
-                },
-                filePath -> AlertHelper.showInfo("Export Successful", "File saved to:\n" + filePath),
-                getRootNode()
-        );
+    private void navigateToReport(List<EmployeePerformanceDTO> snapshot) {
+        viewManager.showDialog(AppView.EMPLOYEE_PERFORMANCE_REPORT,
+                (EmployeePerformanceReportController controller) ->
+                        controller.setData(snapshot));
     }
 
     @Override
