@@ -38,7 +38,8 @@ public enum AppView {
     CHECK_LIST("view/check/check-list-view.fxml"),
     CHECK_FORM("view/check/check-form-view.fxml"),
     CHECK_DETAILS("view/check/check-details-view.fxml"),
-    SALE_FORM("view/check/sale-form-view.fxml");
+    SALE_FORM("view/check/sale-form-view.fxml"),
+    CHECK_REPORT("view/check/check-report-view.fxml");
 
     private final String fxmlPath;
 

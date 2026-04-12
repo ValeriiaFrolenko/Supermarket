@@ -67,6 +67,23 @@ public interface CheckDAO {
     @SqlQuery("""
     SELECT c.check_number,
            e.empl_surname || ' ' || e.empl_name AS employee_name,
+           c.card_number,
+           CASE WHEN cc.card_number IS NOT NULL THEN cc.cust_surname || ' ' || cc.cust_name ELSE NULL END AS customer_name,
+           c.print_date,
+           c.sum_total,
+           c.vat,
+           (SELECT COALESCE(SUM(product_number * selling_price), 0) FROM Sale WHERE check_number = c.check_number) AS base_sum,
+           ((SELECT COALESCE(SUM(product_number * selling_price), 0) FROM Sale WHERE check_number = c.check_number) - c.sum_total) AS discount_amount
+    FROM Check_Table c
+    JOIN Employee e ON c.id_employee = e.id_employee
+    LEFT JOIN Customer_Card cc ON c.card_number = cc.card_number
+    ORDER BY c.print_date DESC
+    """)
+    List<CheckDetailsDTO> findAllDetails();
+
+    @SqlQuery("""
+    SELECT c.check_number,
+           e.empl_surname || ' ' || e.empl_name AS employee_name,
            c.print_date, c.sum_total
     FROM Check_Table c
     JOIN Employee e ON c.id_employee = e.id_employee

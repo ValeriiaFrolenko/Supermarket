@@ -94,12 +94,7 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
 
         int productId;
         if (isPromotional) {
-            Integer resolved = storeProductService.getProductIdByUpc(upcProm);
-            if (resolved == null) {
-                throw new IllegalArgumentException(
-                        "Base product with UPC \"" + upcProm + "\" not found in store.");
-            }
-            productId = resolved;
+            productId = storeProductService.getProductIdByUpc(upcProm);
         } else {
             productId = productComboBox.getValue().id();
         }
@@ -123,19 +118,6 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
         }
     }
 
-    /**
-     * Overridden to handle the UPC Promo lookup failure ({@link #buildDTO()} throws
-     * {@link IllegalArgumentException} if the base UPC is not found in the store).
-     */
-    @FXML
-    @Override
-    public void onSave() {
-        try {
-            super.onSave();
-        } catch (IllegalArgumentException e) {
-            AlertHelper.showError(e.getMessage());
-        }
-    }
 
     private void updateFieldVisibility(boolean isPromotional) {
         upcPromField.setVisible(isPromotional);

@@ -96,6 +96,10 @@ public class CheckService {
         return checkDAO.findAll();
     }
 
+    public List<CheckDetailsDTO> getAllCheckDetails() {
+        return checkDAO.findAllDetails();
+    }
+
     public List<CheckListDTO> getCheckByFilter(CheckFilter filter){
         return checkDAO.findByFilter(filter);
     }

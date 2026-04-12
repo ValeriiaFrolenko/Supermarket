@@ -3,6 +3,9 @@ package com.vfrol.supermarket.controller.check;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.base.BaseListController;
+import com.vfrol.supermarket.controller.util.AsyncRunner;
+import com.vfrol.supermarket.controller.util.Debouncer;
+import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.check.CheckDetailsDTO;
 import com.vfrol.supermarket.dto.check.CheckListDTO;
@@ -17,22 +20,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CheckListController extends BaseListController<CheckListDTO> {
 
     private final CheckService checkService;
+    private final Debouncer searchDebouncer = new Debouncer(300);
+    private ObservableList<CheckListDTO> checkData;
 
     @FXML private TextField searchField;
-    @FXML private Button addButton;
-
     @FXML private TableView<CheckListDTO> checkTable;
     @FXML private TableColumn<CheckListDTO, String> checkNumberColumn;
     @FXML private TableColumn<CheckListDTO, String> employeeNameColumn;
     @FXML private TableColumn<CheckListDTO, String> dateColumn;
     @FXML private TableColumn<CheckListDTO, Number> sumTotalColumn;
+    @FXML private Button addButton;
 
     @FXML private VBox filterPanel;
     @FXML private TextField cashierSurnameFilterField;
@@ -40,13 +43,53 @@ public class CheckListController extends BaseListController<CheckListDTO> {
     @FXML private DatePicker dateToPicker;
     @FXML private ComboBox<CheckSortBy> sortByComboBox;
 
-    private ObservableList<CheckListDTO> checkData;
-
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     @Inject
     public CheckListController(CheckService checkService) {
         this.checkService = checkService;
+    }
+
+    @FXML
+    public void initialize() {
+        SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton);
+        if (!sessionManager.isManager()) {
+            cashierSurnameFilterField.setText(sessionManager.getCurrentUser().surname());
+            cashierSurnameFilterField.setDisable(true);
+        }
+        initializeTable();
+        initializeFilters();
+        loadAllChecks();
+    }
+
+    private void initializeTable() {
+        checkData = FXCollections.observableArrayList();
+
+        checkNumberColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().checkNumber()));
+        employeeNameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().employeeName()));
+        dateColumn.setCellValueFactory(cell -> {
+            var dateTime = cell.getValue().dateTime();
+            return new SimpleStringProperty(dateTime != null ? dateTime.format(DATE_FORMATTER) : "");
+        });
+        sumTotalColumn.setCellValueFactory(cell -> new SimpleDoubleProperty(cell.getValue().sumTotal()));
+
+        checkTable.setItems(checkData);
+        setupTableDoubleClick();
+    }
+
+    private void initializeFilters() {
+        searchField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        cashierSurnameFilterField.textProperty().addListener((_,_,_) ->
+                searchDebouncer.debounce(this::applyFilter));
+        dateFromPicker.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+        dateToPicker.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+        sortByComboBox.valueProperty().addListener((_,_,_) ->
+                applyFilter());
+
+        sortByComboBox.getItems().addAll(CheckSortBy.values());
     }
 
     @Override
@@ -56,41 +99,29 @@ public class CheckListController extends BaseListController<CheckListDTO> {
 
     @Override
     protected void showDetails(CheckListDTO item) {
-        showCheckDetails(item.checkNumber());
+        AsyncRunner.runAsync(
+                () -> checkService.getCheckById(item.checkNumber()),
+                details -> {
+                    navigateToDetails(details);
+                    loadAllChecks();
+                },
+                checkTable
+        );
     }
 
     @FXML
-    public void initialize() {
-        initializeTable();
-        sortByComboBox.getItems().addAll(CheckSortBy.values());
-
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
-
-        SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton);
-
-        if (!sessionManager.isManager()) {
-            cashierSurnameFilterField.setText(sessionManager.getCurrentUser().surname());
-            cashierSurnameFilterField.setDisable(true);
-        }
-
-        applyFilter();
+    public void onAddCheckClick() {
+        navigateToForm();
+        loadAllChecks();
     }
 
-    private void initializeTable() {
-        checkData = FXCollections.observableArrayList();
-
-        checkNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().checkNumber()));
-        employeeNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().employeeName()));
-
-        dateColumn.setCellValueFactory(cellData -> {
-            var dateTime = cellData.getValue().dateTime();
-            return new SimpleStringProperty(dateTime != null ? dateTime.format(DATE_FORMATTER) : "");
-        });
-
-        sumTotalColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().sumTotal()));
-
-        checkTable.setItems(checkData);
-        setupTableDoubleClick();
+    @FXML
+    public void onExportClick() {
+        AsyncRunner.runAsync(
+                checkService::getAllCheckDetails,
+                this::navigateToReport,
+                getRootNode()
+        );
     }
 
     @FXML
@@ -100,68 +131,69 @@ public class CheckListController extends BaseListController<CheckListDTO> {
 
     @FXML
     public void applyFilter() {
-        String searchText = searchField.getText();
-        String checkNumber = (searchText != null && !searchText.isBlank()) ? searchText.trim() : null;
+        CheckFilter filter = buildFilter();
+        setProgressIndicator();
 
-        String cashierText = cashierSurnameFilterField.getText();
-        String cashierSurname = (cashierText != null && !cashierText.isBlank()) ? cashierText.trim() : null;
-
-        LocalDate dateFrom = dateFromPicker.getValue();
-        LocalDate dateTo = dateToPicker.getValue();
-
-        String employeeId = null;
-        if (!sessionManager.isManager()) {
-            employeeId = sessionManager.getCurrentUser().id();
-            cashierSurname = null;
+        if (filter.isEmpty() && sessionManager.isManager()) {
+            AsyncRunner.runAsync(
+                    checkService::getAllChecks,
+                    this::updateTableData,
+                    checkTable
+            );
+        } else {
+            AsyncRunner.runAsync(
+                    () -> checkService.getCheckByFilter(filter),
+                    this::updateTableData,
+                    checkTable
+            );
         }
-
-        CheckFilter filter = CheckFilter.builder()
-                .checkNumber(checkNumber)
-                .cashierSurname(cashierSurname)
-                .employeeId(employeeId)
-                .dateFrom(dateFrom)
-                .dateTo(dateTo)
-                .sortBy(sortByComboBox.getValue())
-                .build();
-
-        List<CheckListDTO> filtered = checkService.getCheckByFilter(filter);
-        checkData.setAll(filtered);
     }
 
     @FXML
     public void onClearFilterClick() {
         searchField.clear();
-        cashierSurnameFilterField.clear();
+        if (sessionManager.isManager()) {
+            cashierSurnameFilterField.clear();
+        }
         dateFromPicker.setValue(null);
         dateToPicker.setValue(null);
         sortByComboBox.setValue(null);
         applyFilter();
     }
 
-    private void loadChecks() {
-        List<CheckListDTO> checks = checkService.getAllChecks();
-        checkData.clear();
-        checkData.addAll(checks);
+    private CheckFilter buildFilter() {
+        return CheckFilter.builder()
+                .checkNumber(InputHelper.getString(searchField))
+                .cashierSurname(InputHelper.getString(cashierSurnameFilterField))
+                .employeeId(sessionManager.isManager() ? null : sessionManager.getCurrentUser().id())
+                .dateFrom(dateFromPicker.getValue())
+                .dateTo(dateToPicker.getValue())
+                .sortBy(sortByComboBox.getValue())
+                .build();
+    }
+
+    private void loadAllChecks() {
         applyFilter();
     }
 
-    private void showCheckDetails(String checkNumber) {
-        CheckDetailsDTO details = checkService.getCheckById(checkNumber);
-        if (details != null) {
-            viewManager.showDialog(AppView.CHECK_DETAILS, (CheckDetailsController controller) -> {
-                controller.setCheckDetails(details);
-            });
-        }
-        refreshChecks();
+    private void updateTableData(List<CheckListDTO> data) {
+        checkData.setAll(data);
+        removeProgressIndicator();
     }
 
-    public void refreshChecks() {
-        loadChecks();
+    private void navigateToDetails(CheckDetailsDTO details) {
+        viewManager.showDialog(AppView.CHECK_DETAILS,
+                (CheckDetailsController controller) ->
+                        controller.setDetails(details));
     }
 
-    @FXML
-    public void onAddCheckClick() {
+    private void navigateToForm() {
         viewManager.showDialog(AppView.CHECK_FORM);
-        refreshChecks();
+    }
+
+    private void navigateToReport(List<CheckDetailsDTO> checks) {
+        viewManager.showDialog(AppView.CHECK_REPORT,
+                (CheckReportController controller) ->
+                        controller.setData(checks));
     }
 }

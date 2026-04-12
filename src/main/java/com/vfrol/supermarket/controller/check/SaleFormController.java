@@ -2,6 +2,8 @@ package com.vfrol.supermarket.controller.check;
 
 import com.google.inject.Inject;
 import com.vfrol.supermarket.controller.base.BaseModalController;
+import com.vfrol.supermarket.controller.ui_validator.SaleFormValidator;
+import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
 import com.vfrol.supermarket.filter.StoreProductFilter;
@@ -10,17 +12,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
+import net.synedra.validatorfx.Validator;
 
 import java.util.function.Consumer;
 
 public class SaleFormController extends BaseModalController {
+
+    private final StoreProductService storeProductService;
+    protected final Validator validator = new Validator();
 
     @FXML private VBox formPanel;
     @FXML private ComboBox<StoreProductListDTO> storeProductComboBox;
     @FXML private TextField quantityField;
     @FXML private TextField priceField;
 
-    private final StoreProductService storeProductService;
     @Setter
     private Consumer<CheckFormController.SaleItemModel> saveCallback;
 
@@ -31,6 +36,7 @@ public class SaleFormController extends BaseModalController {
 
     @FXML
     public void initialize() {
+        setupValidation();
         configureComboBox();
 
         storeProductComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -40,6 +46,13 @@ public class SaleFormController extends BaseModalController {
                 priceField.setText("0.00");
             }
         });
+    }
+
+    private void setupValidation() {
+        SaleFormValidator saleValidator = new SaleFormValidator(validator);
+        saleValidator.validateProduct(storeProductComboBox);
+        saleValidator.validatePrice(priceField);
+        saleValidator.validateQuantity(quantityField);
     }
 
     private void configureComboBox() {
@@ -54,38 +67,19 @@ public class SaleFormController extends BaseModalController {
     @FXML
     public void onAdd() {
         StoreProductListDTO selectedProduct = storeProductComboBox.getValue();
-        if (selectedProduct == null) {
-            new Alert(Alert.AlertType.WARNING, "Please select a product!").showAndWait();
-            return;
+        int qty = InputHelper.getInt(quantityField);
+        double finalPrice = InputHelper.getDouble(priceField);
+
+        if (saveCallback != null) {
+            CheckFormController.SaleItemModel saleItem = new CheckFormController.SaleItemModel(
+                    selectedProduct.UPC(),
+                    selectedProduct.productName(),
+                    finalPrice,
+                    qty
+            );
+            saveCallback.accept(saleItem);
         }
-
-        try {
-            int qty = Integer.parseInt(quantityField.getText().trim());
-            double finalPrice = Double.parseDouble(priceField.getText().trim().replace(",", "."));
-
-            if (qty <= 0 || finalPrice < 0) {
-                throw new NumberFormatException();
-            }
-
-            if (qty > selectedProduct.quantity()) {
-                new Alert(Alert.AlertType.WARNING, "Not enough items in store! Available: " + selectedProduct.quantity()).showAndWait();
-                return;
-            }
-
-            if (saveCallback != null) {
-                CheckFormController.SaleItemModel saleItem = new CheckFormController.SaleItemModel(
-                        selectedProduct.UPC(),
-                        selectedProduct.productName(),
-                        finalPrice,
-                        qty
-                );
-                saveCallback.accept(saleItem);
-            }
-            closeWindow(formPanel);
-
-        } catch (NumberFormatException e) {
-            new Alert(Alert.AlertType.ERROR, "Invalid quantity or price format! Please check your inputs.").showAndWait();
-        }
+        closeWindow(formPanel);
     }
 
     @FXML
