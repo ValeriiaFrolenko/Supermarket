@@ -3,11 +3,9 @@ package com.vfrol.supermarket.controller.customer_card;
 import com.google.inject.Inject;
 import com.vfrol.supermarket.config.AppView;
 import com.vfrol.supermarket.controller.base.BaseDetailsController;
-import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class CustomerCardDetailsController extends BaseDetailsController<CustomerCardDetailsDTO> {
@@ -24,8 +22,6 @@ public class CustomerCardDetailsController extends BaseDetailsController<Custome
     @FXML private Label zipLabel;
     @FXML private Label discountLabel;
 
-    @FXML private Button editButton;
-    @FXML private Button deleteButton;
 
     @Inject
     public CustomerCardDetailsController(CustomerCardService customerCardService) {
@@ -34,7 +30,6 @@ public class CustomerCardDetailsController extends BaseDetailsController<Custome
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, editButton, deleteButton);
     }
 
     @Override

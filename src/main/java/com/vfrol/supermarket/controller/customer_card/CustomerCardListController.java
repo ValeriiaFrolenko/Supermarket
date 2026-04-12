@@ -6,7 +6,6 @@ import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.controller.util.AsyncRunner;
 import com.vfrol.supermarket.controller.util.Debouncer;
 import com.vfrol.supermarket.controller.util.InputHelper;
-import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
 import com.vfrol.supermarket.enums.sortby.CustomerCardSortBy;
@@ -35,7 +34,6 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
     @FXML private TableColumn<CustomerCardListDTO, String> nameColumn;
     @FXML private TableColumn<CustomerCardListDTO, Number> discountColumn;
     @FXML private TableColumn<CustomerCardListDTO, String> phoneColumn;
-    @FXML private Button addButton;
 
     @FXML private VBox filterPanel;
     @FXML private TextField phoneFilterField;
@@ -50,7 +48,6 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
         initializeTable();
         initializeFilters();
         loadAllCustomerCards();
