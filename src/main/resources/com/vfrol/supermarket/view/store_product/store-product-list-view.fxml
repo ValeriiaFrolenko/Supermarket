@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.SearchableComboBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -26,7 +27,7 @@
         <HBox spacing="15" alignment="CENTER_LEFT">
 
             <Label text="Product:"/>
-            <ComboBox fx:id="productFilterComboBox" prefWidth="200" promptText="Type to search..."/>
+            <SearchableComboBox fx:id="productFilterComboBox" prefWidth="200" promptText="Type to search..."/>
 
             <Label text="Promotional:"/>
             <ComboBox fx:id="promotionalFilterComboBox" prefWidth="100"/>

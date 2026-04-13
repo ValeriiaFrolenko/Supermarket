@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.controlsfx.control.SearchableComboBox?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.vfrol.supermarket.controller.product.ProductListController"
       spacing="10" prefHeight="600.0" prefWidth="800.0">
@@ -23,7 +24,7 @@
           style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
         <HBox spacing="15" alignment="CENTER_LEFT">
             <Label text="Category:"/>
-            <ComboBox fx:id="categoryFilterComboBox" prefWidth="150"/>
+            <SearchableComboBox fx:id="categoryFilterComboBox" prefWidth="150"/>
 
             <Label text="Sort By:"/>
             <ComboBox fx:id="sortByComboBox" prefWidth="150"/>

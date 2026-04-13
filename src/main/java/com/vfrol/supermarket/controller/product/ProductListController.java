@@ -21,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class ProductListController extends BaseListController<ProductListDTO> {
     @FXML private Button addButton;
 
     @FXML private VBox filterPanel;
-    @FXML private ComboBox<CategoryListDTO> categoryFilterComboBox;
+    @FXML private SearchableComboBox<CategoryListDTO> categoryFilterComboBox;
     @FXML private ComboBox<ProductSortBy> sortByComboBox;
 
     @Inject
@@ -68,17 +69,18 @@ public class ProductListController extends BaseListController<ProductListDTO> {
     private void initializeFilters() {
         searchField.textProperty().addListener((_,_,_) ->
                 searchDebouncer.debounce(this::applyFilter));
-        categoryFilterComboBox.valueProperty().addListener((_,_,_) ->
-                applyFilter());
+        categoryFilterComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
+            if (newValue == null && oldValue != null) return;
+            applyFilter();
+        });
         sortByComboBox.valueProperty().addListener((_,_,_) ->
                 applyFilter());
 
         sortByComboBox.getItems().addAll(ProductSortBy.values());
 
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForFilter(
                 categoryFilterComboBox,
                 categoryService::getAllCategories,
-                categoryService::getCategoriesByName,
                 CategoryListDTO::name
         );
     }

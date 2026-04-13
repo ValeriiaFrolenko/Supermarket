@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.controlsfx.control.SearchableComboBox?>
 <VBox fx:id="formPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.vfrol.supermarket.controller.check.SaleFormController"
       prefWidth="400" prefHeight="250" spacing="15"
@@ -17,7 +18,7 @@
         </columnConstraints>
 
         <Label text="Product: *" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="storeProductComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="250"/>
+        <SearchableComboBox fx:id="storeProductComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="250"/>
 
         <Label text="Unit Price: *" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <TextField fx:id="priceField" promptText="0.00" GridPane.rowIndex="1" GridPane.columnIndex="1"/>

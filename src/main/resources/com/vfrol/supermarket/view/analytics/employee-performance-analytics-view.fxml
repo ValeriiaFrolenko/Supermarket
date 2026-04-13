@@ -66,7 +66,6 @@
         </HBox>
     </VBox>
 
-    <!-- Toolbar -->
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Filters"         onAction="#onToggleFilterClick"/>
         <Button text="Export to Excel" onAction="#onExportClick"

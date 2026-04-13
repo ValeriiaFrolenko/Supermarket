@@ -15,6 +15,7 @@ import com.vfrol.supermarket.service.ProductService;
 import com.vfrol.supermarket.service.StoreProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.Locale;
 
@@ -25,8 +26,8 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
     private final Debouncer priceDebouncer = new Debouncer(400);
 
     @FXML private TextField upcField;
-    @FXML private ComboBox<StoreProductListDTO> upcPromComboBox;
-    @FXML private ComboBox<ProductNameDTO> productComboBox;
+    @FXML private SearchableComboBox<StoreProductListDTO> upcPromComboBox;
+    @FXML private SearchableComboBox<ProductNameDTO> productComboBox;
     @FXML private TextField priceField;
     @FXML private TextField discountField;
     @FXML private TextField quantityField;
@@ -44,18 +45,18 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
     public void initialize() {
         super.initialize();
 
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForForm(
                 productComboBox,
                 productService::getAllProductNames,
-                productService::getProductByName,
-                ProductNameDTO::name
+                ProductNameDTO::name,
+                ProductNameDTO::id
         );
 
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForForm(
                 upcPromComboBox,
                 storeProductService::getAllStoreProducts,
-                text -> storeProductService.getStoreProductsByFilter(StoreProductFilter.builder().upc(text).build()),
-                sp -> sp.UPC() + " (" + sp.productName() + ")"
+                sp -> sp.UPC() + " (" + sp.productName() + ")",
+                StoreProductListDTO::UPC
         );
 
         discountField.setText("20");

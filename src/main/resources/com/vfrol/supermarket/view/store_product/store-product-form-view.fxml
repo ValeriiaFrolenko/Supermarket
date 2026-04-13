@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.SearchableComboBox?>
 
 <VBox fx:id="formPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.vfrol.supermarket.controller.store_product.StoreProductFormController"
@@ -20,15 +21,15 @@
         <TextField fx:id="upcField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
         <Label text="UPC Promo:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="upcPromComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200" promptText="Type base product to search..."/>
+        <SearchableComboBox fx:id="upcPromComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200" promptText="Type base product to search..."/>
 
         <CheckBox fx:id="promotionalCheckBox"
                   text="This is a promotional product"
                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
         <Label text="Product:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="productComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"
-                  prefWidth="200" promptText="Type to search..."/>
+        <SearchableComboBox fx:id="productComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                            prefWidth="200" promptText="Type to search..."/>
 
         <Label text="Price:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <TextField fx:id="priceField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="0.00"/>

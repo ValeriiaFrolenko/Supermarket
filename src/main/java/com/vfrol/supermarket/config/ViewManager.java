@@ -92,9 +92,6 @@ public class ViewManager {
             loader.setControllerFactory(injector::getInstance);
             Parent root = loader.load();
             T controller = loader.getController();
-            if (controllerConsumer != null) {
-                controllerConsumer.accept(controller);
-            }
             Stage dialogStage = new Stage();
             dialogStage.setTitle(view.name().replace("_", " "));
             dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -102,6 +99,11 @@ public class ViewManager {
                 dialogStage.initOwner(rootArea.getScene().getWindow());
             }
             dialogStage.setScene(new Scene(root));
+
+            if (controllerConsumer != null) {
+                controllerConsumer.accept(controller);
+            }
+
             dialogStage.showAndWait();
             return controller;
         } catch (IOException e) {

@@ -1,7 +1,8 @@
 package com.vfrol.supermarket.controller.util;
 
-import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
+import javafx.stage.Window;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.List;
 import java.util.function.Function;
@@ -11,14 +12,28 @@ public final class SearchableComboBoxHelper {
 
     private SearchableComboBoxHelper() {}
 
-    public static <T> void configure(
-            ComboBox<T> comboBox,
+    public static <T> void configureForForm(
+            SearchableComboBox<T> comboBox,
             Supplier<List<T>> allItemsSupplier,
-            Function<String, List<T>> searchFunction,
+            Function<T, String> toStringFunction,
+            Function<T, ?> idExtractor) {
+
+        setupConverter(comboBox, toStringFunction);
+        setupOnWindowShowing(comboBox, allItemsSupplier, true, idExtractor);
+    }
+
+    public static <T> void configureForFilter(
+            SearchableComboBox<T> comboBox,
+            Supplier<List<T>> allItemsSupplier,
             Function<T, String> toStringFunction) {
 
-        Debouncer debouncer = new Debouncer(300);
-        comboBox.setEditable(true);
+        setupConverter(comboBox, toStringFunction);
+        setupOnWindowShowing(comboBox, allItemsSupplier, false, null);
+    }
+
+    private static <T> void setupConverter(
+            SearchableComboBox<T> comboBox,
+            Function<T, String> toStringFunction) {
 
         comboBox.setConverter(new StringConverter<>() {
             @Override
@@ -31,39 +46,77 @@ public final class SearchableComboBoxHelper {
                 if (text == null || text.isBlank()) return null;
                 return comboBox.getItems().stream()
                         .filter(item -> toStringFunction.apply(item).equals(text))
-                        .findFirst().orElse(null);
+                        .findFirst()
+                        .orElse(null);
             }
         });
-
-        comboBox.getEditor().textProperty().addListener((_, _, newVal) -> {
-            if (matchesCurrentValue(comboBox, newVal, toStringFunction)) return;
-
-            if (newVal == null || newVal.isBlank()) {
-                debouncer.debounce(() -> AsyncRunner.runAsync(allItemsSupplier,
-                        items -> updateItemsAndRestoreValue(comboBox, items), null));
-                return;
-            }
-
-            debouncer.debounce(() -> AsyncRunner.runAsync(() -> searchFunction.apply(newVal),
-                    results -> {
-                        updateItemsAndRestoreValue(comboBox, results);
-                        if (!results.isEmpty()) comboBox.show();
-                    }, null));
-        });
-
-        AsyncRunner.runAsync(allItemsSupplier, items -> updateItemsAndRestoreValue(comboBox, items), null);
     }
 
-    private static <T> void updateItemsAndRestoreValue(ComboBox<T> comboBox, List<T> newItems) {
-        T current = comboBox.getValue();
-        comboBox.getItems().setAll(newItems);
-        if (current != null) {
-            comboBox.setValue(current);
+    private static <T> void setupOnWindowShowing(
+            SearchableComboBox<T> comboBox,
+            Supplier<List<T>> allItemsSupplier,
+            boolean restoreSelection,
+            Function<T, ?> idExtractor) {
+
+        comboBox.sceneProperty().addListener((obsScene, oldScene, newScene) -> {
+            if (newScene == null) return;
+
+            newScene.windowProperty().addListener((obsWindow, oldWindow, newWindow) -> {
+                if (newWindow == null) return;
+                attachWindowListener(comboBox, allItemsSupplier, restoreSelection, idExtractor, newWindow);
+            });
+
+            if (newScene.getWindow() != null) {
+                attachWindowListener(comboBox, allItemsSupplier, restoreSelection, idExtractor, newScene.getWindow());
+            }
+
+            reload(comboBox, allItemsSupplier, restoreSelection, idExtractor);
+        });
+
+        if (comboBox.getScene() != null) {
+            reload(comboBox, allItemsSupplier, restoreSelection, idExtractor);
         }
     }
 
-    private static <T> boolean matchesCurrentValue(ComboBox<T> comboBox, String text, Function<T, String> toStringFunction) {
-        T current = comboBox.getValue();
-        return current != null && toStringFunction.apply(current).equals(text);
+    private static <T> void attachWindowListener(
+            SearchableComboBox<T> comboBox,
+            Supplier<List<T>> allItemsSupplier,
+            boolean restoreSelection,
+            Function<T, ?> idExtractor,
+            Window window) {
+
+        window.showingProperty().addListener((obs, wasShowing, isShowing) -> {
+            if (isShowing) {
+                reload(comboBox, allItemsSupplier, restoreSelection, idExtractor);
+            }
+        });
+    }
+
+    private static <T> void reload(
+            SearchableComboBox<T> comboBox,
+            Supplier<List<T>> allItemsSupplier,
+            boolean restoreSelection,
+            Function<T, ?> idExtractor) {
+
+        Object token = new Object();
+        comboBox.setUserData(token);
+
+        AsyncRunner.runAsync(allItemsSupplier, items -> {
+            if (comboBox.getUserData() != token) return;
+
+            T current = comboBox.getValue();
+            Object currentId = (restoreSelection && current != null && idExtractor != null)
+                    ? idExtractor.apply(current)
+                    : null;
+
+            comboBox.getItems().setAll(items);
+
+            if (currentId != null) {
+                items.stream()
+                        .filter(item -> idExtractor.apply(item).equals(currentId))
+                        .findFirst()
+                        .ifPresent(comboBox::setValue);
+            }
+        }, null);
     }
 }

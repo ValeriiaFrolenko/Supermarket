@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.controlsfx.control.SearchableComboBox?>
 <VBox fx:id="formPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.vfrol.supermarket.controller.check.CheckFormController"
       prefWidth="750" prefHeight="650" spacing="15"
@@ -22,7 +23,7 @@
         <TextField fx:id="checkNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
         <Label text="Customer Card:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="customerCardComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="250"/>
+        <SearchableComboBox fx:id="customerCardComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="250"/>
 
         <CheckBox fx:id="useDiscount" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
     </GridPane>

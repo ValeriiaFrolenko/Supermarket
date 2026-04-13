@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.controlsfx.control.SearchableComboBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.vfrol.supermarket.controller.analytics.SalesAnalyticsController"
@@ -52,11 +53,11 @@
             <DatePicker fx:id="dateToPicker" prefWidth="130"/>
 
             <Label text="Product:"/>
-            <ComboBox fx:id="productComboBox" prefWidth="200" editable="true"
-                      promptText="All products"/>
+            <SearchableComboBox fx:id="productComboBox" prefWidth="200" editable="true"
+                                promptText="All products"/>
 
             <Label text="Cashier:"/>
-            <ComboBox fx:id="cashierComboBox" prefWidth="200" editable="true"
+            <SearchableComboBox fx:id="cashierComboBox" prefWidth="200" editable="true"
                       promptText="All cashiers"/>
         </HBox>
 

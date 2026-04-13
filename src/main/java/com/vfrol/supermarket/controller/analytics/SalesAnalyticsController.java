@@ -11,7 +11,6 @@ import com.vfrol.supermarket.dto.analytics.SalesAnalyticsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.enums.sortby.SalesAnalyticsSortBy;
-import com.vfrol.supermarket.filter.EmployeeFilter;
 import com.vfrol.supermarket.filter.SalesAnalyticsFilter;
 import com.vfrol.supermarket.service.CheckService;
 import com.vfrol.supermarket.service.EmployeeService;
@@ -25,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -52,8 +52,8 @@ public class SalesAnalyticsController extends BaseListController<SalesAnalyticsD
     @FXML private VBox filterPanel;
     @FXML private DatePicker dateFromPicker;
     @FXML private DatePicker dateToPicker;
-    @FXML private ComboBox<ProductNameDTO> productComboBox;
-    @FXML private ComboBox<EmployeeListDTO> cashierComboBox;
+    @FXML private SearchableComboBox<ProductNameDTO> productComboBox;
+    @FXML private SearchableComboBox<EmployeeListDTO> cashierComboBox;
     @FXML private ComboBox<SalesAnalyticsSortBy> sortByComboBox;
 
     private ObservableList<SalesAnalyticsDTO> tableData;
@@ -100,24 +100,28 @@ public class SalesAnalyticsController extends BaseListController<SalesAnalyticsD
     }
 
     private void initializeProductComboBox() {
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForFilter(
                 productComboBox,
                 productService::getAllProductNames,
-                productService::getProductByName,
                 ProductNameDTO::name
         );
-        productComboBox.valueProperty().addListener((_, _, _) -> applyFilter());
+        productComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
+            if (newValue == null && oldValue != null) return;
+            applyFilter();
+        });
+
     }
 
     private void initializeCashierComboBox() {
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForFilter(
                 cashierComboBox,
                 employeeService::getAllEmployees,
-                surname -> employeeService.getEmployeesByFilter(
-                        EmployeeFilter.builder().surname(surname).build()),
                 emp -> emp.surname() + " " + emp.name()
         );
-        cashierComboBox.valueProperty().addListener((_, _, _) -> applyFilter());
+        cashierComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
+            if (newValue == null && oldValue != null) return;
+            applyFilter();
+        });
     }
 
     private void initializeSortComboBox() {

@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.synedra.validatorfx.Validator;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.function.Consumer;
 
@@ -22,7 +23,7 @@ public class SaleFormController extends BaseModalController {
     protected final Validator validator = new Validator();
 
     @FXML private VBox formPanel;
-    @FXML private ComboBox<StoreProductListDTO> storeProductComboBox;
+    @FXML private SearchableComboBox<StoreProductListDTO> storeProductComboBox;
     @FXML private TextField quantityField;
     @FXML private TextField priceField;
 
@@ -56,11 +57,11 @@ public class SaleFormController extends BaseModalController {
     }
 
     private void configureComboBox() {
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForForm(
                 storeProductComboBox,
                 storeProductService::getAllStoreProducts,
-                text -> storeProductService.getStoreProductsByFilter(StoreProductFilter.builder().productName(text).build()),
-                sp -> sp.productName() + " (" + sp.UPC() + ")"
+                sp -> sp.productName() + " (" + sp.UPC() + ")",
+                StoreProductListDTO::UPC
         );
     }
 

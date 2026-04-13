@@ -12,6 +12,7 @@ import com.vfrol.supermarket.service.CategoryService;
 import com.vfrol.supermarket.service.ProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.controlsfx.control.SearchableComboBox;
 
 public class ProductFormController extends BaseFormController<ProductCreateDTO, ProductDetailsDTO> {
 
@@ -20,7 +21,7 @@ public class ProductFormController extends BaseFormController<ProductCreateDTO, 
     private ProductDetailsDTO currentProduct;
 
     @FXML private TextField nameField;
-    @FXML private ComboBox<CategoryListDTO> categoryComboBox;
+    @FXML private SearchableComboBox<CategoryListDTO> categoryComboBox;
     @FXML private TextField manufacturerField;
     @FXML private TextArea characteristicsArea;
 
@@ -35,11 +36,11 @@ public class ProductFormController extends BaseFormController<ProductCreateDTO, 
     public void initialize() {
         super.initialize();
 
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForForm(
                 categoryComboBox,
                 categoryService::getAllCategories,
-                categoryService::getCategoriesByName,
-                CategoryListDTO::name
+                CategoryListDTO::name,
+                CategoryListDTO::id
         );
     }
 

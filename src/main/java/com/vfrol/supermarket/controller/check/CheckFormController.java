@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import lombok.Setter;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
     private final ObservableList<SaleItemModel> salesData = FXCollections.observableArrayList();
 
     @FXML private TextField checkNumberField;
-    @FXML private ComboBox<CustomerCardListDTO> customerCardComboBox;
+    @FXML private SearchableComboBox<CustomerCardListDTO> customerCardComboBox;
     @FXML private CheckBox useDiscount;
 
     @FXML private TableView<SaleItemModel> salesTable;
@@ -72,11 +73,11 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
     }
 
     private void configureCustomerCard() {
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForForm(
                 customerCardComboBox,
                 customerCardService::getAllCards,
-                text -> customerCardService.getCardsByFilter(CustomerCardFilter.builder().surname(text).build()),
-                card -> card.surname() + " " + card.name() + " [" + card.cardNumber() + "]"
+                card -> card.surname() + " " + card.name() + " [" + card.cardNumber() + "]",
+                CustomerCardListDTO::cardNumber
         );
         customerCardComboBox.valueProperty().addListener((obs, oldVal, newVal) -> setUseDiscountVisible());
     }

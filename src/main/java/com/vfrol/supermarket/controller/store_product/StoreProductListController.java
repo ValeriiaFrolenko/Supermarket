@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.List;
 
@@ -46,8 +47,8 @@ public class StoreProductListController extends BaseListController<StoreProductL
     @FXML private TableColumn<StoreProductListDTO, Boolean> promotionalColumn;
 
     @FXML private VBox filterPanel;
-    @FXML private ComboBox<ProductNameDTO>    productFilterComboBox;
-    @FXML private ComboBox<Boolean>           promotionalFilterComboBox;
+    @FXML private SearchableComboBox<ProductNameDTO> productFilterComboBox;
+    @FXML private ComboBox<Boolean> promotionalFilterComboBox;
     @FXML private ComboBox<StoreProductSortBy> sortByComboBox;
 
     @Inject
@@ -86,16 +87,17 @@ public class StoreProductListController extends BaseListController<StoreProductL
                 applyFilter());
         sortByComboBox.valueProperty().addListener((_, _, _) ->
                 applyFilter());
-        productFilterComboBox.valueProperty().addListener((_, _, _) ->
-                applyFilter());
+        productFilterComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
+            if (newValue == null && oldValue != null) return;
+            applyFilter();
+        });
 
         promotionalFilterComboBox.getItems().setAll(true, false);
         sortByComboBox.getItems().setAll(StoreProductSortBy.values());
 
-        SearchableComboBoxHelper.configure(
+        SearchableComboBoxHelper.configureForFilter(
                 productFilterComboBox,
                 productService::getAllProductNames,
-                productService::getProductByName,
                 ProductNameDTO::name
         );
     }
@@ -162,7 +164,6 @@ public class StoreProductListController extends BaseListController<StoreProductL
         searchField.clear();
         productFilterComboBox.setValue(null);
         productFilterComboBox.getEditor().clear();
-        productFilterComboBox.getItems().clear();
         promotionalFilterComboBox.setValue(null);
         sortByComboBox.setValue(null);
         applyFilter();
