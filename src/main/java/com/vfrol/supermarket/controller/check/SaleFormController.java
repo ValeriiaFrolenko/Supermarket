@@ -40,6 +40,9 @@ public class SaleFormController extends BaseModalController {
         setupValidation();
         configureComboBox();
 
+        priceField.setDisable(true);
+
+
         storeProductComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 priceField.setText(String.format("%.2f", newVal.price()).replace(",", "."));
@@ -52,7 +55,6 @@ public class SaleFormController extends BaseModalController {
     private void setupValidation() {
         SaleFormValidator saleValidator = new SaleFormValidator(validator);
         saleValidator.validateProduct(storeProductComboBox);
-        saleValidator.validatePrice(priceField);
         saleValidator.validateQuantity(quantityField);
     }
 
@@ -69,13 +71,11 @@ public class SaleFormController extends BaseModalController {
     public void onAdd() {
         StoreProductListDTO selectedProduct = storeProductComboBox.getValue();
         int qty = InputHelper.getInt(quantityField);
-        double finalPrice = InputHelper.getDouble(priceField);
 
         if (saveCallback != null) {
             CheckFormController.SaleItemModel saleItem = new CheckFormController.SaleItemModel(
                     selectedProduct.UPC(),
                     selectedProduct.productName(),
-                    finalPrice,
                     qty
             );
             saveCallback.accept(saleItem);

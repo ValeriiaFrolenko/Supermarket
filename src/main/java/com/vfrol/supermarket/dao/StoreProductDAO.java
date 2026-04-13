@@ -110,4 +110,10 @@ public interface StoreProductDAO {
 
     @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC_prom = :upc)")
     boolean isUsedAsPromoBase(@Bind("upc") String upc);
+
+    @SqlQuery("SELECT products_number FROM Store_Product WHERE UPC = :upc")
+    int getQuantityByUPC(@Bind("upc") String upc);
+
+    @SqlQuery("SELECT selling_price FROM Store_Product WHERE UPC = :upc")
+    double getPriceByUPC(@Bind("upc") String upc);
 }

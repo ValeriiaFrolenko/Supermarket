@@ -26,12 +26,15 @@ public class StoreProductService {
 
     public void addStoreProduct(StoreProductCreateDTO dto) {
         storeProductValidator.validateForCreate(dto);
-        storeProductDAO.create(buildEntity(dto));
+        double sellingPrice = calculateSellingPrice(dto);
+        storeProductDAO.create(buildEntity(dto, sellingPrice));
     }
+
 
     public void updateStoreProduct(StoreProductCreateDTO dto) {
         storeProductValidator.validateForUpdate(dto);
-        storeProductDAO.update(buildEntity(dto));
+        double sellingPrice = calculateSellingPrice(dto);
+        storeProductDAO.update(buildEntity(dto, sellingPrice));
     }
 
     public void deleteStoreProduct(String upc) {
@@ -60,15 +63,26 @@ public class StoreProductService {
         return storeProductDAO.findProductIdByUPC(upc);
     }
 
-    private StoreProduct buildEntity(StoreProductCreateDTO dto) {
+    private StoreProduct buildEntity(StoreProductCreateDTO dto, Double sellingPrice) {
         return StoreProduct.builder()
                 .UPC(dto.UPC())
                 .UPCprom(dto.UPCprom())
                 .productId(dto.productId())
-                .price(dto.price())
+                .price(sellingPrice)
                 .quantity(dto.quantity())
                 .promotional(dto.promotional())
                 .build();
+    }
+
+    private double calculateSellingPrice(StoreProductCreateDTO dto) {
+        double sellingPrice;
+        if (dto.promotional()){
+            Double discount = dto.discount();
+            sellingPrice = dto.price() * (1.0 - (discount / 100.0));
+        } else {
+            sellingPrice = dto.price();
+        }
+        return sellingPrice;
     }
 
     public boolean existsByProductId(int id){

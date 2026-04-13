@@ -14,31 +14,41 @@ import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
 import com.vfrol.supermarket.entity.Check;
 import com.vfrol.supermarket.entity.Sale;
 import com.vfrol.supermarket.filter.CheckFilter;
+import com.vfrol.supermarket.service.validator.CheckValidator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class CheckService {
 
     private final TransactionManager transactionManager;
     private final CheckDAO checkDAO;
+    private final CheckValidator checkValidator;
 
     @Inject
-    public CheckService(TransactionManager transactionManager, CheckDAO checkDAO) {
+    public CheckService(TransactionManager transactionManager, CheckDAO checkDAO, CheckValidator checkValidator) {
         this.transactionManager = transactionManager;
         this.checkDAO = checkDAO;
+        this.checkValidator = checkValidator;
     }
 
     public void createCheck(CheckCreateDTO dto) {
         transactionManager.useTransaction(handle -> {
+            checkValidator.validateOnCreate(dto);
             CheckDAO checkDAO = handle.attach(CheckDAO.class);
             SaleDAO saleDAO = handle.attach(SaleDAO.class);
             StoreProductDAO storeProductDAO = handle.attach(StoreProductDAO.class);
             List<SaleCreateDTO> sales = dto.sales();
 
             double sumTotal = 0.0;
-            for (SaleCreateDTO saleDTO : dto.sales()) {
-                sumTotal += saleDTO.price() * saleDTO.quantity();
+            Map<String, Double> actualPrices = new HashMap<>();
+
+            for (SaleCreateDTO saleDTO : sales) {
+                double actualPrice = storeProductDAO.getPriceByUPC(saleDTO.UPC());
+                actualPrices.put(saleDTO.UPC(), actualPrice);
+                sumTotal += actualPrice * saleDTO.quantity();
             }
 
             if (dto.cardNumber() != null && !dto.cardNumber().isBlank()) {
@@ -62,17 +72,17 @@ public class CheckService {
             checkDAO.create(check);
 
             for (SaleCreateDTO saleDTO : sales) {
-                createSale(saleDAO, storeProductDAO, saleDTO);
+               createSale(saleDAO, storeProductDAO, saleDTO, actualPrices.get(saleDTO.UPC()));
             }
         });
     }
 
-    private void createSale(SaleDAO saleDAO, StoreProductDAO storeProductDAO, SaleCreateDTO saleDTO) {
+    private void createSale(SaleDAO saleDAO, StoreProductDAO storeProductDAO, SaleCreateDTO saleDTO, double actualPrice) {
         Sale sale = Sale.builder()
                 .UPC(saleDTO.UPC())
                 .checkNumber(saleDTO.checkNumber())
                 .quantity(saleDTO.quantity())
-                .price(saleDTO.price())
+                .price(actualPrice)
                 .build();
         saleDAO.create(sale);
         storeProductDAO.sellStoreProduct(saleDTO.UPC(), saleDTO.quantity());
@@ -80,6 +90,7 @@ public class CheckService {
 
     public void deleteCheckByNumber(String checkNumber) {
         transactionManager.useTransaction(handle -> {
+            checkValidator.validateOnDelete(checkNumber);
             SaleDAO saleDAO = handle.attach(SaleDAO.class);
             CheckDAO checkDAO = handle.attach(CheckDAO.class);
 

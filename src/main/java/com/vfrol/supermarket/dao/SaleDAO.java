@@ -9,7 +9,6 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
-import java.util.Optional;
 
 @RegisterConstructorMapper(Sale.class)
 @RegisterConstructorMapper(SaleListDTO.class)
@@ -48,4 +47,7 @@ public interface SaleDAO {
 
     @SqlQuery("SELECT EXISTS (SELECT 1 FROM Sale WHERE UPC = :upc)")
     boolean existsByUPC(@Bind("upc") String upc);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Sale WHERE check_number = :checkNumber AND UPC = :upc)")
+    boolean existsByCheckNumberAndUPC(@Bind("checkNumber") String checkNumber, @Bind("upc") String upc);
 }
