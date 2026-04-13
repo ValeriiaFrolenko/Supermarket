@@ -9,6 +9,7 @@ import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
 import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.StoreProductFilter;
 import com.vfrol.supermarket.service.validator.StoreProductValidator;
+import com.vfrol.supermarket.service.validator.ValidationException;
 
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class StoreProductService {
 
     private double calculateSellingPrice(StoreProductCreateDTO dto) {
         double sellingPrice;
-        if (dto.promotional()){
+        if (dto.promotional()) {
             Double discount = dto.discount();
             sellingPrice = dto.price() * (1.0 - (discount / 100.0));
         } else {
@@ -85,7 +86,14 @@ public class StoreProductService {
         return sellingPrice;
     }
 
-    public boolean existsByProductId(int id){
+    public boolean existsByProductId(int id) {
         return storeProductDAO.existsByProductId(id);
+    }
+
+    public double getPriceByUPC(String upc) {
+        if (!storeProductDAO.existsByUPC(upc)) {
+            throw new ValidationException("Store product with UPC '" + upc + "' does not exist.");
+        }
+       return storeProductDAO.getPriceByUPC(upc);
     }
 }

@@ -116,4 +116,7 @@ public interface StoreProductDAO {
 
     @SqlQuery("SELECT selling_price FROM Store_Product WHERE UPC = :upc")
     double getPriceByUPC(@Bind("upc") String upc);
+
+    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC = :upc)")
+    boolean existsByUPC(@Bind("upc") String upc);
 }

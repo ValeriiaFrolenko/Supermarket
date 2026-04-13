@@ -104,7 +104,7 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
         String cardNumber = customerCardComboBox.getValue() != null ? customerCardComboBox.getValue().cardNumber() : null;
 
         List<SaleCreateDTO> saleDTOs = salesData.stream()
-                .map(item -> new SaleCreateDTO(item.upc(), InputHelper.getString(checkNumberField), item.quantity(), item.price()))
+                .map(item -> new SaleCreateDTO(item.upc(), InputHelper.getString(checkNumberField), item.quantity()))
                 .collect(Collectors.toList());
 
         return CheckCreateDTO.builder()
