@@ -7,7 +7,9 @@ import com.vfrol.supermarket.dao.*;
 import com.vfrol.supermarket.dto.check.CheckCreateDTO;
 import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Singleton
 public class CheckValidator{
@@ -54,7 +56,12 @@ public class CheckValidator{
         if (saleCreateDTOS == null || saleCreateDTOS.isEmpty()) {
             throw new ValidationException("Check must contain at least one sale");
         }
+        Set<String> seenUPCs = new HashSet<>();
         for (SaleCreateDTO saleDTO : saleCreateDTOS) {
+            if (!seenUPCs.add(saleDTO.UPC())) {
+                throw new ValidationException("Duplicate UPC '" + saleDTO.UPC() + "' in the same check");
+            }
+
             if (storeProductDAO.findById(saleDTO.UPC()).isEmpty()) {
                 throw new ValidationException("Store product with UPC '" + saleDTO.UPC() + "' does not exist");
             }

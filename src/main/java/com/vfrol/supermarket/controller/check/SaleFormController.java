@@ -6,7 +6,6 @@ import com.vfrol.supermarket.controller.ui_validator.SaleFormValidator;
 import com.vfrol.supermarket.controller.util.InputHelper;
 import com.vfrol.supermarket.controller.util.SearchableComboBoxHelper;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
-import com.vfrol.supermarket.filter.StoreProductFilter;
 import com.vfrol.supermarket.service.StoreProductService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

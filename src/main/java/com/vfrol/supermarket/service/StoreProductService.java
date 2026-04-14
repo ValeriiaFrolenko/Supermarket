@@ -86,10 +86,6 @@ public class StoreProductService {
         return sellingPrice;
     }
 
-    public boolean existsByProductId(int id) {
-        return storeProductDAO.existsByProductId(id);
-    }
-
     public double getPriceByUPC(String upc) {
         if (!storeProductDAO.existsByUPC(upc)) {
             throw new ValidationException("Store product with UPC '" + upc + "' does not exist.");

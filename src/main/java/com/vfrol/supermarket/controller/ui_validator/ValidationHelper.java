@@ -176,16 +176,6 @@ public final class ValidationHelper {
     }
 
     public static void checkRequiredComboBoxConditional(Validator validator, ComboBox<?> box,
-                                                        Supplier<Boolean> condition, String message) {
-        validator.createCheck()
-                .dependsOn("val", box.valueProperty())
-                .withMethod(c -> {
-                    if (condition.get() && c.get("val") == null) c.error(message);
-                })
-                .decorates(box).immediate();
-    }
-
-    public static void checkRequiredComboBoxConditional(Validator validator, ComboBox<?> box,
                                                         ObservableBooleanValue conditionObservable, String message) {
         validator.createCheck()
                 .dependsOn("val",       box.valueProperty())
@@ -214,6 +204,45 @@ public final class ValidationHelper {
                 .withMethod(c -> {
                     String text = field.getText();
                     if (text != null && text.trim().length() > maxLength) c.error(message);
+                })
+                .decorates(field).immediate();
+    }
+
+    public static void checkIsDoubleConditional(Validator validator, TextField field,
+                                                ObservableBooleanValue condition, String message) {
+        validator.createCheck()
+                .dependsOn("text", field.textProperty())
+                .dependsOn("condition", condition)
+                .withMethod(c -> {
+                    String text = InputHelper.getString(field);
+                    if (Boolean.TRUE.equals(c.get("condition")) && text != null && InputHelper.getDouble(field) == null)
+                        c.error(message);
+                })
+                .decorates(field).immediate();
+    }
+
+    public static void checkMinDoubleConditional(Validator validator, TextField field, double min,
+                                                 ObservableBooleanValue condition, String message) {
+        validator.createCheck()
+                .dependsOn("text", field.textProperty())
+                .dependsOn("condition", condition)
+                .withMethod(c -> {
+                    Double val = InputHelper.getDouble(field);
+                    if (Boolean.TRUE.equals(c.get("condition")) && val != null && val < min)
+                        c.error(message);
+                })
+                .decorates(field).immediate();
+    }
+
+    public static void checkMaxDoubleConditional(Validator validator, TextField field, double max,
+                                                 ObservableBooleanValue condition, String message) {
+        validator.createCheck()
+                .dependsOn("text", field.textProperty())
+                .dependsOn("condition", condition)
+                .withMethod(c -> {
+                    Double val = InputHelper.getDouble(field);
+                    if (Boolean.TRUE.equals(c.get("condition")) && val != null && val > max)
+                        c.error(message);
                 })
                 .decorates(field).immediate();
     }

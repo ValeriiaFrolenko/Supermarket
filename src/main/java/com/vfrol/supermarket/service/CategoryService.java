@@ -49,8 +49,4 @@ public class CategoryService {
     public List<CategoryListDTO> getCategoriesByName(String name) {
         return categoryDAO.findByName(name);
     }
-
-    public int countCategories(){
-        return categoryDAO.count();
-    }
 }

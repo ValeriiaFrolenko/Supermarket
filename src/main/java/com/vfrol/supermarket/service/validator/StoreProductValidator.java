@@ -7,6 +7,8 @@ import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.dao.StoreProductDAO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
 
+import java.util.Objects;
+
 @Singleton
 public class StoreProductValidator {
 
@@ -25,13 +27,13 @@ public class StoreProductValidator {
         if (storeProductDAO.findById(dto.UPC()).isPresent()) {
             throw new ValidationException("Store product with UPC '" + dto.UPC() + "' already exists.");
         }
-
         if (productDAO.findById(dto.productId()).isEmpty()) {
             throw new ValidationException("Product with ID '" + dto.productId() + "' does not exist.");
         }
-
         if (dto.promotional()) {
             validatePromotionalRules(dto);
+        } else if (dto.UPCprom() != null) {
+            throw new ValidationException("Non-promotional product must not have a promotional UPC.");
         }
     }
 
@@ -71,12 +73,9 @@ public class StoreProductValidator {
 
         if (storeProductDAO.findById(dto.UPCprom()).isEmpty())
             throw new ValidationException("Promotional UPC '" + dto.UPCprom() + "' does not exist.");
-
-        if (dto.UPC().equals(dto.UPCprom())) {
+        if (dto.UPC().equals(dto.UPCprom()))
             throw new ValidationException("Regular and promotional UPC cannot be the same.");
-        }
-        if (dto.productId() != storeProductDAO.findProductIdByUPC(dto.UPCprom())) {
+        if (!Objects.equals(dto.productId(), storeProductDAO.findProductIdByUPC(dto.UPCprom())))
             throw new ValidationException("Promotional UPC must be associated with the same product.");
-        }
     }
 }

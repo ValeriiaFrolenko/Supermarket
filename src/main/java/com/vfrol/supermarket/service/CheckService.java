@@ -114,8 +114,4 @@ public class CheckService {
     public List<CheckListDTO> getCheckByFilter(CheckFilter filter){
         return checkDAO.findByFilter(filter);
     }
-
-    public boolean existsByCardNumber(String cardNumber) {
-        return checkDAO.existsByCardNumber(cardNumber);
-    }
 }

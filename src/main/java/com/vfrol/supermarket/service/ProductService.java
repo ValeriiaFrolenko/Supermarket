@@ -57,10 +57,6 @@ public class ProductService {
         return productDAO.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    public List<ProductNameDTO> getProductByName(String name) {
-        return productDAO.findByName(name);
-    }
-
     public List<ProductListDTO> getAllProducts() {
         return productDAO.findAll();
     }
@@ -77,7 +73,4 @@ public class ProductService {
         return productDAO.findByFilter(filter);
     }
 
-    public boolean existsByCategoryId(int id){
-        return productDAO.existsByCategoryId(id);
-    }
 }

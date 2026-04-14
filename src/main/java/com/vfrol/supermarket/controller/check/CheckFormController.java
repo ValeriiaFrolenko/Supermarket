@@ -11,7 +11,6 @@ import com.vfrol.supermarket.dto.check.CheckCreateDTO;
 import com.vfrol.supermarket.dto.check.CheckDetailsDTO;
 import com.vfrol.supermarket.dto.customer_card.CustomerCardListDTO;
 import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
-import com.vfrol.supermarket.filter.CustomerCardFilter;
 import com.vfrol.supermarket.service.CheckService;
 import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.beans.property.SimpleDoubleProperty;

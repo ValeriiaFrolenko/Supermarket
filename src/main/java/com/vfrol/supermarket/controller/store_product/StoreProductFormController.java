@@ -10,7 +10,6 @@ import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
-import com.vfrol.supermarket.filter.StoreProductFilter;
 import com.vfrol.supermarket.service.ProductService;
 import com.vfrol.supermarket.service.StoreProductService;
 import javafx.fxml.FXML;

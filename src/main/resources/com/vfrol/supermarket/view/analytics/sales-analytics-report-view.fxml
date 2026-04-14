@@ -12,7 +12,7 @@
         <TableView fx:id="previewTable">
             <columns>
                 <TableColumn fx:id="productNameColumn"  text="Product"              prefWidth="200"/>
-                <TableColumn fx:id="quantitySoldColumn" text="Qty Sold"             prefWidth="80"/>
+                <TableColumn fx:id="quantitySoldColumn" text="Qty Sold"             />
                 <TableColumn fx:id="totalAmountColumn"  text="Total Amount (UAH)"   prefWidth="150"/>
                 <TableColumn fx:id="checkNumberColumn"  text="Receipt #"            prefWidth="110"/>
                 <TableColumn fx:id="cashierNameColumn"  text="Cashier"              prefWidth="160"/>

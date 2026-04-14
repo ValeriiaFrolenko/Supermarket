@@ -39,10 +39,14 @@ public class StoreProductFormValidator {
     }
 
     public void validateDiscount(TextField field) {
-        ValidationHelper.checkRequiredConditional(validator, field, isPromotionalObservable, "Discount is required for promotional products");
-        ValidationHelper.checkIsDouble(validator, field, "Discount must be a valid number");
-        ValidationHelper.checkMinDouble(validator, field, 0.0, "Discount cannot be negative");
-        ValidationHelper.checkMaxDouble(validator, field, 100.0, "Discount cannot exceed 100%");
+        ValidationHelper.checkRequiredConditional(validator, field, isPromotionalObservable,
+                "Discount is required for promotional products");
+        ValidationHelper.checkIsDoubleConditional(validator, field, isPromotionalObservable,
+                "Discount must be a valid number");
+        ValidationHelper.checkMinDoubleConditional(validator, field, 0.0, isPromotionalObservable,
+                "Discount cannot be negative");
+        ValidationHelper.checkMaxDoubleConditional(validator, field, 100.0, isPromotionalObservable,
+                "Discount cannot exceed 100%");
     }
 
     public void validateQuantity(TextField field) {

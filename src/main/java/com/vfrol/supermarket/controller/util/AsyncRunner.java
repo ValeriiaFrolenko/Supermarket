@@ -3,7 +3,6 @@ package com.vfrol.supermarket.controller.util;
 import javafx.concurrent.Task;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
