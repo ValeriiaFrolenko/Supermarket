@@ -7,11 +7,13 @@ import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeDetailsDTO;
 import com.vfrol.supermarket.dto.employee.EmployeeListDTO;
 import com.vfrol.supermarket.entity.Employee;
+import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.filter.EmployeeFilter;
 import com.vfrol.supermarket.service.validator.EmployeeValidator;
 import com.vfrol.supermarket.service.validator.ValidationException;
 import com.vfrol.supermarket.tools.PasswordManager;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Singleton
@@ -70,6 +72,10 @@ public class EmployeeService {
                 .isPresent();
     }
 
+    public boolean isEmpty(){
+        return employeeDAO.isEmpty();
+    }
+
     private Employee createEmployee(EmployeeCreateDTO dto, String passwordHash) {
         return Employee.builder()
                 .id(dto.id())
@@ -86,5 +92,23 @@ public class EmployeeService {
                 .street(dto.street())
                 .zipCode(dto.zipCode())
                 .build();
+    }
+
+    public void createInitialAdmin() {
+        EmployeeCreateDTO createDTO = EmployeeCreateDTO.builder()
+                .id("admin")
+                .rawPassword("admin")
+                .surname("Admin")
+                .name("Admin")
+                .role(EmployeeRole.MANAGER)
+                .salary(0.0)
+                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .dateOfStart(LocalDate.now())
+                .phoneNumber("0000000000")
+                .city("City")
+                .street("Street")
+                .zipCode("00000")
+                .build();
+        addEmployee(createDTO);
     }
 }

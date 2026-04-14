@@ -9,7 +9,7 @@ import org.jdbi.v3.core.Jdbi;
 import java.nio.charset.StandardCharsets;
 
 // This class is used only for testing purposes to create the database schema and seed it with initial data. It should not be used in production.
-public class CreateDatabaseTest {
+public class DevDataSeeder {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new SupermarketModule());
         DatabaseInitializer initializer = injector.getInstance(DatabaseInitializer.class);
@@ -22,7 +22,7 @@ public class CreateDatabaseTest {
 
     private static void seedDatabase(Jdbi jdbi) {
         try {
-            var inputStream = CreateDatabaseTest.class.getResourceAsStream("/sql/seed.sql");
+            var inputStream = DevDataSeeder.class.getResourceAsStream("/sql/seed.sql");
             if (inputStream == null) {
                 throw new RuntimeException("Resource not found: /sql/seed.sql");
             }
