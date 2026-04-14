@@ -37,6 +37,7 @@ public class ProductListController extends BaseListController<ProductListDTO> {
     @FXML private TableColumn<ProductListDTO, String> nameColumn;
     @FXML private TableColumn<ProductListDTO, String> categoryColumn;
     @FXML private Button addButton;
+    @FXML private Button exportButton;
 
     @FXML private VBox filterPanel;
     @FXML private SearchableComboBox<CategoryListDTO> categoryFilterComboBox;
@@ -50,7 +51,7 @@ public class ProductListController extends BaseListController<ProductListDTO> {
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton, exportButton);
         initializeTable();
         initializeFilters();
         loadAllProducts();

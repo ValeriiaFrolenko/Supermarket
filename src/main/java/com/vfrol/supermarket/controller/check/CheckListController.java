@@ -37,6 +37,7 @@ public class CheckListController extends BaseListController<CheckListDTO> {
     @FXML private TableColumn<CheckListDTO, String> dateColumn;
     @FXML private TableColumn<CheckListDTO, Number> sumTotalColumn;
     @FXML private Button addButton;
+    @FXML private Button exportButton;
 
     @FXML private VBox filterPanel;
     @FXML private TextField cashierSurnameFilterField;
@@ -53,7 +54,7 @@ public class CheckListController extends BaseListController<CheckListDTO> {
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton);
+        SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton, exportButton);
         if (!sessionManager.isManager()) {
             cashierSurnameFilterField.setText(sessionManager.getCurrentUser().surname());
             cashierSurnameFilterField.setDisable(true);

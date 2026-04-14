@@ -38,6 +38,7 @@ public class StoreProductListController extends BaseListController<StoreProductL
 
     @FXML private TextField searchField;
     @FXML private Button addButton;
+    @FXML private Button exportButton;
 
     @FXML private TableView<StoreProductListDTO> storeProductTable;
     @FXML private TableColumn<StoreProductListDTO, String>  upcColumn;

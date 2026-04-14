@@ -6,6 +6,7 @@ import com.vfrol.supermarket.controller.base.BaseListController;
 import com.vfrol.supermarket.controller.util.AsyncRunner;
 import com.vfrol.supermarket.controller.util.Debouncer;
 import com.vfrol.supermarket.controller.util.InputHelper;
+import com.vfrol.supermarket.controller.util.SessionUIHelper;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.service.CategoryService;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,6 +35,7 @@ public class CategoryListController extends BaseListController<CategoryListDTO> 
     @FXML
     public void initialize() {
         initializeTable();
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager);
         searchField.textProperty().addListener((_,_,_) ->
                 searchDebouncer.debounce(this::applyFilter));
         loadAllCategories();
