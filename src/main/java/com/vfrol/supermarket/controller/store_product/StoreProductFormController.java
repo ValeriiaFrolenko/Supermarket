@@ -101,7 +101,7 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
                 new StoreProductFormValidator(validator, promotionalCheckBox.selectedProperty());
 
         storeProductValidator.validateUPC(upcField);
-        storeProductValidator.validateUPCProm(upcPromComboBox); // Оновили валідатор
+        storeProductValidator.validateUPCProm(upcPromComboBox);
         storeProductValidator.validateProduct(productComboBox);
         storeProductValidator.validatePrice(priceField);
         storeProductValidator.validateDiscount(discountField);

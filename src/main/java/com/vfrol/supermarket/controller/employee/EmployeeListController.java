@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeListController extends BaseListController<EmployeeListDTO> {
@@ -66,9 +67,9 @@ public class EmployeeListController extends BaseListController<EmployeeListDTO> 
                 searchDebouncer.debounce(this::applyFilter));
         phoneFilterField.textProperty().addListener((_,_,_) ->
                 searchDebouncer.debounce(this::applyFilter));
-        roleComboBox.valueProperty().addListener((_,_,_) ->
-                applyFilter());
-        roleComboBox.getItems().addAll(EmployeeRole.values());
+        List<EmployeeRole> roles = new ArrayList<>(List.of(EmployeeRole.values()));
+        roles.addFirst(null);
+        roleComboBox.getItems().addAll(roles);
     }
 
     @Override

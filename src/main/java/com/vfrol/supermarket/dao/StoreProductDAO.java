@@ -94,7 +94,7 @@ public interface StoreProductDAO {
     <if(filter.upc)> AND sp.UPC LIKE :upc || '%' <endif>
     <if(filter.productName)> AND p.product_name LIKE '%' || :productName || '%' <endif>
     <if(filter.categoryId)> AND p.category_number = :categoryId <endif>
-    <if(filter.promotional)> AND sp.promotional_product = :promotional <endif>
+    AND (:promotional IS NULL OR promotional_product = :promotional)
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>p.product_name<endif>
     """)
     List<StoreProductListDTO> findByFilter(@BindBean @Define("filter") StoreProductFilter filter);

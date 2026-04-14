@@ -71,12 +71,6 @@ public class CustomerCardListController extends BaseListController<CustomerCardL
                 searchDebouncer.debounce(this::applyFilter));
         phoneFilterField.textProperty().addListener((_,_,_) ->
                 searchDebouncer.debounce(this::applyFilter));
-        discountFromField.textProperty().addListener((_,_,_) ->
-                searchDebouncer.debounce(this::applyFilter));
-        discountToField.textProperty().addListener((_,_,_) ->
-                searchDebouncer.debounce(this::applyFilter));
-        sortByComboBox.valueProperty().addListener((_,_,_) ->
-                applyFilter());
 
         sortByComboBox.getItems().addAll(CustomerCardSortBy.values());
     }

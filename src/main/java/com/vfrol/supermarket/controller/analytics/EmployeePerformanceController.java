@@ -52,7 +52,6 @@ public class EmployeePerformanceController extends BaseListController<EmployeePe
         initializeTable();
         initializeSortComboBox();
         initializeDatePickerListeners();
-        initializeCheckBoxListener();
         applyFilter();
     }
 
@@ -68,7 +67,6 @@ public class EmployeePerformanceController extends BaseListController<EmployeePe
 
     private void initializeSortComboBox() {
         sortByComboBox.getItems().addAll(EmployeePerformanceSortBy.values());
-        sortByComboBox.valueProperty().addListener((_, _, _) -> applyFilter());
     }
 
     private void initializeDatePickerListeners() {
@@ -76,9 +74,6 @@ public class EmployeePerformanceController extends BaseListController<EmployeePe
         dateToPicker.valueProperty().addListener((_, _, _) -> applyFilter());
     }
 
-    private void initializeCheckBoxListener() {
-        onlyWithCardAlwaysCheckBox.selectedProperty().addListener((_, _, _) -> applyFilter());
-    }
 
     @FXML
     public void onLast7DaysClick() {

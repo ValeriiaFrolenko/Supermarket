@@ -83,16 +83,8 @@ public class StoreProductListController extends BaseListController<StoreProductL
     private void initializeFilters() {
         searchField.textProperty().addListener((_, _, _) ->
                 searchDebouncer.debounce(this::applyFilter));
-        promotionalFilterComboBox.valueProperty().addListener((_, _, _) ->
-                applyFilter());
-        sortByComboBox.valueProperty().addListener((_, _, _) ->
-                applyFilter());
-        productFilterComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
-            if (newValue == null && oldValue != null) return;
-            applyFilter();
-        });
 
-        promotionalFilterComboBox.getItems().setAll(true, false);
+        promotionalFilterComboBox.getItems().setAll(null, true, false);
         sortByComboBox.getItems().setAll(StoreProductSortBy.values());
 
         SearchableComboBoxHelper.configureForFilter(

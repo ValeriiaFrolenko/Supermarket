@@ -87,8 +87,6 @@ public class CheckListController extends BaseListController<CheckListDTO> {
                 applyFilter());
         dateToPicker.valueProperty().addListener((_,_,_) ->
                 applyFilter());
-        sortByComboBox.valueProperty().addListener((_,_,_) ->
-                applyFilter());
 
         sortByComboBox.getItems().addAll(CheckSortBy.values());
     }

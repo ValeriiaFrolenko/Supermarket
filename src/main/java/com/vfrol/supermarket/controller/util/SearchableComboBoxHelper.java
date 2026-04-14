@@ -109,11 +109,13 @@ public final class SearchableComboBoxHelper {
                     ? idExtractor.apply(current)
                     : null;
 
+            items.addFirst(comboBox.getConverter().fromString(""));
+
             comboBox.getItems().setAll(items);
 
             if (currentId != null) {
                 items.stream()
-                        .filter(item -> idExtractor.apply(item).equals(currentId))
+                        .filter(item -> item != null && idExtractor.apply(item).equals(currentId))
                         .findFirst()
                         .ifPresent(comboBox::setValue);
             }

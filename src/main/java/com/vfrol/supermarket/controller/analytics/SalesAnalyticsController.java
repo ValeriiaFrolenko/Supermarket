@@ -105,11 +105,6 @@ public class SalesAnalyticsController extends BaseListController<SalesAnalyticsD
                 productService::getAllProductNames,
                 ProductNameDTO::name
         );
-        productComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
-            if (newValue == null && oldValue != null) return;
-            applyFilter();
-        });
-
     }
 
     private void initializeCashierComboBox() {
@@ -118,15 +113,10 @@ public class SalesAnalyticsController extends BaseListController<SalesAnalyticsD
                 employeeService::getAllEmployees,
                 emp -> emp.surname() + " " + emp.name()
         );
-        cashierComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
-            if (newValue == null && oldValue != null) return;
-            applyFilter();
-        });
     }
 
     private void initializeSortComboBox() {
         sortByComboBox.getItems().addAll(SalesAnalyticsSortBy.values());
-        sortByComboBox.valueProperty().addListener((_, _, _) -> applyFilter());
     }
 
     private void initializeDatePickerListeners() {

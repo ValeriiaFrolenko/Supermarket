@@ -69,12 +69,6 @@ public class ProductListController extends BaseListController<ProductListDTO> {
     private void initializeFilters() {
         searchField.textProperty().addListener((_,_,_) ->
                 searchDebouncer.debounce(this::applyFilter));
-        categoryFilterComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
-            if (newValue == null && oldValue != null) return;
-            applyFilter();
-        });
-        sortByComboBox.valueProperty().addListener((_,_,_) ->
-                applyFilter());
 
         sortByComboBox.getItems().addAll(ProductSortBy.values());
 
