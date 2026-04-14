@@ -92,7 +92,7 @@ public interface StoreProductDAO {
     JOIN Product p ON sp.id_product = p.id_product
     WHERE 1=1
     <if(filter.upc)> AND sp.UPC LIKE :upc || '%' <endif>
-    <if(filter.productName)> AND p.product_name LIKE '%' || :productName || '%' <endif>
+    <if(filter.productName)> AND p.product_name = :productName '%' <endif>
     <if(filter.categoryId)> AND p.category_number = :categoryId <endif>
     AND (:promotional IS NULL OR promotional_product = :promotional)
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>p.product_name<endif>

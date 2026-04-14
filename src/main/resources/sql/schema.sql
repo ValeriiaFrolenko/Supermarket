@@ -1,11 +1,8 @@
 -- Zlagoda Supermarket Database Schema for H2
--- Creates tables only if they don't exist
--- STRICTLY conforms to TZ Requirements
 
 -- Employee table
 CREATE TABLE IF NOT EXISTS Employee (
-                                        id_employee VARCHAR(10) PRIMARY KEY,
-    password_hash VARCHAR(255) NOT NULL,
+    id_employee VARCHAR(10) PRIMARY KEY COLLATE BINARY,    password_hash VARCHAR(255) NOT NULL,
     empl_surname VARCHAR(50) NOT NULL,
     empl_name VARCHAR(50) NOT NULL,
     empl_patronymic VARCHAR(50),
@@ -21,15 +18,15 @@ CREATE TABLE IF NOT EXISTS Employee (
 
 -- Category table
 CREATE TABLE IF NOT EXISTS Category (
-                                        category_number INT PRIMARY KEY AUTO_INCREMENT,
-                                        category_name VARCHAR(50) NOT NULL
+    category_number INT PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(50) NOT NULL
     );
 
 -- Product table
 CREATE TABLE IF NOT EXISTS Product (
-                                       id_product INT PRIMARY KEY AUTO_INCREMENT,
-                                       category_number INT NOT NULL,
-                                       product_name VARCHAR(50) NOT NULL,
+    id_product INT PRIMARY KEY AUTO_INCREMENT,
+    category_number INT NOT NULL,
+    product_name VARCHAR(50) NOT NULL,
     manufacturer VARCHAR(50) NOT NULL,
     characteristics VARCHAR(100) NOT NULL,
     FOREIGN KEY (category_number) REFERENCES Category(category_number)
@@ -39,7 +36,7 @@ CREATE TABLE IF NOT EXISTS Product (
 
 -- Store_Product table
 CREATE TABLE IF NOT EXISTS Store_Product (
-                                             UPC VARCHAR(12) PRIMARY KEY,
+    UPC VARCHAR(12) PRIMARY KEY,
     UPC_prom VARCHAR(12),
     id_product INT NOT NULL,
     selling_price DECIMAL(13,4) NOT NULL CHECK (selling_price >= 0),
@@ -55,7 +52,7 @@ CREATE TABLE IF NOT EXISTS Store_Product (
 
 -- Customer_Card table
 CREATE TABLE IF NOT EXISTS Customer_Card (
-                                             card_number VARCHAR(13) PRIMARY KEY,
+    card_number VARCHAR(13) PRIMARY KEY,
     cust_surname VARCHAR(50) NOT NULL,
     cust_name VARCHAR(50) NOT NULL,
     cust_patronymic VARCHAR(50),
@@ -68,7 +65,7 @@ CREATE TABLE IF NOT EXISTS Customer_Card (
 
 -- Check_Table
 CREATE TABLE IF NOT EXISTS Check_Table (
-                                           check_number VARCHAR(10) PRIMARY KEY,
+    check_number VARCHAR(10) PRIMARY KEY,
     id_employee VARCHAR(10) NOT NULL,
     card_number VARCHAR(13),
     print_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -84,7 +81,7 @@ CREATE TABLE IF NOT EXISTS Check_Table (
 
 -- Sale table
 CREATE TABLE IF NOT EXISTS Sale (
-                                    UPC VARCHAR(12),
+    UPC VARCHAR(12),
     check_number VARCHAR(10),
     product_number INT NOT NULL CHECK (product_number > 0),
     selling_price DECIMAL(13,4) NOT NULL CHECK (selling_price >= 0),
