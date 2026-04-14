@@ -90,6 +90,6 @@ public interface EmployeeDAO {
     @SqlQuery("SELECT COUNT(*) FROM Employee WHERE empl_role = :role")
     int countByRole(@Bind("role") com.vfrol.supermarket.enums.EmployeeRole role);
 
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Employee)")
+    @SqlQuery("SELECT NOT EXISTS (SELECT 1 FROM Employee)")
     boolean isEmpty();
 }

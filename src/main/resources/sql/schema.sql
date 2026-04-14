@@ -2,7 +2,8 @@
 
 -- Employee table
 CREATE TABLE IF NOT EXISTS Employee (
-    id_employee VARCHAR(10) PRIMARY KEY COLLATE BINARY,    password_hash VARCHAR(255) NOT NULL,
+    id_employee VARCHAR(10) PRIMARY KEY,
+    password_hash VARCHAR(255) NOT NULL,
     empl_surname VARCHAR(50) NOT NULL,
     empl_name VARCHAR(50) NOT NULL,
     empl_patronymic VARCHAR(50),
