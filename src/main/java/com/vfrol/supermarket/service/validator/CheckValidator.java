@@ -10,7 +10,7 @@ import com.vfrol.supermarket.dto.sale.SaleCreateDTO;
 import java.util.List;
 
 @Singleton
-public class CheckValidator extends BaseValidator {
+public class CheckValidator{
 
     private final CheckDAO checkDAO;
     private final SaleDAO saleDAO;
@@ -35,14 +35,18 @@ public class CheckValidator extends BaseValidator {
     }
 
     public void validateOnCreate(CheckCreateDTO dto){
-        requireNotExists(checkDAO.findById(dto.checkNumber()), "Check with this number already exists");
+        if (checkDAO.findById(dto.checkNumber()).isPresent()) {
+            throw new ValidationException("Check with number '" + dto.checkNumber() + "' already exists");
+        }
         validateEmployee(dto);
         validateCustomer(dto);
         validateSales(dto);
     }
 
     public void validateOnDelete(String checkNumber) {
-        requireExists(checkDAO.findById(checkNumber), "Check not found");
+        if (checkDAO.findById(checkNumber).isEmpty()) {
+            throw new ValidationException("Check with number '" + checkNumber + "' does not exist");
+        }
     }
 
     private void validateSales(CheckCreateDTO dto) {
@@ -51,7 +55,10 @@ public class CheckValidator extends BaseValidator {
             throw new ValidationException("Check must contain at least one sale");
         }
         for (SaleCreateDTO saleDTO : saleCreateDTOS) {
-            requireExists(storeProductDAO.findById(saleDTO.UPC()), "Store product with UPC '" + saleDTO.UPC() + "' does not exist");
+            if (storeProductDAO.findById(saleDTO.UPC()).isEmpty()) {
+                throw new ValidationException("Store product with UPC '" + saleDTO.UPC() + "' does not exist");
+            }
+
             if (saleDTO.quantity()>storeProductDAO.getQuantityByUPC(saleDTO.UPC())) {
                 throw new ValidationException("Not enough quantity for product with UPC '" + saleDTO.UPC() + "' \n" +
                         "Available quantity: " + storeProductDAO.getQuantityByUPC(saleDTO.UPC()) + ", requested quantity: " + saleDTO.quantity());
@@ -67,12 +74,16 @@ public class CheckValidator extends BaseValidator {
 
     private void validateCustomer(CheckCreateDTO dto) {
         if (dto.cardNumber() != null) {
-            requireExists(customerCardDAO.findById(dto.cardNumber()), "Customer card not found");
+            if (customerCardDAO.findById(dto.cardNumber()).isEmpty()) {
+                throw new ValidationException("Customer card with number '" + dto.cardNumber() + "' does not exist");
+            }
         }
     }
 
     private void validateEmployee(CheckCreateDTO dto) {
-        requireExists(employeeDAO.findById(dto.idEmployee()), "Employee not found");
+        if (employeeDAO.findById(dto.idEmployee()).isEmpty()) {
+            throw new ValidationException("Employee with id '" + dto.idEmployee() + "' does not exist");
+        }
         if (sessionManager.isManager()){
             throw new ValidationException("Employee with MANAGER role cannot create checks");
         }

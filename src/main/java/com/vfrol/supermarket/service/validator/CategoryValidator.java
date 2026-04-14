@@ -7,7 +7,7 @@ import com.vfrol.supermarket.dao.ProductDAO;
 import com.vfrol.supermarket.dto.category.CategoryCreateDTO;
 
 @Singleton
-public class CategoryValidator extends BaseValidator {
+public class CategoryValidator {
 
     private final CategoryDAO categoryDAO;
     private final ProductDAO productDAO;
@@ -19,17 +19,13 @@ public class CategoryValidator extends BaseValidator {
     }
 
     public void validateForUpdate(CategoryCreateDTO dto) {
-        requireExists(
-                categoryDAO.findById(dto.id()),
-                "Category with ID '" + dto.id() + "' does not exist."
-        );
+       if (categoryDAO.findById(dto.id()).isEmpty())
+           throw new ValidationException("Category with ID '" + dto.id() + "' does not exist.");
     }
 
     public void validateForDelete(int id) {
-        requireExists(
-                categoryDAO.findById(id),
-                "Category with ID '" + id + "' does not exist."
-        );
+        if (categoryDAO.findById(id).isEmpty())
+            throw new ValidationException("Category with ID '" + id + "' does not exist.");
 
         if (productDAO.existsByCategoryId(id)) {
             throw new ValidationException(

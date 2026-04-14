@@ -9,7 +9,7 @@ import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
 
 @Singleton
-public class EmployeeValidator extends BaseValidator {
+public class EmployeeValidator {
 
     private final EmployeeDAO employeeDAO;
     private final SessionManager sessionManager;
@@ -23,24 +23,21 @@ public class EmployeeValidator extends BaseValidator {
     }
 
     public void validateForCreate(EmployeeCreateDTO dto) {
-        requireNotExists(
-                employeeDAO.findById(dto.id()),
-                "Employee with ID '" + dto.id() + "' already exists."
-        );
+        if(employeeDAO.findById(dto.id()).isPresent()) {
+            throw new ValidationException("Employee with ID '" + dto.id() + "' already exists.");
+        }
     }
 
     public void validateForUpdate(EmployeeCreateDTO dto) {
-        requireExists(
-                employeeDAO.findById(dto.id()),
-                "Employee with ID '" + dto.id() + "' does not exist."
-        );
+        if (employeeDAO.findById(dto.id()).isEmpty()) {
+            throw new ValidationException("Employee with ID '" + dto.id() + "' does not exist.");
+        }
     }
 
     public void validateForDelete(String id) {
-        requireExists(
-                employeeDAO.findById(id),
-                "Employee with ID '" + id + "' does not exist."
-        );
+        if (employeeDAO.findById(id).isEmpty()) {
+            throw new ValidationException("Employee with ID '" + id + "' does not exist.");
+        }
 
         if (id.equals(sessionManager.getCurrentUser().id())) {
             throw new ValidationException("You cannot delete your own account.");

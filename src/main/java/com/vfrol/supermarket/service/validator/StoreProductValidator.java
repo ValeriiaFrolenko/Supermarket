@@ -8,7 +8,7 @@ import com.vfrol.supermarket.dao.StoreProductDAO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
 
 @Singleton
-public class StoreProductValidator extends BaseValidator {
+public class StoreProductValidator {
 
     private final StoreProductDAO storeProductDAO;
     private final ProductDAO productDAO;
@@ -22,12 +22,13 @@ public class StoreProductValidator extends BaseValidator {
     }
 
     public void validateForCreate(StoreProductCreateDTO dto) {
-        requireNotExists(
-                storeProductDAO.findById(dto.UPC()),
-                "Store product with UPC '" + dto.UPC() + "' already exists."
-        );
+        if (storeProductDAO.findById(dto.UPC()).isPresent()) {
+            throw new ValidationException("Store product with UPC '" + dto.UPC() + "' already exists.");
+        }
 
-        requireExists(productDAO.findById(dto.productId()), "Product does not exist.");
+        if (productDAO.findById(dto.productId()).isEmpty()) {
+            throw new ValidationException("Product with ID '" + dto.productId() + "' does not exist.");
+        }
 
         if (dto.promotional()) {
             validatePromotionalRules(dto);
@@ -35,12 +36,13 @@ public class StoreProductValidator extends BaseValidator {
     }
 
     public void validateForUpdate(StoreProductCreateDTO dto) {
-        requireExists(
-                storeProductDAO.findById(dto.UPC()),
-                "Store product with UPC '" + dto.UPC() + "' does not exist."
-        );
+       if (storeProductDAO.findById(dto.UPC()).isEmpty()) {
+            throw new ValidationException("Store product with UPC '" + dto.UPC() + "' does not exist.");
+        }
 
-        requireExists(productDAO.findById(dto.productId()), "Product does not exist.");
+        if (productDAO.findById(dto.productId()).isEmpty()) {
+            throw new ValidationException("Product with ID '" + dto.productId() + "' does not exist.");
+        }
 
         if (dto.promotional()) {
             validatePromotionalRules(dto);
@@ -48,10 +50,9 @@ public class StoreProductValidator extends BaseValidator {
     }
 
     public void validateForDelete(String upc) {
-        requireExists(
-                storeProductDAO.findById(upc),
-                "Store product with UPC '" + upc + "' does not exist."
-        );
+       if (storeProductDAO.findById(upc).isEmpty()) {
+            throw new ValidationException("Store product with UPC '" + upc + "' does not exist.");
+        }
 
         if (saleDAO.existsByUPC(upc)) {
             throw new ValidationException(
@@ -67,10 +68,10 @@ public class StoreProductValidator extends BaseValidator {
     }
 
     private void validatePromotionalRules(StoreProductCreateDTO dto) {
-        requireExists(
-                storeProductDAO.findById(dto.UPCprom()),
-                "Promotional UPC '" + dto.UPCprom() + "' does not exist."
-        );
+
+        if (storeProductDAO.findById(dto.UPCprom()).isEmpty())
+            throw new ValidationException("Promotional UPC '" + dto.UPCprom() + "' does not exist.");
+
         if (dto.UPC().equals(dto.UPCprom())) {
             throw new ValidationException("Regular and promotional UPC cannot be the same.");
         }
