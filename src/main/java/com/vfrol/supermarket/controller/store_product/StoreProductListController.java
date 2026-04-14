@@ -61,7 +61,7 @@ public class StoreProductListController extends BaseListController<StoreProductL
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, addButton, exportButton);
         initializeTable();
         initializeFilters();
         loadAllStoreProducts();
