@@ -80,7 +80,7 @@ public class SaleFormController extends BaseModalController {
             CheckFormController.SaleItemModel saleItem = new CheckFormController.SaleItemModel(
                     selectedProduct.UPC(),
                     selectedProduct.productName(),
-                    storeProductService.getPriceByUPC(selectedProduct.UPC()),
+                    selectedProduct.price(),
                     qty
             );
             saveCallback.accept(saleItem);

@@ -150,7 +150,12 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
             productId = productComboBox.getValue().id();
         }
 
-        Double finalPrice = InputHelper.getDouble(priceField);
+        Double finalPrice;
+        if (isPromotional && upcPromComboBox.getValue() != null) {
+            finalPrice = upcPromComboBox.getValue().price();
+        } else {
+            finalPrice = InputHelper.getDouble(priceField);
+        }
         if (finalPrice == null) finalPrice = 0.0;
 
         return StoreProductCreateDTO.builder()

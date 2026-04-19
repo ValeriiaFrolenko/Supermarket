@@ -28,27 +28,4 @@ public class EmployeePerformanceExcelExporter extends BaseExcelExporter<Employee
         amtCell.setCellValue(item.totalAmount());
         amtCell.setCellStyle(styles.money);
     }
-
-    @Override
-    protected void writeFooter(Sheet sheet, ExcelStyles styles,
-                               List<EmployeePerformanceDTO> data, int nextRowNum) {
-        long   totalReceipts = data.stream().mapToLong(EmployeePerformanceDTO::receiptCount).sum();
-        double totalAmount   = data.stream().mapToDouble(EmployeePerformanceDTO::totalAmount).sum();
-
-        sheet.createRow(nextRowNum);
-
-        Row totalsRow = sheet.createRow(nextRowNum + 1);
-
-        Cell labelCell = totalsRow.createCell(0);
-        labelCell.setCellValue("TOTALS");
-        labelCell.setCellStyle(styles.header);
-
-        Cell rcptCell = totalsRow.createCell(1);
-        rcptCell.setCellValue(totalReceipts);
-        rcptCell.setCellStyle(styles.header);
-
-        Cell amtCell = totalsRow.createCell(2);
-        amtCell.setCellValue(totalAmount);
-        amtCell.setCellStyle(styles.money);
-    }
 }

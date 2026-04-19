@@ -41,27 +41,4 @@ public class SalesAnalyticsExcelExporter extends BaseExcelExporter<SalesAnalytic
         row.createCell(5).setCellValue(
                 item.dateTime() != null ? item.dateTime().format(DATE_FORMATTER) : "");
     }
-
-    @Override
-    protected void writeFooter(Sheet sheet, ExcelStyles styles,
-                               List<SalesAnalyticsDTO> data, int nextRowNum) {
-        long   totalQty    = data.stream().mapToLong(SalesAnalyticsDTO::quantitySold).sum();
-        double totalAmount = data.stream().mapToDouble(SalesAnalyticsDTO::totalAmount).sum();
-
-        sheet.createRow(nextRowNum);
-
-        Row totalsRow = sheet.createRow(nextRowNum + 1);
-
-        Cell labelCell = totalsRow.createCell(0);
-        labelCell.setCellValue("TOTALS");
-        labelCell.setCellStyle(styles.header);
-
-        Cell qtyCell = totalsRow.createCell(1);
-        qtyCell.setCellValue(totalQty);
-        qtyCell.setCellStyle(styles.header);
-
-        Cell amtCell = totalsRow.createCell(2);
-        amtCell.setCellValue(totalAmount);
-        amtCell.setCellStyle(styles.money);
-    }
 }

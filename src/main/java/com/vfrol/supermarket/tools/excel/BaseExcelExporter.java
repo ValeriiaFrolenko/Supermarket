@@ -14,9 +14,6 @@ public abstract class BaseExcelExporter<T> {
     protected abstract String[] getColumns();
     protected abstract void fillRow(T item, Row row, ExcelStyles styles);
 
-    protected void writeFooter(Sheet sheet, ExcelStyles styles, List<T> data, int nextRowNum) {
-    }
-
     public void export(List<T> data, File file) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet(getSheetName());
@@ -44,8 +41,6 @@ public abstract class BaseExcelExporter<T> {
             for (T item : data) {
                 fillRow(item, sheet.createRow(rowNum++), styles);
             }
-
-            writeFooter(sheet, styles, data, rowNum);
 
             for (int i = 0; i < getColumns().length; i++) {
                 sheet.autoSizeColumn(i);
