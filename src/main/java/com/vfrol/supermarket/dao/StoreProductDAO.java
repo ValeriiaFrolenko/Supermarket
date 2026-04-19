@@ -15,6 +15,7 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @UseStringTemplateEngine
 @RegisterConstructorMapper(StoreProduct.class)
@@ -104,6 +105,16 @@ public interface StoreProductDAO {
     WHERE UPC = :upc AND products_number >= :quantity
     """)
     void sellStoreProduct(@Bind("upc") String upc, @Bind("quantity") int quantity);
+
+    @SqlQuery("""
+    SELECT UPC FROM Store_Product WHERE promotional_product = true
+    UNION
+    SELECT UPC_prom FROM Store_Product WHERE promotional_product = true
+    """)
+    List<String> findBlockedUPCs();
+
+    @SqlQuery("SELECT COUNT(*) FROM Store_Product WHERE id_product = :id")
+    int countByProductId(@Bind("id") int id);
 
     @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE id_product = :id)")
     boolean existsByProductId(@Bind("id") int id);

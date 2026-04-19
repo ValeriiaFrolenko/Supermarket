@@ -1,10 +1,12 @@
 package com.vfrol.supermarket.controller.util;
 
+import javafx.scene.control.ListCell;
 import javafx.util.StringConverter;
 import javafx.stage.Window;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -29,6 +31,31 @@ public final class SearchableComboBoxHelper {
 
         setupConverter(comboBox, toStringFunction);
         setupOnWindowShowing(comboBox, allItemsSupplier, false, null);
+    }
+
+    public static <T> void applyBlocking(
+            SearchableComboBox<T> comboBox,
+            Function<T, ?> idExtractor,
+            Supplier<Set<?>> blockedIdsSupplier) {
+
+        AsyncRunner.runAsync(blockedIdsSupplier, blocked -> {
+            comboBox.setCellFactory(lv -> new ListCell<>() {
+                @Override
+                protected void updateItem(T item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setDisable(false);
+                        setStyle("");
+                    } else {
+                        setText(comboBox.getConverter().toString(item));
+                        boolean isBlocked = blocked.contains(idExtractor.apply(item));
+                        setDisable(isBlocked);
+                        setStyle(isBlocked ? "-fx-opacity: 0.4;" : "");
+                    }
+                }
+            });
+        }, null);
     }
 
     private static <T> void setupConverter(

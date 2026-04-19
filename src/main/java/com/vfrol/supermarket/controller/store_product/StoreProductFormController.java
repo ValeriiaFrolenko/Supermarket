@@ -58,6 +58,12 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
                 StoreProductListDTO::UPC
         );
 
+        SearchableComboBoxHelper.applyBlocking(
+                upcPromComboBox,
+                StoreProductListDTO::UPC,
+                storeProductService::getBlockedUPCs
+        );
+
         discountField.setText("20");
 
         discountField.textProperty().addListener((_, _, _) -> priceDebouncer.debounce(this::recalculatePrice));
@@ -119,18 +125,15 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
         updateFieldVisibility(isPromotional);
 
         if (isPromotional) {
-            if (dto.UPCprom() != null) {
-
-                StoreProductDetailsDTO baseDetails = storeProductService.getStoreProductByUpc(dto.UPCprom());
-                StoreProductListDTO currentBase = StoreProductListDTO.builder()
-                        .UPC(baseDetails.UPC())
-                        .productName(baseDetails.productName())
-                        .price(baseDetails.price())
-                        .build();
-                upcPromComboBox.getItems().setAll(currentBase);
-                upcPromComboBox.setValue(currentBase);
-            }
             discountField.setText(dto.discount() != null ? String.valueOf(dto.discount()) : "20.0");
+            if (dto.UPCprom() != null) {
+                upcPromComboBox.setValue(StoreProductListDTO.builder().UPC(dto.UPCprom()).build());
+                SearchableComboBoxHelper.applyBlocking(
+                        upcPromComboBox,
+                        StoreProductListDTO::UPC,
+                        () -> storeProductService.getBlockedUPCsExcluding(dto.UPCprom())
+                );
+            }
         } else {
             ProductNameDTO current = new ProductNameDTO(dto.productId(), dto.productName());
             productComboBox.getItems().setAll(current);

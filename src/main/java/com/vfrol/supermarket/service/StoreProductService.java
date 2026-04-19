@@ -11,7 +11,9 @@ import com.vfrol.supermarket.filter.StoreProductFilter;
 import com.vfrol.supermarket.service.validator.StoreProductValidator;
 import com.vfrol.supermarket.service.validator.ValidationException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Singleton
 public class StoreProductService {
@@ -62,6 +64,16 @@ public class StoreProductService {
 
     public Integer getProductIdByUpc(String upc) {
         return storeProductDAO.findProductIdByUPC(upc);
+    }
+
+    public Set<String> getBlockedUPCs() {
+        return new HashSet<>(storeProductDAO.findBlockedUPCs());
+    }
+
+    public Set<String> getBlockedUPCsExcluding(String upc) {
+        Set<String> blocked = getBlockedUPCs();
+        blocked.remove(upc);
+        return blocked;
     }
 
     private StoreProduct buildEntity(StoreProductCreateDTO dto, Double sellingPrice) {
