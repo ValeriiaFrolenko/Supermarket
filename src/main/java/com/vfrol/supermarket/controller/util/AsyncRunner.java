@@ -45,7 +45,9 @@ public final class AsyncRunner {
                     disableNode.getScene().setCursor(Cursor.DEFAULT);
                 }
             }
-            AlertHelper.showError(task.getException().getMessage());
+            Throwable ex = task.getException();
+            String msg = (ex != null && ex.getMessage() != null) ? ex.getMessage() : "An unexpected error occurred.";
+            AlertHelper.showError(msg);
         });
 
         new Thread(task).start();

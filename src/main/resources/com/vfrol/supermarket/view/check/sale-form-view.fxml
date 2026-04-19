@@ -31,6 +31,6 @@
 
     <HBox alignment="CENTER_RIGHT" spacing="10">
         <Button text="Cancel" onAction="#onCancel"/>
-        <Button text="Add" onAction="#onAdd" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button fx:id="addButton" text="Add" onAction="#onAdd" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
     </HBox>
 </VBox>

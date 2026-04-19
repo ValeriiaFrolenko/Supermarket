@@ -21,6 +21,9 @@ public class EmployeeService {
     private final EmployeeDAO employeeDAO;
     private final EmployeeValidator employeeValidator;
 
+    private static final String INITIAL_ADMIN_ID = "admin";
+    private static final String INITIAL_ADMIN_PASSWORD = "admin";
+
     @Inject
     public EmployeeService(EmployeeDAO employeeDAO, EmployeeValidator employeeValidator) {
         this.employeeDAO = employeeDAO;
@@ -96,8 +99,8 @@ public class EmployeeService {
 
     public void createInitialAdmin() {
         EmployeeCreateDTO createDTO = EmployeeCreateDTO.builder()
-                .id("admin")
-                .rawPassword("admin")
+                .id(INITIAL_ADMIN_ID)
+                .rawPassword(INITIAL_ADMIN_PASSWORD)
                 .surname("Admin")
                 .name("Admin")
                 .role(EmployeeRole.MANAGER)

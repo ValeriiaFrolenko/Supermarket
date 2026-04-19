@@ -37,16 +37,16 @@ public class CheckService {
     public void createCheck(CheckCreateDTO dto) {
         transactionManager.useTransaction(handle -> {
             checkValidator.validateOnCreate(dto);
-            CheckDAO checkDAO = handle.attach(CheckDAO.class);
-            SaleDAO saleDAO = handle.attach(SaleDAO.class);
-            StoreProductDAO storeProductDAO = handle.attach(StoreProductDAO.class);
+            CheckDAO txCheckDAO = handle.attach(CheckDAO.class);
+            SaleDAO txSaleDAO = handle.attach(SaleDAO.class);
+            StoreProductDAO txStoreProductDAO = handle.attach(StoreProductDAO.class);
             List<SaleCreateDTO> sales = dto.sales();
 
             double sumTotal = 0.0;
             Map<String, Double> actualPrices = new HashMap<>();
 
             for (SaleCreateDTO saleDTO : sales) {
-                double actualPrice = storeProductDAO.getPriceByUPC(saleDTO.UPC());
+                double actualPrice = txStoreProductDAO.getPriceByUPC(saleDTO.UPC());
                 actualPrices.put(saleDTO.UPC(), actualPrice);
                 sumTotal += actualPrice * saleDTO.quantity();
             }
@@ -69,10 +69,10 @@ public class CheckService {
                     .sumTotal(sumTotal)
                     .vat(vat)
                     .build();
-            checkDAO.create(check);
 
+            txCheckDAO.create(check);
             for (SaleCreateDTO saleDTO : sales) {
-               createSale(saleDAO, storeProductDAO, saleDTO, actualPrices.get(saleDTO.UPC()));
+                createSale(txSaleDAO, txStoreProductDAO, saleDTO, actualPrices.get(saleDTO.UPC()));
             }
         });
     }
@@ -91,11 +91,11 @@ public class CheckService {
     public void deleteCheckByNumber(String checkNumber) {
         transactionManager.useTransaction(handle -> {
             checkValidator.validateOnDelete(checkNumber);
-            SaleDAO saleDAO = handle.attach(SaleDAO.class);
-            CheckDAO checkDAO = handle.attach(CheckDAO.class);
+            SaleDAO txSaleDAO = handle.attach(SaleDAO.class);
+            CheckDAO txCheckDAO = handle.attach(CheckDAO.class);
 
-            saleDAO.deleteByCheckNumber(checkNumber);
-            checkDAO.delete(checkNumber);
+            txSaleDAO.deleteByCheckNumber(checkNumber);
+            txCheckDAO.delete(checkNumber);
         });
     }
 

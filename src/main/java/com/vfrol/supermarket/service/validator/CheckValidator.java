@@ -66,10 +66,12 @@ public class CheckValidator{
                 throw new ValidationException("Store product with UPC '" + saleDTO.UPC() + "' does not exist");
             }
 
-            if (saleDTO.quantity()>storeProductDAO.getQuantityByUPC(saleDTO.UPC())) {
+            int availableQty = storeProductDAO.getQuantityByUPC(saleDTO.UPC());
+            if (saleDTO.quantity() > availableQty) {
                 throw new ValidationException("Not enough quantity for product with UPC '" + saleDTO.UPC() + "' \n" +
-                        "Available quantity: " + storeProductDAO.getQuantityByUPC(saleDTO.UPC()) + ", requested quantity: " + saleDTO.quantity());
+                        "Available quantity: " + availableQty + ", requested quantity: " + saleDTO.quantity());
             }
+
             if (!saleDTO.checkNumber().equals(dto.checkNumber())) {
                 throw new ValidationException("Sale check number '" + saleDTO.checkNumber() + "' does not match the check number '" + dto.checkNumber() + "' in the request");
             }

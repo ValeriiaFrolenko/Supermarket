@@ -54,7 +54,9 @@ public class CheckListController extends BaseListController<CheckListDTO> {
 
     @FXML
     public void initialize() {
-        SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton, exportButton);
+        SessionUIHelper.configureCashierOnlyNodes(sessionManager, addButton);
+        SessionUIHelper.configureManagerOnlyNodes(sessionManager, exportButton);
+
         if (!sessionManager.isManager()) {
             cashierSurnameFilterField.setText(sessionManager.getCurrentUser().surname());
             cashierSurnameFilterField.setDisable(true);

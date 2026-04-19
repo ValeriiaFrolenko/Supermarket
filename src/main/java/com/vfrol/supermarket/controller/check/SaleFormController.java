@@ -25,6 +25,8 @@ public class SaleFormController extends BaseModalController {
     @FXML private SearchableComboBox<StoreProductListDTO> storeProductComboBox;
     @FXML private TextField quantityField;
     @FXML private TextField priceField;
+    @FXML private Button addButton;
+
 
     @Setter
     private Consumer<CheckFormController.SaleItemModel> saveCallback;
@@ -55,6 +57,9 @@ public class SaleFormController extends BaseModalController {
         SaleFormValidator saleValidator = new SaleFormValidator(validator);
         saleValidator.validateProduct(storeProductComboBox);
         saleValidator.validateQuantity(quantityField);
+        if (addButton != null) {
+            addButton.disableProperty().bind(validator.containsErrorsProperty());
+        }
     }
 
     private void configureComboBox() {

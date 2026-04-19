@@ -48,6 +48,8 @@ public class StoreProductValidator {
 
         if (dto.promotional()) {
             validatePromotionalRules(dto);
+        } else if (dto.UPCprom() != null) {
+            throw new ValidationException("Non-promotional product must not have a promotional UPC.");
         }
     }
 
