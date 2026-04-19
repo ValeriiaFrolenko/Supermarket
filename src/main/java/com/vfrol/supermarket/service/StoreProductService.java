@@ -9,7 +9,6 @@ import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
 import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.StoreProductFilter;
 import com.vfrol.supermarket.service.validator.StoreProductValidator;
-import com.vfrol.supermarket.service.validator.ValidationException;
 
 import java.util.HashSet;
 import java.util.List;
