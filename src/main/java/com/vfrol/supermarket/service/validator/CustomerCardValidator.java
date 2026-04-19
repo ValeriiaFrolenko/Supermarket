@@ -19,19 +19,19 @@ public class CustomerCardValidator{
     }
 
     public void validateForCreate(CustomerCardCreateDTO dto) {
-        if (customerCardDAO.findById(dto.cardNumber()).isPresent()) {
+        if (customerCardDAO.existsByCardNumber(dto.cardNumber())) {
             throw new ValidationException("Customer card with number '" + dto.cardNumber() + "' already exists.");
         }
     }
 
     public void validateForUpdate(CustomerCardCreateDTO dto) {
-        if (customerCardDAO.findById(dto.cardNumber()).isEmpty()) {
+        if (!customerCardDAO.existsByCardNumber(dto.cardNumber())) {
             throw new ValidationException("Customer card with number '" + dto.cardNumber() + "' does not exist.");
         }
     }
 
     public void validateForDelete(String cardNumber) {
-       if (customerCardDAO.findById(cardNumber).isEmpty()) {
+       if (!customerCardDAO.existsByCardNumber(cardNumber)) {
             throw new ValidationException("Customer card with number '" + cardNumber + "' does not exist.");
         }
 

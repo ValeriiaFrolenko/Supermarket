@@ -19,12 +19,12 @@ public class CategoryValidator {
     }
 
     public void validateForUpdate(CategoryCreateDTO dto) {
-       if (categoryDAO.findById(dto.id()).isEmpty())
+       if (!categoryDAO.existsById(dto.id()))
            throw new ValidationException("Category with ID '" + dto.id() + "' does not exist.");
     }
 
     public void validateForDelete(int id) {
-        if (categoryDAO.findById(id).isEmpty())
+        if (!categoryDAO.existsById(id))
             throw new ValidationException("Category with ID '" + id + "' does not exist.");
 
         if (productDAO.existsByCategoryId(id)) {

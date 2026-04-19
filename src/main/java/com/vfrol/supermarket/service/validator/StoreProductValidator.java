@@ -6,8 +6,7 @@ import com.vfrol.supermarket.dao.ProductDAO;
 import com.vfrol.supermarket.dao.SaleDAO;
 import com.vfrol.supermarket.dao.StoreProductDAO;
 import com.vfrol.supermarket.dto.store_product.StoreProductCreateDTO;
-
-import java.util.Objects;
+import com.vfrol.supermarket.dto.store_product.StoreProductPromoInfoDTO;
 
 @Singleton
 public class StoreProductValidator {
@@ -17,7 +16,7 @@ public class StoreProductValidator {
     private final SaleDAO saleDAO;
 
     @Inject
-    public StoreProductValidator(StoreProductDAO storeProductDAO, ProductDAO productDAO, SaleDAO saleDAO) { // Змінено тут
+    public StoreProductValidator(StoreProductDAO storeProductDAO, ProductDAO productDAO, SaleDAO saleDAO) {
         this.storeProductDAO = storeProductDAO;
         this.productDAO = productDAO;
         this.saleDAO = saleDAO;
@@ -27,13 +26,13 @@ public class StoreProductValidator {
         if (storeProductDAO.existsByUPC(dto.UPC())) {
             throw new ValidationException("Store product with UPC '" + dto.UPC() + "' already exists.");
         }
-        if (productDAO.findById(dto.productId()).isEmpty()) {
+        if (!productDAO.existsById(dto.productId())) {
             throw new ValidationException("Product with ID '" + dto.productId() + "' does not exist.");
         }
         if (dto.promotional()) {
             validatePromotionalRules(dto);
-        } else if (dto.UPCprom() != null) {
-            throw new ValidationException("Non-promotional product must not have a promotional UPC.");
+        } else {
+            validateNonPromotionalRules(dto);
         }
     }
 
@@ -41,26 +40,26 @@ public class StoreProductValidator {
         if (!storeProductDAO.existsByUPC(dto.UPC())) {
             throw new ValidationException("Store product with UPC '" + dto.UPC() + "' does not exist.");
         }
-        if (productDAO.findById(dto.productId()).isEmpty()) {
+        if (!productDAO.existsById(dto.productId())) {
             throw new ValidationException("Product with ID '" + dto.productId() + "' does not exist.");
         }
         if (dto.promotional()) {
             validatePromotionalRules(dto);
-        } else if (dto.UPCprom() != null) {
-            throw new ValidationException("Non-promotional product must not have a promotional UPC.");
+        } else {
+            validateNonPromotionalRules(dto);
         }
     }
 
     public void validateForDelete(String upc) {
-        if (!storeProductDAO.existsByUPC(upc)) {
-            throw new ValidationException("Store product with UPC '" + upc + "' does not exist.");
-        }
+        StoreProductPromoInfoDTO info = storeProductDAO.findPromoInfo(upc)
+                .orElseThrow(() -> new ValidationException("Store product with UPC '" + upc + "' does not exist."));
+
         if (saleDAO.existsByUPC(upc)) {
             throw new ValidationException(
                     "Cannot delete store product with UPC '" + upc + "' because it has been sold in existing sales."
             );
         }
-        if (storeProductDAO.isUsedAsPromoBase(upc)) {
+        if (info.usedAsPromoBase()) {
             throw new ValidationException(
                     "Cannot delete store product with UPC '" + upc + "' because it is used as a promotional base for another product."
             );
@@ -68,13 +67,30 @@ public class StoreProductValidator {
     }
 
     private void validatePromotionalRules(StoreProductCreateDTO dto) {
-        if (!storeProductDAO.existsByUPC(dto.UPCprom()))
-            throw new ValidationException("Promotional UPC '" + dto.UPCprom() + "' does not exist.");
-        if (dto.UPC().equals(dto.UPCprom()))
+        if (dto.UPCprom() == null) {
+            throw new ValidationException("Promotional product must have a promotional UPC.");
+        }
+        if (dto.UPC().equals(dto.UPCprom())) {
             throw new ValidationException("Regular and promotional UPC cannot be the same.");
-        if (!Objects.equals(dto.productId(), storeProductDAO.findProductIdByUPC(dto.UPCprom())))
+        }
+
+        StoreProductPromoInfoDTO promInfo = storeProductDAO.findPromoInfo(dto.UPCprom())
+                .orElseThrow(() -> new ValidationException("Promotional UPC '" + dto.UPCprom() + "' does not exist."));
+
+        if (!(dto.productId() == (promInfo.productId()))) {
             throw new ValidationException("Promotional UPC must be associated with the same product.");
-        if (storeProductDAO.countByProductId(dto.productId()) >= 2)
-            throw new ValidationException("A product cannot have more than one promotional offer.");
+        }
+        if (promInfo.usedAsPromoBase()) {
+            throw new ValidationException("Promotional UPC '" + dto.UPCprom() + "' cannot be used as a base for another promotion.");
+        }
+    }
+
+    private void validateNonPromotionalRules(StoreProductCreateDTO dto) {
+        if (dto.UPCprom() != null) {
+            throw new ValidationException("Non-promotional product must not have a promotional UPC.");
+        }
+        if (storeProductDAO.existsByProductIdNotProm(dto.productId())) {
+            throw new ValidationException("Only one non-promotional store product is allowed per product.");
+        }
     }
 }

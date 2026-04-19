@@ -22,22 +22,22 @@ public class ProductValidator {
     }
 
     public void validateForCreate(ProductCreateDTO dto){
-        if (categoryDAO.findById(dto.categoryId()).isEmpty()) {
+        if (!categoryDAO.existsById(dto.categoryId())) {
             throw new ValidationException("Category with ID " + dto.categoryId() + " does not exist.");
         }
     }
 
     public void validateForUpdate(ProductCreateDTO dto){
-        if (productDAO.findById(dto.id()).isEmpty()) {
+        if (!productDAO.existsById(dto.id())) {
             throw new ValidationException("Product with ID " + dto.id() + " does not exist.");
         }
-        if (categoryDAO.findById(dto.categoryId()).isEmpty()) {
+        if (!categoryDAO.existsById(dto.categoryId())) {
             throw new ValidationException("Category with ID " + dto.categoryId() + " does not exist.");
         }
     }
 
     public void validateForDelete(int id){
-        if (productDAO.findById(id).isEmpty()) {
+        if (!productDAO.existsById(id)) {
             throw new ValidationException("Product with ID " + id + " does not exist.");
         }
         if (storeProductDAO.existsByProductId(id)) {

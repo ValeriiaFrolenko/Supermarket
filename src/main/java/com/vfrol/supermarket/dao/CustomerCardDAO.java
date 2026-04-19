@@ -39,7 +39,7 @@ public interface CustomerCardDAO {
     @SqlUpdate("DELETE FROM Customer_Card WHERE card_number = :cardNumber")
     void delete(@Bind("cardNumber") String cardNumber);
 
-    @SqlQuery("""   
+    @SqlQuery("""
     SELECT card_number, cust_surname, cust_name,
     cust_patronymic, phone_number, city,
     street, zip_code, percent
@@ -72,4 +72,7 @@ public interface CustomerCardDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>cust_surname<endif>
     """)
     List<CustomerCardListDTO> findByFilter(@BindBean @Define("filter") CustomerCardFilter filter);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Customer_Card WHERE card_number = :cardNumber)")
+    boolean existsByCardNumber(@Bind("cardNumber") String cardNumber);
 }

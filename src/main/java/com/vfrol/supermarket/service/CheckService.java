@@ -35,8 +35,8 @@ public class CheckService {
     }
 
     public void createCheck(CheckCreateDTO dto) {
+        checkValidator.validateOnCreate(dto);
         transactionManager.useTransaction(handle -> {
-            checkValidator.validateOnCreate(dto);
             CheckDAO txCheckDAO = handle.attach(CheckDAO.class);
             SaleDAO txSaleDAO = handle.attach(SaleDAO.class);
             StoreProductDAO txStoreProductDAO = handle.attach(StoreProductDAO.class);
@@ -46,7 +46,8 @@ public class CheckService {
             Map<String, Double> actualPrices = new HashMap<>();
 
             for (SaleCreateDTO saleDTO : sales) {
-                double actualPrice = txStoreProductDAO.getPriceByUPC(saleDTO.UPC());
+                double actualPrice = txStoreProductDAO.findPriceByUPC(saleDTO.UPC())
+                        .orElseThrow(() -> new RuntimeException("Store product not found: " + saleDTO.UPC()));
                 actualPrices.put(saleDTO.UPC(), actualPrice);
                 sumTotal += actualPrice * saleDTO.quantity();
             }
@@ -89,21 +90,20 @@ public class CheckService {
     }
 
     public void deleteCheckByNumber(String checkNumber) {
+        checkValidator.validateOnDelete(checkNumber);
         transactionManager.useTransaction(handle -> {
-            checkValidator.validateOnDelete(checkNumber);
             SaleDAO txSaleDAO = handle.attach(SaleDAO.class);
             CheckDAO txCheckDAO = handle.attach(CheckDAO.class);
-
             txSaleDAO.deleteByCheckNumber(checkNumber);
             txCheckDAO.delete(checkNumber);
         });
     }
 
-    public CheckDetailsDTO getCheckById(String checkNumber){
+    public CheckDetailsDTO getCheckById(String checkNumber) {
         return checkDAO.findById(checkNumber).orElseThrow(() -> new RuntimeException("Check not found"));
     }
 
-    public List<CheckListDTO> getAllChecks(){
+    public List<CheckListDTO> getAllChecks() {
         return checkDAO.findAll();
     }
 
@@ -111,7 +111,7 @@ public class CheckService {
         return checkDAO.findAllDetails();
     }
 
-    public List<CheckListDTO> getCheckByFilter(CheckFilter filter){
+    public List<CheckListDTO> getCheckByFilter(CheckFilter filter) {
         return checkDAO.findByFilter(filter);
     }
 }

@@ -23,19 +23,19 @@ public class EmployeeValidator {
     }
 
     public void validateForCreate(EmployeeCreateDTO dto) {
-        if(employeeDAO.findById(dto.id()).isPresent()) {
+        if (employeeDAO.existsById(dto.id())) {
             throw new ValidationException("Employee with ID '" + dto.id() + "' already exists.");
         }
     }
 
     public void validateForUpdate(EmployeeCreateDTO dto) {
-        if (employeeDAO.findById(dto.id()).isEmpty()) {
+        if (!employeeDAO.existsById(dto.id())) {
             throw new ValidationException("Employee with ID '" + dto.id() + "' does not exist.");
         }
     }
 
     public void validateForDelete(String id) {
-        if (employeeDAO.findById(id).isEmpty()) {
+        if (!employeeDAO.existsById(id)) {
             throw new ValidationException("Employee with ID '" + id + "' does not exist.");
         }
 
@@ -44,9 +44,7 @@ public class EmployeeValidator {
         }
 
         if (employeeDAO.countByRole(EmployeeRole.MANAGER) <= 1
-                && employeeDAO.findById(id)
-                .filter(e -> e.role() == EmployeeRole.MANAGER)
-                .isPresent()) {
+                && employeeDAO.existsByIdAndRole(id, EmployeeRole.MANAGER)) {
             throw new ValidationException(
                     "Cannot delete the last manager. Assign another manager first."
             );

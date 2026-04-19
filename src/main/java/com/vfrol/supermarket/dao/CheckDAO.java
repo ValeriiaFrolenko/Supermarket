@@ -46,7 +46,6 @@ public interface CheckDAO {
             FROM Sale WHERE check_number = c.check_number) AS base_sum,
            ((SELECT COALESCE(SUM(product_number * selling_price), 0)
              FROM Sale WHERE check_number = c.check_number) - c.sum_total) AS discount_amount
-
     FROM Check_Table c
     JOIN Employee e ON c.id_employee = e.id_employee
     LEFT JOIN Customer_Card cc ON c.card_number = cc.card_number
@@ -96,6 +95,9 @@ public interface CheckDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>c.print_date DESC<endif>
     """)
     List<CheckListDTO> findByFilter(@BindBean @Define("filter") CheckFilter filter);
+
+    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Check_Table WHERE check_number = :checkNumber)")
+    boolean existsByCheckNumber(@Bind("checkNumber") String checkNumber);
 
     @SqlQuery("SELECT EXISTS (SELECT 1 FROM Check_Table WHERE card_number = :cardNumber)")
     boolean existsByCardNumber(@Bind("cardNumber") String cardNumber);

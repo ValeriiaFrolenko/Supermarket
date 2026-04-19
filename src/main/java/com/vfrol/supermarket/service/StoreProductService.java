@@ -33,7 +33,6 @@ public class StoreProductService {
         storeProductDAO.create(buildEntity(dto, sellingPrice));
     }
 
-
     public void updateStoreProduct(StoreProductCreateDTO dto) {
         storeProductValidator.validateForUpdate(dto);
         double sellingPrice = calculateSellingPrice(dto);
@@ -80,12 +79,6 @@ public class StoreProductService {
         return new HashSet<>(storeProductDAO.findOutOfStockUPCs());
     }
 
-    public Set<String> getOutOfStockUPCsExcluding(String upc) {
-        Set<String> outOfStock = getOutOfStockUPCs();
-        outOfStock.remove(upc);
-        return outOfStock;
-    }
-
     private StoreProduct buildEntity(StoreProductCreateDTO dto, Double sellingPrice) {
         return StoreProduct.builder()
                 .UPC(dto.UPC())
@@ -98,20 +91,9 @@ public class StoreProductService {
     }
 
     private double calculateSellingPrice(StoreProductCreateDTO dto) {
-        double sellingPrice;
         if (dto.promotional()) {
-            Double discount = dto.discount();
-            sellingPrice = dto.price() * (1.0 - (discount / 100.0));
-        } else {
-            sellingPrice = dto.price();
+            return dto.price() * (1.0 - (dto.discount() / 100.0));
         }
-        return sellingPrice;
-    }
-
-    public double getPriceByUPC(String upc) {
-        if (!storeProductDAO.existsByUPC(upc)) {
-            throw new ValidationException("Store product with UPC '" + upc + "' does not exist.");
-        }
-       return storeProductDAO.getPriceByUPC(upc);
+        return dto.price();
     }
 }

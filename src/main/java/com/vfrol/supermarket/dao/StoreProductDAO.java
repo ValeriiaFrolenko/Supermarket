@@ -2,6 +2,7 @@ package com.vfrol.supermarket.dao;
 
 import com.vfrol.supermarket.dto.store_product.StoreProductDetailsDTO;
 import com.vfrol.supermarket.dto.store_product.StoreProductListDTO;
+import com.vfrol.supermarket.dto.store_product.StoreProductPromoInfoDTO;
 import com.vfrol.supermarket.entity.StoreProduct;
 import com.vfrol.supermarket.filter.StoreProductFilter;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
@@ -21,6 +22,7 @@ import java.util.Set;
 @RegisterConstructorMapper(StoreProduct.class)
 @RegisterConstructorMapper(StoreProductDetailsDTO.class)
 @RegisterConstructorMapper(StoreProductListDTO.class)
+@RegisterConstructorMapper(StoreProductPromoInfoDTO.class)
 public interface StoreProductDAO {
 
     @SqlUpdate("""
@@ -58,7 +60,6 @@ public interface StoreProductDAO {
     @SqlQuery("""
     SELECT sp.id_product
     FROM Store_Product sp
-    JOIN Product p ON sp.id_product = p.id_product
     WHERE sp.UPC = :upc
     """)
     Integer findProductIdByUPC(@Bind("upc") String upc);
@@ -122,15 +123,26 @@ public interface StoreProductDAO {
     @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE id_product = :id)")
     boolean existsByProductId(@Bind("id") int id);
 
+    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE id_product = :id AND promotional_product = false)")
+    boolean existsByProductIdNotProm(@Bind("id") int id);
+
     @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC_prom = :upc)")
     boolean isUsedAsPromoBase(@Bind("upc") String upc);
 
     @SqlQuery("SELECT products_number FROM Store_Product WHERE UPC = :upc")
-    int getQuantityByUPC(@Bind("upc") String upc);
+    Optional<Integer> getQuantityByUPC(@Bind("upc") String upc);
 
     @SqlQuery("SELECT selling_price FROM Store_Product WHERE UPC = :upc")
-    double getPriceByUPC(@Bind("upc") String upc);
+    Optional<Double> findPriceByUPC(@Bind("upc") String upc);
 
     @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC = :upc)")
     boolean existsByUPC(@Bind("upc") String upc);
+
+    @SqlQuery("""
+    SELECT sp.id_product,
+           EXISTS(SELECT 1 FROM Store_Product base WHERE base.UPC_prom = :upc) AS used_as_promo_base
+    FROM Store_Product sp
+    WHERE sp.UPC = :upc
+    """)
+    Optional<StoreProductPromoInfoDTO> findPromoInfo(@Bind("upc") String upc);
 }
