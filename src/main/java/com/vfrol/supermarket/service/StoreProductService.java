@@ -76,6 +76,16 @@ public class StoreProductService {
         return blocked;
     }
 
+    public Set<String> getOutOfStockUPCs() {
+        return new HashSet<>(storeProductDAO.findOutOfStockUPCs());
+    }
+
+    public Set<String> getOutOfStockUPCsExcluding(String upc) {
+        Set<String> outOfStock = getOutOfStockUPCs();
+        outOfStock.remove(upc);
+        return outOfStock;
+    }
+
     private StoreProduct buildEntity(StoreProductCreateDTO dto, Double sellingPrice) {
         return StoreProduct.builder()
                 .UPC(dto.UPC())

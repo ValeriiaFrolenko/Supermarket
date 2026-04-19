@@ -25,6 +25,8 @@
 
         <Label text="Quantity: *" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
         <TextField fx:id="quantityField" promptText="Enter quantity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label fx:id="availableQtyLabel" text="Available: 0" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-font-size: 11px; -fx-text-fill: #666666;"/>
     </GridPane>
 
     <Region VBox.vgrow="ALWAYS"/>

@@ -26,7 +26,7 @@ public class SaleFormController extends BaseModalController {
     @FXML private TextField quantityField;
     @FXML private TextField priceField;
     @FXML private Button addButton;
-
+    @FXML private Label availableQtyLabel;
 
     @Setter
     private Consumer<CheckFormController.SaleItemModel> saveCallback;
@@ -47,8 +47,10 @@ public class SaleFormController extends BaseModalController {
         storeProductComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 priceField.setText(String.format("%.2f", newVal.price()).replace(",", "."));
+                availableQtyLabel.setText("Available: " + newVal.quantity());
             } else {
                 priceField.setText("0.00");
+                availableQtyLabel.setText("Available: 0");
             }
         });
     }
@@ -68,6 +70,12 @@ public class SaleFormController extends BaseModalController {
                 storeProductService::getAllStoreProducts,
                 sp -> sp.productName() + " (" + sp.UPC() + ")",
                 StoreProductListDTO::UPC
+        );
+
+        SearchableComboBoxHelper.applyBlocking(
+                storeProductComboBox,
+                StoreProductListDTO::UPC,
+                storeProductService::getOutOfStockUPCs
         );
     }
 

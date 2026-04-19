@@ -113,6 +113,9 @@ public interface StoreProductDAO {
     """)
     List<String> findBlockedUPCs();
 
+    @SqlQuery("SELECT UPC FROM Store_Product WHERE products_number = 0")
+    List<String> findOutOfStockUPCs();
+
     @SqlQuery("SELECT COUNT(*) FROM Store_Product WHERE id_product = :id")
     int countByProductId(@Bind("id") int id);
 
