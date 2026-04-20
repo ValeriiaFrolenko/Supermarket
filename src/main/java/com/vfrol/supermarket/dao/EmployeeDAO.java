@@ -89,9 +89,6 @@ public interface EmployeeDAO {
     @SqlQuery("SELECT COUNT(*) FROM Employee WHERE empl_role = :role")
     int countByRole(@Bind("role") EmployeeRole role);
 
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Employee WHERE id_employee = :id)")
-    boolean existsById(@Bind("id") String id);
-
     @SqlQuery("SELECT EXISTS (SELECT 1 FROM Employee WHERE id_employee = :id AND empl_role = :role)")
     boolean existsByIdAndRole(@Bind("id") String id, @Bind("role") EmployeeRole role);
 

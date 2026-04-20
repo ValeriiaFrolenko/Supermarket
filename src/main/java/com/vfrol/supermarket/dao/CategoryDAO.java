@@ -47,10 +47,4 @@ public interface CategoryDAO {
     FROM Category WHERE category_name ILIKE '%' || :name || '%'
     """)
     List<CategoryListDTO> findByName(@Bind("name") String name);
-
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Category WHERE category_number = :id)")
-    boolean existsById(@Bind("id") int id);
-
-    @SqlQuery("SELECT COUNT(*) FROM Category")
-    int count();
 }

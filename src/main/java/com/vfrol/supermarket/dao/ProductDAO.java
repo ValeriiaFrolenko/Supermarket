@@ -48,13 +48,6 @@ public interface ProductDAO {
     Optional<ProductDetailsDTO> findById(@Bind("id") int id);
 
     @SqlQuery("""
-    SELECT id_product, product_name FROM Product
-    WHERE product_name LIKE '%' || :name || '%'
-    ORDER BY product_name
-    """)
-    List<ProductNameDTO> findByName(@Bind("name") String name);
-
-    @SqlQuery("""
     SELECT p.id_product, p.product_name, c.category_name
     FROM Product p
     JOIN Category c ON p.category_number = c.category_number
@@ -87,13 +80,4 @@ public interface ProductDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>product_name<endif>
     """)
     List<ProductListDTO> findByFilter(@BindBean @Define("filter") ProductFilter filter);
-
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Product WHERE id_product = :id)")
-    boolean existsById(@Bind("id") int id);
-
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Product WHERE category_number = :id)")
-    boolean existsByCategoryId(@Bind("id") int id);
-
-    @SqlQuery("SELECT COUNT(*) FROM Product")
-    int count();
 }

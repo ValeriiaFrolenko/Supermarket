@@ -16,7 +16,6 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @UseStringTemplateEngine
 @RegisterConstructorMapper(StoreProduct.class)
@@ -117,26 +116,14 @@ public interface StoreProductDAO {
     @SqlQuery("SELECT UPC FROM Store_Product WHERE products_number = 0")
     List<String> findOutOfStockUPCs();
 
-    @SqlQuery("SELECT COUNT(*) FROM Store_Product WHERE id_product = :id")
-    int countByProductId(@Bind("id") int id);
-
-    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE id_product = :id)")
-    boolean existsByProductId(@Bind("id") int id);
-
     @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE id_product = :id AND promotional_product = false)")
     boolean existsByProductIdNotProm(@Bind("id") int id);
 
-    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC_prom = :upc)")
-    boolean isUsedAsPromoBase(@Bind("upc") String upc);
-
     @SqlQuery("SELECT products_number FROM Store_Product WHERE UPC = :upc")
-    Optional<Integer> getQuantityByUPC(@Bind("upc") String upc);
+    int getQuantityByUPC(@Bind("upc") String upc);
 
     @SqlQuery("SELECT selling_price FROM Store_Product WHERE UPC = :upc")
     Optional<Double> findPriceByUPC(@Bind("upc") String upc);
-
-    @SqlQuery("SELECT EXISTS(SELECT 1 FROM Store_Product WHERE UPC = :upc)")
-    boolean existsByUPC(@Bind("upc") String upc);
 
     @SqlQuery("""
     SELECT sp.id_product,

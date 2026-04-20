@@ -72,7 +72,4 @@ public interface CustomerCardDAO {
     ORDER BY <if(filter.sortBy)><filter.sortBy.column><else>cust_surname<endif>
     """)
     List<CustomerCardListDTO> findByFilter(@BindBean @Define("filter") CustomerCardFilter filter);
-
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Customer_Card WHERE card_number = :cardNumber)")
-    boolean existsByCardNumber(@Bind("cardNumber") String cardNumber);
 }

@@ -31,23 +31,6 @@ public interface SaleDAO {
     """)
     List<SaleListDTO> findByCheckNumber(@Bind("checkNumber") String checkNumber);
 
-    @SqlQuery("""
-    SELECT s.UPC, p.product_name, s.product_number, s.selling_price,
-           (s.product_number * s.selling_price) AS total_price
-    FROM Sale s
-    JOIN Store_Product sp ON s.UPC = sp.UPC
-    JOIN Product p ON sp.id_product = p.id_product
-    WHERE s.UPC = :upc
-    ORDER BY s.check_number
-    """)
-    List<SaleListDTO> findByUPC(@Bind("upc") String upc);
-
     @SqlUpdate("DELETE FROM Sale WHERE check_number = :checkNumber")
     void deleteByCheckNumber(@Bind("checkNumber") String checkNumber);
-
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Sale WHERE UPC = :upc)")
-    boolean existsByUPC(@Bind("upc") String upc);
-
-    @SqlQuery("SELECT EXISTS (SELECT 1 FROM Sale WHERE check_number = :checkNumber AND UPC = :upc)")
-    boolean existsByCheckNumberAndUPC(@Bind("checkNumber") String checkNumber, @Bind("upc") String upc);
 }
