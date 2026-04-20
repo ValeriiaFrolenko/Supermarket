@@ -1,4 +1,4 @@
-package com.vfrol.supermarket.service.validator;
+package com.vfrol.supermarket.exception;
 
 public class ValidationException extends RuntimeException {
     public ValidationException(String message) {
