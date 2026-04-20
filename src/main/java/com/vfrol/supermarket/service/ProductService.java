@@ -9,7 +9,6 @@ import com.vfrol.supermarket.dto.product.ProductListDTO;
 import com.vfrol.supermarket.dto.product.ProductNameDTO;
 import com.vfrol.supermarket.entity.Product;
 import com.vfrol.supermarket.filter.ProductFilter;
-import com.vfrol.supermarket.service.validator.ProductValidator;
 
 import java.util.List;
 
@@ -17,39 +16,32 @@ import java.util.List;
 public class ProductService {
 
     private final ProductDAO productDAO;
-    private final ProductValidator productValidator;
 
     @Inject
-    public ProductService(ProductDAO productDAO, ProductValidator productValidator) {
+    public ProductService(ProductDAO productDAO) {
         this.productDAO = productDAO;
-        this.productValidator = productValidator;
     }
 
     public void addProduct(ProductCreateDTO dto) {
-        productValidator.validateForCreate(dto);
-        Product product = Product.builder()
+        productDAO.create(Product.builder()
                 .categoryId(dto.categoryId())
                 .name(dto.name())
                 .manufacturer(dto.manufacturer())
                 .characteristics(dto.characteristics())
-                .build();
-        productDAO.create(product);
+                .build());
     }
 
     public void updateProduct(ProductCreateDTO dto) {
-        productValidator.validateForUpdate(dto);
-        Product product = Product.builder()
+        productDAO.update(Product.builder()
                 .id(dto.id())
                 .categoryId(dto.categoryId())
                 .name(dto.name())
                 .manufacturer(dto.manufacturer())
                 .characteristics(dto.characteristics())
-                .build();
-        productDAO.update(product);
+                .build());
     }
 
     public void deleteProduct(int id) {
-        productValidator.validateForDelete(id);
         productDAO.delete(id);
     }
 
@@ -72,5 +64,4 @@ public class ProductService {
     public List<ProductListDTO> getProductsByFilter(ProductFilter filter) {
         return productDAO.findByFilter(filter);
     }
-
 }

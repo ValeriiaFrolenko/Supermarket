@@ -7,53 +7,25 @@ import com.vfrol.supermarket.dao.CheckDAO;
 import com.vfrol.supermarket.dao.EmployeeDAO;
 import com.vfrol.supermarket.dto.employee.EmployeeCreateDTO;
 import com.vfrol.supermarket.enums.EmployeeRole;
+import com.vfrol.supermarket.exception.ValidationException;
 
 @Singleton
 public class EmployeeValidator {
 
     private final EmployeeDAO employeeDAO;
     private final SessionManager sessionManager;
-    private final CheckDAO checkDAO;
 
     @Inject
-    public EmployeeValidator(EmployeeDAO employeeDAO, SessionManager sessionManager, CheckDAO checkDAO) {
+    public EmployeeValidator(EmployeeDAO employeeDAO, SessionManager sessionManager) {
         this.employeeDAO = employeeDAO;
         this.sessionManager = sessionManager;
-        this.checkDAO = checkDAO;
-    }
-
-    public void validateForCreate(EmployeeCreateDTO dto) {
-        if (employeeDAO.existsById(dto.id())) {
-            throw new ValidationException("Employee with ID '" + dto.id() + "' already exists.");
-        }
-    }
-
-    public void validateForUpdate(EmployeeCreateDTO dto) {
-        if (!employeeDAO.existsById(dto.id())) {
-            throw new ValidationException("Employee with ID '" + dto.id() + "' does not exist.");
-        }
     }
 
     public void validateForDelete(String id) {
-        if (!employeeDAO.existsById(id)) {
-            throw new ValidationException("Employee with ID '" + id + "' does not exist.");
-        }
-
-        if (id.equals(sessionManager.getCurrentUser().id())) {
+        if (id.equals(sessionManager.getCurrentUser().id()))
             throw new ValidationException("You cannot delete your own account.");
-        }
-
         if (employeeDAO.countByRole(EmployeeRole.MANAGER) <= 1
-                && employeeDAO.existsByIdAndRole(id, EmployeeRole.MANAGER)) {
-            throw new ValidationException(
-                    "Cannot delete the last manager. Assign another manager first."
-            );
-        }
-
-        if (checkDAO.existsByEmployeeId(id)) {
-            throw new ValidationException(
-                    "Cannot delete employee with ID '" + id + "' because they are associated with existing checks."
-            );
-        }
+                && employeeDAO.existsByIdAndRole(id, EmployeeRole.MANAGER))
+            throw new ValidationException("Cannot delete the last manager. Assign another manager first.");
     }
 }

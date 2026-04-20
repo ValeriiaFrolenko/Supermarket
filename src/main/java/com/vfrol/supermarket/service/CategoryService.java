@@ -6,43 +6,36 @@ import com.vfrol.supermarket.dao.CategoryDAO;
 import com.vfrol.supermarket.dto.category.CategoryCreateDTO;
 import com.vfrol.supermarket.dto.category.CategoryListDTO;
 import com.vfrol.supermarket.entity.Category;
-import com.vfrol.supermarket.service.validator.CategoryValidator;
-import com.vfrol.supermarket.service.validator.ValidationException;
+import com.vfrol.supermarket.exception.ValidationException;
 
 import java.util.List;
 
 @Singleton
 public class CategoryService {
     private final CategoryDAO categoryDAO;
-    private final CategoryValidator categoryValidator;
 
     @Inject
-    public CategoryService(CategoryDAO categoryDAO, CategoryValidator validator) {
+    public CategoryService(CategoryDAO categoryDAO) {
         this.categoryDAO = categoryDAO;
-        this.categoryValidator = validator;
     }
 
-    public void addCategory(CategoryCreateDTO categoryCreateDTO){
-        Category category = new Category(0, categoryCreateDTO.name());
-        categoryDAO.create(category);
+    public void addCategory(CategoryCreateDTO categoryCreateDTO) {
+        categoryDAO.create(new Category(0, categoryCreateDTO.name()));
     }
 
-    public void updateCategory(CategoryCreateDTO categoryCreateDTO){
-        categoryValidator.validateForUpdate(categoryCreateDTO);
-        Category category = new Category(categoryCreateDTO.id(), categoryCreateDTO.name());
-        categoryDAO.update(category);
+    public void updateCategory(CategoryCreateDTO categoryCreateDTO) {
+        categoryDAO.update(new Category(categoryCreateDTO.id(), categoryCreateDTO.name()));
     }
 
-    public void deleteCategory(int id){
-        categoryValidator.validateForDelete(id);
+    public void deleteCategory(int id) {
         categoryDAO.delete(id);
     }
 
-    public CategoryListDTO getCategoryById(int id){
+    public CategoryListDTO getCategoryById(int id) {
         return categoryDAO.findById(id).orElseThrow(() -> new ValidationException("Category not found"));
     }
 
-    public List<CategoryListDTO> getAllCategories(){
+    public List<CategoryListDTO> getAllCategories() {
         return categoryDAO.findAll();
     }
 

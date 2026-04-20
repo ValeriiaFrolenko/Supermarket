@@ -90,7 +90,6 @@ public class CheckService {
     }
 
     public void deleteCheckByNumber(String checkNumber) {
-        checkValidator.validateOnDelete(checkNumber);
         transactionManager.useTransaction(handle -> {
             SaleDAO txSaleDAO = handle.attach(SaleDAO.class);
             CheckDAO txCheckDAO = handle.attach(CheckDAO.class);

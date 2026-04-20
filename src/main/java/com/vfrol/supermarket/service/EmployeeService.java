@@ -10,7 +10,7 @@ import com.vfrol.supermarket.entity.Employee;
 import com.vfrol.supermarket.enums.EmployeeRole;
 import com.vfrol.supermarket.filter.EmployeeFilter;
 import com.vfrol.supermarket.service.validator.EmployeeValidator;
-import com.vfrol.supermarket.service.validator.ValidationException;
+import com.vfrol.supermarket.exception.ValidationException;
 import com.vfrol.supermarket.tools.PasswordManager;
 
 import java.time.LocalDate;
@@ -31,13 +31,11 @@ public class EmployeeService {
     }
 
     public void addEmployee(EmployeeCreateDTO dto) {
-        employeeValidator.validateForCreate(dto);
         String passwordHash = PasswordManager.generatePassword(dto.rawPassword());
         employeeDAO.create(createEmployee(dto, passwordHash));
     }
 
     public void updateEmployee(EmployeeCreateDTO dto) {
-        employeeValidator.validateForUpdate(dto);
         String finalPasswordHash;
         if (dto.rawPassword() == null || dto.rawPassword().trim().isEmpty()) {
             finalPasswordHash = employeeDAO.getPasswordById(dto.id())
@@ -75,7 +73,7 @@ public class EmployeeService {
                 .isPresent();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return employeeDAO.isEmpty();
     }
 
