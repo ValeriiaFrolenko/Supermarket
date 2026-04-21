@@ -48,7 +48,7 @@ public interface EmployeeDAO {
     void delete(@Bind("id") String id);
 
     @SqlQuery("""
-    SELECT id_employee, password_hash,
+    SELECT id_employee,
     empl_surname, empl_name, empl_patronymic,
     empl_role, salary, date_of_birth,
     date_of_start, phone_number,
@@ -64,7 +64,7 @@ public interface EmployeeDAO {
     List<EmployeeListDTO> findAll();
 
     @SqlQuery("""
-    SELECT id_employee, password_hash,
+    SELECT id_employee,
     empl_surname, empl_name, empl_patronymic,
     empl_role, salary, date_of_birth,
     date_of_start, phone_number,
