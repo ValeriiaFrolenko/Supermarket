@@ -10,6 +10,8 @@ import com.vfrol.supermarket.service.CustomerCardService;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+import java.util.Objects;
+
 public class CustomerCardFormController extends BaseFormController<CustomerCardCreateDTO, CustomerCardDetailsDTO> {
 
     private final CustomerCardService customerCardService;
@@ -74,7 +76,7 @@ public class CustomerCardFormController extends BaseFormController<CustomerCardC
                 .city(InputHelper.getString(cityField))
                 .street(InputHelper.getString(streetField))
                 .zipCode(InputHelper.getString(zipField))
-                .discount(InputHelper.getInt(discountField) != null ? InputHelper.getInt(discountField) : 0)
+                .discount(Objects.requireNonNull(InputHelper.getInt(discountField)))
                 .build();
     }
 

@@ -14,6 +14,7 @@ import lombok.Setter;
 import net.synedra.validatorfx.Validator;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SaleFormController extends BaseModalController {
@@ -42,17 +43,6 @@ public class SaleFormController extends BaseModalController {
         configureComboBox();
 
         priceField.setDisable(true);
-
-
-        storeProductComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                priceField.setText(String.format("%.2f", newVal.price()).replace(",", "."));
-                availableQtyLabel.setText("Available: " + newVal.quantity());
-            } else {
-                priceField.setText("0.00");
-                availableQtyLabel.setText("Available: 0");
-            }
-        });
     }
 
     private void setupValidation() {
@@ -77,12 +67,22 @@ public class SaleFormController extends BaseModalController {
                 StoreProductListDTO::UPC,
                 storeProductService::getOutOfStockUPCs
         );
+
+        storeProductComboBox.valueProperty().addListener((_, _, newVal) -> {
+            if (newVal != null) {
+                priceField.setText(String.format("%.2f", newVal.price()).replace(",", "."));
+                availableQtyLabel.setText("Available: " + newVal.quantity());
+            } else {
+                priceField.setText("0.00");
+                availableQtyLabel.setText("Available: 0");
+            }
+        });
     }
 
     @FXML
     public void onAdd() {
         StoreProductListDTO selectedProduct = storeProductComboBox.getValue();
-        int qty = InputHelper.getInt(quantityField);
+        int qty = Objects.requireNonNull(InputHelper.getInt(quantityField));
 
         if (saveCallback != null) {
             CheckFormController.SaleItemModel saleItem = new CheckFormController.SaleItemModel(

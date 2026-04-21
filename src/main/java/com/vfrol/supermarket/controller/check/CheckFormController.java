@@ -59,7 +59,8 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
         initializeTable();
         configureCustomerCard();
         configureDiscountElements(false);
-        useDiscount.selectedProperty().addListener((obs, oldVal, newVal) -> recalculateTotals());
+        useDiscount.selectedProperty().addListener((_,_,_) ->
+                recalculateTotals());
     }
 
     private void initializeTable() {
@@ -78,7 +79,8 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
                 card -> card.surname() + " " + card.name() + " [" + card.cardNumber() + "]",
                 CustomerCardListDTO::cardNumber
         );
-        customerCardComboBox.valueProperty().addListener((obs, oldVal, newVal) -> setUseDiscountVisible());
+        customerCardComboBox.valueProperty().addListener((_,_,_) ->
+                onCustomerCardChanged());
     }
 
     @Override
@@ -99,17 +101,14 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
 
     @Override
     protected CheckCreateDTO buildDTO() {
-        String cashierId = sessionManager.getCurrentUser().id();
-        String cardNumber = customerCardComboBox.getValue() != null ? customerCardComboBox.getValue().cardNumber() : null;
-
         List<SaleCreateDTO> saleDTOs = salesData.stream()
                 .map(item -> new SaleCreateDTO(item.upc(), InputHelper.getString(checkNumberField), item.quantity()))
                 .collect(Collectors.toList());
 
         return CheckCreateDTO.builder()
                 .checkNumber(InputHelper.getString(checkNumberField))
-                .cardNumber(cardNumber)
-                .idEmployee(cashierId)
+                .cardNumber(customerCardComboBox.getValue() != null ? customerCardComboBox.getValue().cardNumber() : null)
+                .idEmployee(sessionManager.getCurrentUser().id())
                 .useDiscount(useDiscount.isSelected())
                 .sales(saleDTOs)
                 .build();
@@ -125,6 +124,11 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
         navigateToSaleForm();
     }
 
+    private void navigateToSaleForm() {
+        viewManager.showDialog(AppView.SALE_FORM, (SaleFormController controller) ->
+                controller.setSaveCallback(this::addSaleItem));
+    }
+
     @FXML
     public void onRemoveSale() {
         SaleItemModel selected = salesTable.getSelectionModel().getSelectedItem();
@@ -134,20 +138,15 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
         }
     }
 
-    private void navigateToSaleForm(){
-        viewManager.showDialog(AppView.SALE_FORM, (SaleFormController controller) -> {
-            controller.setSaveCallback(this::addSaleItem);
-        });
-    }
 
-    private void setUseDiscountVisible() {
+    private void onCustomerCardChanged() {
         configureDiscountElements(
                 customerCardComboBox.getValue() != null
-                && customerCardComboBox.getValue().discount() > 0);
+                        && customerCardComboBox.getValue().discount() > 0);
         recalculateTotals();
     }
 
-    private void configureDiscountElements(Boolean isDiscountPresent) {
+    private void configureDiscountElements(boolean isDiscountPresent) {
         useDiscount.setVisible(isDiscountPresent);
         useDiscount.setManaged(isDiscountPresent);
         int discount = customerCardComboBox.getValue() != null ? customerCardComboBox.getValue().discount() : 0;
@@ -194,8 +193,12 @@ public class CheckFormController extends BaseFormController<CheckCreateDTO, Chec
         @Setter private int quantity;
 
         public SaleItemModel(String upc, String productName, double price, int quantity) {
-            this.upc = upc; this.productName = productName; this.price = price; this.quantity = quantity;
+            this.upc = upc;
+            this.productName = productName;
+            this.price = price;
+            this.quantity = quantity;
         }
+
         public String upc() { return upc; }
         public String productName() { return productName; }
         public double price() { return price; }

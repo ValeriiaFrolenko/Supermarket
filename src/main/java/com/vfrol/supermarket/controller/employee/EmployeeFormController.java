@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class EmployeeFormController extends BaseFormController<EmployeeCreateDTO, EmployeeDetailsDTO> {
 
@@ -91,7 +92,7 @@ public class EmployeeFormController extends BaseFormController<EmployeeCreateDTO
                 .name(InputHelper.getString(nameField))
                 .patronymic(InputHelper.getString(patronymicField))
                 .role(roleComboBox.getValue())
-                .salary(InputHelper.getDouble(salaryField))
+                .salary(Objects.requireNonNull(InputHelper.getDouble(salaryField)))
                 .dateOfBirth(dobPicker.getValue())
                 .dateOfStart(dosPicker.getValue())
                 .phoneNumber(InputHelper.getString(phoneField))

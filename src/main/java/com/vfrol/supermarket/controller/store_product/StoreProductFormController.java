@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class StoreProductFormController extends BaseFormController<StoreProductCreateDTO, StoreProductDetailsDTO> {
 
@@ -44,6 +45,22 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
     public void initialize() {
         super.initialize();
 
+        configureComboBoxes();
+
+        discountField.setText("20");
+
+        discountField.textProperty().addListener((_, _, _) -> priceDebouncer.debounce(this::recalculatePrice));
+
+        promotionalCheckBox.selectedProperty().addListener((_, _, isPromotional) -> {
+            updateFieldVisibility(isPromotional);
+            if (isPromotional) {
+                recalculatePrice();
+            }
+        });
+        updateFieldVisibility(false);
+    }
+
+    private void configureComboBoxes() {
         SearchableComboBoxHelper.configureForForm(
                 productComboBox,
                 productService::getAllProductNames,
@@ -64,19 +81,8 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
                 storeProductService::getBlockedUPCs
         );
 
-        discountField.setText("20");
-
-        discountField.textProperty().addListener((_, _, _) -> priceDebouncer.debounce(this::recalculatePrice));
-        upcPromComboBox.valueProperty().addListener((_, _, _) -> recalculatePrice());
-
-        promotionalCheckBox.selectedProperty().addListener((_, _, isPromotional) -> {
-            updateFieldVisibility(isPromotional);
-            if (isPromotional) {
-                recalculatePrice();
-            }
-        });
-
-        updateFieldVisibility(false);
+        upcPromComboBox.valueProperty().addListener((_, _, _) ->
+                recalculatePrice());
     }
 
     private void recalculatePrice() {
@@ -144,15 +150,34 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
     @Override
     protected StoreProductCreateDTO buildDTO() {
         boolean isPromotional = promotionalCheckBox.isSelected();
-        String upcProm = (isPromotional && upcPromComboBox.getValue() != null) ? upcPromComboBox.getValue().UPC() : null;
+        String upcProm = (isPromotional && upcPromComboBox.getValue() != null)
+                ? upcPromComboBox.getValue().UPC()
+                : null;
 
-        int productId;
+        int productId = getProductId(isPromotional, upcProm);
+
+        Double finalPrice = getFinalPrice(isPromotional);
+
+        return StoreProductCreateDTO.builder()
+                .UPC(InputHelper.getString(upcField))
+                .UPCprom(upcProm)
+                .productId(productId)
+                .price(finalPrice)
+                .quantity(Objects.requireNonNull(InputHelper.getInt(quantityField)))
+                .promotional(isPromotional)
+                .discount(isPromotional ? InputHelper.getDouble(discountField) : null)
+                .build();
+    }
+
+    private int getProductId(boolean isPromotional, String upcProm) {
         if (isPromotional) {
-            productId = storeProductService.getProductIdByUpc(upcProm);
+            return storeProductService.getProductIdByUpc(upcProm);
         } else {
-            productId = productComboBox.getValue().id();
+            return productComboBox.getValue().id();
         }
+    }
 
+    private Double getFinalPrice(boolean isPromotional) {
         Double finalPrice;
         if (isPromotional && upcPromComboBox.getValue() != null) {
             finalPrice = upcPromComboBox.getValue().price();
@@ -160,16 +185,7 @@ public class StoreProductFormController extends BaseFormController<StoreProductC
             finalPrice = InputHelper.getDouble(priceField);
         }
         if (finalPrice == null) finalPrice = 0.0;
-
-        return StoreProductCreateDTO.builder()
-                .UPC(InputHelper.getString(upcField))
-                .UPCprom(upcProm)
-                .productId(productId)
-                .price(finalPrice)
-                .quantity(InputHelper.getInt(quantityField))
-                .promotional(isPromotional)
-                .discount(isPromotional ? InputHelper.getDouble(discountField) : null)
-                .build();
+        return finalPrice;
     }
 
     @Override

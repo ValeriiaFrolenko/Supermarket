@@ -30,7 +30,7 @@ public class H2ExceptionTranslator implements SqlExceptionHandler {
                                 "Please remove or change the linked items first.";
 
                 case REFERENCE_NOT_FOUND ->
-                        "A referenced item (such as a category or product) does not exist.\n" +
+                        "A referenced item does not exist.\n" +
                                 "Please check your selection and try again.";
 
                 case CHECK_CONSTRAINT_VIOLATION ->
