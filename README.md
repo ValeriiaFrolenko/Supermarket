@@ -39,13 +39,11 @@ The application uses an embedded **H2** relational database located at `./superm
 - All price, quantity, salary, and percentage columns enforce non-negative values via `CHECK`
 - `date_of_birth` has a DB-level `CHECK` to enforce the 18-year minimum age rule
 - Phone number fields are `VARCHAR(13)` to accommodate the `+380XXXXXXXXX` format
-- `id_employee` uses `COLLATE BINARY` to make login case-sensitive
 
 **Foreign keys:**
 - `ON UPDATE CASCADE` is used throughout
 - `ON DELETE RESTRICT` where referential integrity must be preserved
 - `ON DELETE CASCADE` from `Check_Table` to `Sale` — deleting a check removes its line items
-- `Store_Product.UPC_prom` is a nullable self-referencing FK with `ON DELETE SET NULL`, linking a promotional item to its regular counterpart
 
 **Historical pricing:**
 `Sale` stores `selling_price` independently from `Store_Product.selling_price` to preserve accurate check data after repricing events — when a new batch arrives, all stock is repriced, but past sales must reflect the price at the time of purchase.
